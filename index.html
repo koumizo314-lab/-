@@ -1,0 +1,3913 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>南房総 拠点ガイド | コンプリート版</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap');
+        body { font-family: 'Noto Sans JP', sans-serif; }
+        .favorite-active { color: #ef4444 !important; }
+        
+        /* 営業状態ラベルのスタイル */
+        .status-open { background: #dcfce7; color: #166534; padding: 4px 12px; rounded-full: 9999px; font-weight: bold; font-size: 12px; border-radius: 999px; }
+        .status-closed { background: #f1f5f9; color: #64748b; padding: 4px 12px; rounded-full: 9999px; font-weight: bold; font-size: 12px; border-radius: 999px; }
+
+        #area-visual {
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            transition: background-image 0.8s ease-in-out;
+            height: 300px;
+        }
+
+        @media (min-width: 1024px) {
+            body { overflow: hidden; }
+            #area-visual { height: 100vh; width: 25%; position: fixed; left: 0; top: 0; }
+            #right-content { margin-left: 25%; width: 75%; height: calc(100vh - 64px); overflow-y: auto; }
+        }
+
+        .area-info-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 2rem;
+            background: linear-gradient(to top, rgba(15, 23, 42, 1) 0%, transparent 100%);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+    <header class="bg-slate-900 text-white py-4 px-6 shadow-xl z-50 relative">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-black tracking-tighter">南房総 拠点ガイド</h1>
+            <div id="real-time-clock" class="text-xs font-mono text-slate-400"></div>
+        </div>
+    </header>
+
+    <div class="flex flex-col lg:flex-row">
+        <aside id="area-visual">
+            <div class="area-info-overlay">
+                <span id="current-area-en" class="text-blue-400 text-xs font-black uppercase tracking-[0.3em] mb-2 block">All Areas</span>
+                <h2 id="current-area-jp" class="text-white text-4xl font-black tracking-tight mb-3">南房総市</h2>
+                <p id="area-description" class="text-slate-300 text-sm leading-relaxed">
+                    房総半島の最南端。海と山に囲まれた豊かな食の宝庫。
+                </p>
+            </div>
+        </aside>
+
+        <section id="right-content" class="p-6 lg:p-10">
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-5 mb-10 sticky top-0 z-40">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                    <select id="filter-area" class="bg-slate-50 border-none rounded-2xl p-3 font-bold text-sm ring-1 ring-slate-100">
+                        <option value="all">すべての地区</option>
+                        <option value="富浦">富浦</option><option value="富山">富山</option>
+                        <option value="千倉">千倉</option><option value="白浜">白浜</option>
+                        <option value="和田">和田</option><option value="丸山">丸山</option>
+                        <option value="三芳">三芳</option>
+                    </select>
+                    <select id="filter-genre" class="bg-slate-50 border-none rounded-2xl p-3 font-bold text-sm ring-1 ring-slate-100">
+                                <option value="all">すべてのジャンル</option>
+                                <option value="うなぎ・和食">うなぎ・和食</option>
+                                <option value="海鮮・シーフード🦐">海鮮・シーフード🦐</option>
+                                <option value="洋食">洋食</option>
+                                <option value="カフェ・喫茶店☕">カフェ・喫茶店☕</option>
+                                <option value="ラーメン・中華🍜">ラーメン・中華🍜</option>
+                                <option value="ピザ🍕">ピザ🍕</option>
+                                <option value="居酒屋🏮">居酒屋🏮</option>
+                                <option value="コーヒーショップ☕">コーヒーショップ☕</option>
+                                <option value="焼肉・ホルモン">焼肉・ホルモン</option>
+                                <option value="そば・うどん">そば・うどん</option>
+                                <option value="ベーカリー🥖">ベーカリー🥖</option>
+                                <option value="寿司🍣">寿司🍣</option>
+                                <option value="和菓子">和菓子</option>
+                                <option value="アジア料理">アジア料理</option>
+                                <option value="ハンバーガー🍔">ハンバーガー🍔</option>
+                                <option value="ハンバーグ">ハンバーグ</option>
+                                <option value="イタリア料理">イタリア料理</option>
+                                <option value="定食">定食</option>
+                                <option value="レストラン🍴">レストラン🍴</option>
+                                <option value="薬膳料理">薬膳料理</option>
+                                <option value="とんかつ">とんかつ</option>
+                                <option value="スナック">スナック</option>
+                                <option value="鉄板焼き">鉄板焼き</option>
+                                <option value="やきとり">やきとり</option>
+                                <option value="牛タン🐮">牛タン🐮</option>
+                                <option value="スイーツ🍰">スイーツ🍰</option>
+                                <option value="軽食">軽食</option>
+                                <option value="バー🍸">バー🍸</option>
+                    </select>
+                    <input type="text" id="search-text" placeholder="店名検索..." class="bg-slate-50 border-none rounded-2xl p-3 font-bold text-sm ring-1 ring-slate-100">
+                    <button id="show-favorites" class="px-6 py-3 rounded-2xl font-black text-sm text-slate-500 hover:bg-rose-50 transition-all border border-slate-100">
+                        <i class="fas fa-heart mr-2"></i>お気に入り
+                    </button>
+                </div>
+                <div class="flex items-center gap-4 text-xs font-bold text-slate-500 px-2">
+                    <label class="flex items-center cursor-pointer">
+                        <input type="checkbox" id="filter-now-open" class="mr-2 w-4 h-4 accent-blue-600"> 現在営業中のみ
+                    </label>
+                    <div class="flex items-center">
+                        <i class="far fa-calendar-alt mr-2"></i>
+                        <input type="datetime-local" id="filter-datetime" class="bg-transparent border-none focus:ring-0">
+                    </div>
+                </div>
+            </div>
+
+            <div id="shop-container" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                </div>
+        </section>
+    </div>
+
+    <script>
+        // エリア設定
+        const areaConfigs = {
+            'all': { jp: '南房総市', en: 'All Areas', img: 'https://images.unsplash.com/photo-1542332213-31f87348057f?auto=format&fit=crop&w=1000', desc: '房総半島の最南端。海と山に囲まれた豊かな食の宝庫。' },
+            '富浦': { jp: '富浦', en: 'Tomiura', img: 'https://images.unsplash.com/photo-1502756119742-b01720e70ca7?auto=format&fit=crop&w=1000', desc: '桟橋とびわの里。穏やかな鏡ヶ浦を望む、南房総の玄関口。' },
+            '富山': { jp: '富山', en: 'Tomiyama', img: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1000', desc: '二つの峰を持つ富山。里見八犬伝の舞台としても知られる自然豊かなエリア。' },
+            '千倉': { jp: '千倉', en: 'Chikura', img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1000', desc: '太平洋を望むアートと花の町。朝市やサーフィンスポットも人気。' },
+            '白浜': { jp: '白浜', en: 'Shirahama', img: 'https://images.unsplash.com/photo-1515238152791-8216bfdf89a7?auto=format&fit=crop&w=1000', desc: '野島崎灯台がそびえる千葉県最南端。豪快な磯料理が楽しめる岬。' },
+            '和田': { jp: '和田', en: 'Wada', img: 'https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=1000', desc: '捕鯨の伝統が息づく町。花に彩られた海岸線とクジラ料理が特徴。' },
+            '丸山': { jp: '丸山', en: 'Maruyama', img: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1000', desc: '緑豊かな田園風景が広がる。古民家カフェやのんびりした空気が流れる里。' },
+            '三芳': { jp: '三芳', en: 'Miyoshi', img: 'https://images.unsplash.com/photo-1500673922987-e212871fec22?auto=format&fit=crop&w=1000', desc: '酪農発祥の地。新鮮な牛乳やソフトクリーム、里山ランチの宝庫。' }
+        };
+
+        // ★ここに全201件のデータを入れます
+        const shopList = [
+            { 
+        id: 1, name: "うなぎ 新都", genre: "うなぎ・和食", area: "和田", 
+        lat: 35.024681, lng: 139.991821,
+        // 日, 月, 火, 水, 木, 金, 土
+        hours: [
+            [["11:30", "15:00"], ["17:00", "21:00"]], // 日
+            [["11:30", "15:00"], ["17:00", "21:00"]], // 月
+            [],                                       // 火(定休)
+            [["11:30", "15:00"], ["17:00", "21:00"]], // 水
+            [["11:30", "15:00"], ["17:00", "21:00"]], // 木
+            [["11:30", "15:00"], ["17:00", "21:00"]], // 金
+            [["11:30", "15:00"], ["17:00", "21:00"]]  // 土
+        ],
+        closedText: "火曜・不定休",
+        updatedAt: "2026/03/03",
+        website: "https://www.shinmiyako.jp/",
+        sns: "https://www.facebook.com/shinmiyako/?locale=ja_JP"
+    },
+
+    { 
+        id: 2, name: "海鮮食堂 とみうら亭", genre: "海鮮・シーフード🦐", area: "富浦", 
+        lat: 35.038267, lng: 139.849518,
+        hours: [
+            [["10:30", "20:30"]], // 日(祝)
+            [["10:30", "19:00"]], // 月
+            [["10:30", "19:00"]], // 火
+            [["10:30", "19:00"]], // 水
+            [["10:30", "19:00"]], // 木
+            [["10:30", "19:00"]], // 金
+            [["10:30", "20:30"]]  // 土
+        ],
+        closedText: "無休",
+        updatedAt: "2026/03/03",
+        website: "https://bosonoeki-tomiura.jp/tomiuratei/",
+        sns: "https://www.instagram.com/yamato.tomiura/"
+    },
+
+    { 
+        id: 3, name: "ピザ インディーズ", genre: "ピザ🍕", area: "千倉", 
+        lat: 34.974632, lng: 139.953033,
+        hours: [
+            [["11:00", "15:00"]], // 日
+            [["11:00", "15:00"]], // 月
+            [],                   // 火(定休)
+            [],                   // 水(定休)
+            [["11:00", "15:00"]], // 木
+            [["11:00", "15:00"]], // 金
+            [["11:00", "15:00"]]  // 土
+        ],
+        closedText: "火・水曜",
+        updatedAt: "2026/03/03",
+        website: "https://sites.google.com/view/pizza-indys/%E3%83%9B%E3%83%BC%E3%83%A0?authuser=0",
+        sns: "https://www.instagram.com/pizzaindys/"
+    },
+
+    { 
+        id: 4, name: "ビンゴバーガー本店", genre: "ハンバーガー🍔", area: "三芳", 
+        lat: 35.033849, lng: 139.894673,
+        hours: [
+            [["11:00", "16:00"]], // 日
+            [["11:00", "16:00"]], // 月
+            [["11:00", "16:00"]], // 火
+            [["11:00", "16:00"]], // 水
+            [],                   // 木(定休)
+            [["11:00", "16:00"]], // 金
+            [["11:00", "16:00"]]  // 土
+        ],
+        closedText: "木曜",
+        updatedAt: "2026/03/03",
+        website: "https://bingo1101.com/",
+        sns: "https://www.instagram.com/bingoburger.minamiboso/"
+    },
+
+    { 
+        id: 5, name: "安藤食堂", genre: "定食", area: "丸山", 
+        lat: 35.051473, lng: 139.957010,
+        hours: [
+            [],                   // 日(定休)
+            [["10:30", "14:00"]], // 月
+            [["10:30", "14:00"]], // 火
+            [["10:30", "14:00"]], // 水
+            [["10:30", "14:00"]], // 木
+            [["10:30", "14:00"]], // 金
+            []                    // 土(定休)
+        ],
+        closedText: "土・日曜日",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 6, name: "みねおかいきいき館", genre: "カフェ・喫茶店☕", area: "丸山", 
+        lat: 35.102411, lng: 139.989816,
+        hours: [
+            [["09:30", "16:30"]], // 日
+            [],                   // 月(定休)
+            [],                   // 火(定休)
+            [["09:30", "16:30"]], // 水
+            [["09:30", "16:30"]], // 木
+            [["09:30", "16:30"]], // 金
+            [["09:30", "16:30"]]  // 土
+        ],
+        closedText: "月・火曜",
+        updatedAt: "2026/03/03",
+        website: "https://www.ikiiki.oi.minamiboso.org/%E3%81%8A%E9%A3%9F%E4%BA%8B",
+        sns: "https://www.instagram.com/mineoka_ikiikikan/"
+    },
+
+    { 
+        id: 7, name: "とみうらカフェ", genre: "カフェ・喫茶店☕", area: "富浦", 
+        lat: 35.037815, lng: 139.850389,
+        hours: [
+            [["10:00", "19:00"]], // 日(祝)
+            [["10:00", "18:00"]], // 月
+            [["10:00", "18:00"]], // 火
+            [["10:00", "18:00"]], // 水
+            [["10:00", "18:00"]], // 木
+            [["10:00", "18:00"]], // 金
+            [["10:00", "19:00"]]  // 土
+        ],
+        closedText: "無休",
+        updatedAt: "2026/03/03",
+        website: "https://bosonoeki-tomiura.jp/cafe/",
+        sns: "https://www.instagram.com/tomiura.cafe/"
+    },
+
+    { 
+        id: 8, name: "SHIP - IWAI PARK", genre: "カフェ・喫茶店☕", area: "富山", 
+        lat: 35.098347, lng: 139.845017,
+        hours: [
+            [], // 日
+            [], // 月
+            [], // 火
+            [], // 水
+            [], // 木
+            [], // 金
+            []  // 土
+        ],
+        closedText: "2026春再オープン予定",
+        updatedAt: "2026/03/03",
+        website: "https://shibuya-iwai-park.com/",
+        sns: "https://www.instagram.com/ship_iwai_park"
+    },
+
+    { 
+        id: 9, name: "らーめん わたなべ", genre: "ラーメン・中華🍜", area: "富山", 
+        lat: 35.100509, lng: 139.855618,
+        hours: [
+            [["08:30", "18:00"]], // 日(祝)
+            [["09:00", "18:00"]], // 月
+            [["09:00", "18:00"]], // 火
+            [["09:00", "18:00"]], // 水
+            [["09:00", "18:00"]], // 木
+            [["09:00", "18:00"]], // 金
+            [["08:30", "18:00"]]  // 土
+        ],
+        closedText: "無休（道の駅 富楽里とみやまに準ずる）",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.instagram.com/ramen_watanabe_/"
+    },
+
+    { 
+        id: 10, name: "酒処 魁 SAKIGAKE", genre: "居酒屋🏮", area: "富浦", 
+        lat: 35.034332, lng: 139.848853,
+        hours: [
+            [["17:00", "00:00"]], // 日
+            [["17:00", "00:00"]], // 月
+            [["17:00", "00:00"]], // 火
+            [["17:00", "00:00"]], // 水
+            [["17:00", "00:00"]], // 木
+            [["17:00", "00:00"]], // 金
+            [["17:00", "00:00"]]  // 土
+        ],
+        closedText: "不定休",
+        updatedAt: "2026/03/03",
+        website: "https://sakigake.org/",
+        sns: "https://www.instagram.com/_sakigake___/"
+    },
+
+    { 
+        id: 11, name: "すし満", genre: "寿司🍣", area: "富浦", 
+        lat: 34.9577, lng: 139.9553, // 座標不明のため仮置き
+        hours: [
+            [], // 日
+            [["18:00", "21:00"]], // 月
+            [["18:00", "21:00"]], // 火
+            [], // 水
+            [["18:00", "21:00"]], // 木
+            [["18:00", "21:00"]], // 金
+            [["18:00", "21:00"]]  // 土
+        ],
+        closedText: "水・日曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 12, name: "こおり屋", genre: "カフェ・喫茶店☕", area: "富浦", 
+        lat: 35.043868, lng: 139.832758,
+        hours: [
+            [["13:00", "17:00"]], // 日
+            [["13:00", "17:00"]], // 月
+            [["13:00", "17:00"]], // 火
+            [],                   // 水(定休)
+            [],                   // 木(定休)
+            [["13:00", "17:00"]], // 金
+            [["13:00", "17:00"]]  // 土
+        ],
+        closedText: "水・木曜日",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.instagram.com/tomiura_kooriya/"
+    },
+
+    { 
+        id: 13, name: "潮騒", genre: "海鮮・シーフード🦐", area: "富山", 
+        lat: 35.100784, lng: 139.855980,
+        hours: [
+            [["11:00", "15:30"],["15:30", "17:30"]], // 日(祝)
+            [["11:00", "15:00"],["15:00", "17:30"]], // 月
+            [["11:00", "15:00"],["15:00", "17:30"]], // 火
+            [["11:00", "15:00"],["15:00", "17:30"]], // 水
+            [["11:00", "15:00"],["15:00", "17:30"]], // 木
+            [["11:00", "15:00"],["15:00", "17:30"]], // 金
+            [["11:00", "15:30"],["15:30", "17:30"]]  // 土
+        ],
+        closedText: "後半はカフェ営業",
+        updatedAt: "2026/03/03",
+        website: "https://www.rokuza.com/news/44/",
+        sns: "https://www.instagram.com/shiosai_furari/"
+    },
+
+    { 
+        id: 14, name: "FURAPAN!", genre: "ベーカリー🥖", area: "富山", 
+        lat: 35.100476, lng: 139.855738,
+        hours: [
+            [["08:30", "18:00"]], // 日(祝)
+            [["09:00", "18:00"]], // 月
+            [["09:00", "18:00"]], // 火
+            [["09:00", "18:00"]], // 水
+            [["09:00", "18:00"]], // 木
+            [["09:00", "18:00"]], // 金
+            [["08:30", "18:00"]]  // 土
+        ],
+        closedText: "無休（道の駅 富楽里とみやまに準ずる）",
+        updatedAt: "2026/03/03",
+        website: "https://furapan.com/",
+        sns: "https://x.com/FURAPAN2023"
+    },
+
+    { 
+        id: 15, name: "珈琲屋らっく", genre: "コーヒーショップ☕", area: "富山", 
+        lat: 35.097965, lng: 139.847147,
+        hours: [
+            [["09:00", "19:00"]], // 日
+            [["09:00", "19:00"]], // 月
+            [["09:00", "19:00"]], // 火
+            [],                   // 水(定休)
+            [["09:00", "19:00"]], // 木
+            [["09:00", "19:00"]], // 金
+            []                    // 土(定休)
+        ],
+        closedText: "水曜・土曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 16, name: "喫茶・軽食 菜の花", genre: "軽食", area: "富山", 
+        lat: 35.100397, lng: 139.855638,
+        hours: [
+            [["08:30", "18:00"]], // 日
+            [["09:00", "18:00"]], // 月
+            [["09:00", "18:00"]], // 火
+            [["09:00", "18:00"]], // 水
+            [["09:00", "18:00"]], // 木
+            [["09:00", "18:00"]], // 金
+            [["08:30", "18:00"]]  // 土
+        ],
+        closedText: "不定休（道の駅に準ずる）",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 17, name: "出口ホルモン", genre: "焼肉・ホルモン", area: "富山", 
+        lat: 35.087564, lng: 139.846633,
+        hours: [
+            [[]], // 暫定
+            [[]], // 暫定
+            [[]], // 暫定
+            [[]], // 暫定
+            [[]], // 暫定
+            [[]], // 暫定
+            [[]]  // 暫定
+        ],
+        closedText: "調査中",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.instagram.com/deguchihorumon708/"
+    },
+
+    { 
+        id: 18, name: "生そばかわな", genre: "そば・うどん", area: "富山", 
+        lat: 35.092612, lng: 139.848965,
+        hours: [
+            [["11:00", "15:00"], ["17:00", "22:00"]], // 日(祝)
+            [["11:45", "15:00"], ["17:30", "22:00"]], // 月
+            [["11:45", "15:00"], ["17:30", "22:00"]], // 火
+            [],                                       // 水(定休)
+            [["11:45", "15:00"], ["17:30", "22:00"]], // 木
+            [["11:45", "15:00"], ["17:30", "22:00"]], // 金
+            [["11:00", "15:00"], ["17:00", "22:00"]]  // 土
+        ],
+        closedText: "水曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+    
+    { 
+        id: 19, name: "伏姫さんが焼", genre: "海鮮・シーフード🦐", area: "富山", 
+        lat: 35.091157, lng: 139.849484,
+        hours: [
+            [["11:00", "15:30"],["17:00", "21:00"]], // 日(祝)
+            [["11:00", "14:30"],["17:00", "21:00"]], // 月
+            [],                                      // 火
+            [["11:00", "14:30"],["17:00", "21:00"]], // 水
+            [["11:00", "14:30"],["17:00", "21:00"]], // 木
+            [["11:00", "14:30"],["17:00", "21:00"]], // 金
+            [["11:00", "15:30"],["17:00", "21:00"]]  // 土
+        ],
+        closedText: "火曜",
+        updatedAt: "2026/03/03",
+        website: "https://www.aokura-sanga.com/",
+        sns: ""
+    },
+
+    { 
+        id: 20, name: "むつき 寿司", genre: "寿司🍣", area: "富山", 
+        lat: 35.090694, lng: 139.844479,
+        hours: [
+            [["17:30", "21:00"]], // 日
+            [["17:30", "21:00"]], // 月
+            [],                   // 火(定休)
+            [],                   // 水(定休)
+            [["17:30", "21:00"]], // 木
+            [["17:30", "21:00"]], // 金
+            [["17:30", "21:00"]]  // 土
+        ],
+        closedText: "火曜・水曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 21, name: "波音", genre: "カフェ・喫茶店☕", area: "富山", 
+        lat: 35.083596, lng: 139.843014,
+        hours: [
+            [["11:00", "20:00"]], // 日
+            [["11:00", "20:00"]], // 月
+            [["11:00", "20:00"]], // 火
+            [],                   // 水
+            [],                   // 木
+            [],                   // 金
+            [["11:00", "20:00"]]  // 土
+        ],
+        closedText: "水・木・金曜",
+        updatedAt: "2026/03/03",
+        website: "https://taito-namioto.com/",
+        sns: ""
+    },
+
+    { 
+        id: 22, name: "WADAPAN", genre: "ベーカリー🥖", area: "和田", 
+        lat: 35.046023, lng: 140.021427,
+        hours: [
+            [["10:00", "16:00"]], // 日
+            [["10:00", "16:00"]], // 月
+            [],                   // 火
+            [],                   // 水
+            [["10:00", "16:00"]], // 木
+            [["10:00", "16:00"]], // 金
+            [["10:00", "16:00"]]  // 土
+        ],
+        closedText: "火・水曜",
+        updatedAt: "2026/03/03",
+        website: "http://wadapan.com/",
+        sns: "https://www.instagram.com/wadapan215/"
+    },
+
+    { 
+        id: 23, name: "叙香園", genre: "ラーメン・中華🍜", area: "和田", 
+        lat: 35.042687, lng: 140.021228,
+        hours: [
+            [["11:00", "14:00"], ["18:00", "22:00"]], // 日
+            [["11:00", "14:00"], ["18:00", "22:00"]], // 月
+            [],                                       // 火(定休)
+            [["11:00", "14:00"], ["18:00", "22:00"]], // 水
+            [["11:00", "14:00"], ["18:00", "22:00"]], // 木
+            [["11:00", "14:00"], ["18:00", "22:00"]], // 金
+            [["11:00", "14:00"], ["18:00", "22:00"]]  // 土
+        ],
+        closedText: "火曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 24, name: "うな陣", genre: "うなぎ・和食", area: "和田", 
+        lat: 35.048686, lng: 140.026796,
+        hours: [
+            [["17:00", "20:30"]], // 日
+            [["17:00", "20:30"]], // 月
+            [["17:00", "20:30"]], // 火
+            [],                   // 水(定休)
+            [["17:00", "20:30"]], // 木
+            [["17:00", "20:30"]], // 金
+            [["17:00", "20:30"]]  // 土
+        ],
+        closedText: "水曜",
+        updatedAt: "2026/03/03",
+        website: "https://unajin.owst.jp/",
+        sns: "https://www.instagram.com/unajin.official/"
+    },
+    
+    { 
+        id: 25, name: "サンライズ本店", genre: "ベーカリー🥖", area: "和田", 
+        lat: 35.020963, lng: 139.980127,
+        hours: [
+            [["07:00", "17:00"]], // 日
+            [["07:00", "17:00"]], // 月
+            [["07:00", "17:00"]], // 火
+            [["07:00", "17:00"]], // 水
+            [["07:00", "17:00"]], // 木
+            [["07:00", "17:00"]], // 金
+            [["07:00", "17:00"]]  // 土
+        ],
+        closedText: "無休",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 26, name: "KUJIKA The Oven", genre: "ベーカリー🥖", area: "和田", 
+        lat: 35.016668, lng: 139.970646,
+        hours: [
+            [],                   // 日(定休)
+            [],                   // 月(定休)
+            [],                   // 火(定休)
+            [],                   // 水(定休)
+            [],                   // 木(定休)
+            [["15:00", "20:00"]], // 金(通常営業)
+            []                    // 土(定休)
+        ],
+        closedText: "金曜以外（金曜以外は予約制）",
+        updatedAt: "2026/03/03",
+        website: "https://kujikaoven.handcrafted.jp/",
+        sns: "https://www.instagram.com/kujikatheoven/"
+    },
+
+    { 
+        id: 27, name: "いとを菓子 盛栄堂", genre: "和菓子", area: "丸山", 
+        lat: 35.013790, lng: 139.959558,
+        hours: [
+            [["09:00", "18:00"]], // 日
+            [],                   // 月(定休)
+            [["09:00", "18:00"]], // 火
+            [["09:00", "18:00"]], // 水
+            [["09:00", "18:00"]], // 木
+            [["09:00", "18:00"]], // 金
+            [["09:00", "18:00"]]  // 土
+        ],
+        closedText: "月曜（祝日の場合は翌火曜）",
+        updatedAt: "2026/03/03",
+        website: "https://boso-seieido.com/",
+        sns: "https://www.facebook.com/sazae.monaka/?locale=ja_JP"
+    },
+
+    { 
+        id: 28, name: "サンドカフェ", genre: "カフェ・喫茶店☕", area: "千倉", 
+        lat: 34.975020, lng: 139.962699,
+        hours: [
+            [["10:30", "17:00"]], // 日
+            [],                   // 月(定休)
+            [],                   // 火(定休)
+            [["10:30", "17:00"]], // 水
+            [["10:30", "17:00"]], // 木
+            [["10:30", "17:00"]], // 金
+            [["10:30", "17:00"]]  // 土
+        ],
+        closedText: "月曜・火曜（不定休あり）",
+        updatedAt: "2026/03/03",
+        website: "https://www.sandcafe.jp/sandcafe/",
+        sns: "https://www.facebook.com/sandcafe.chikura/?locale=ja_JP"
+    },
+
+    { 
+        id: 29, name: "わが家", genre: "居酒屋🏮", area: "千倉", 
+        lat: 34.976098, lng: 139.954521,
+        hours: [
+            [["18:00", "23:00"]], // 日
+            [["18:00", "23:00"]], // 月
+            [["18:00", "23:00"]], // 火
+            [],                   // 水
+            [["18:00", "23:00"]], // 木
+            [["18:00", "23:00"]], // 金
+            [["18:00", "23:00"]]  // 土
+        ],
+        closedText: "水曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.instagram.com/wagaya_1223/"
+    },
+
+    { 
+        id: 30, name: "いつもの処", genre: "居酒屋🏮", area: "千倉", 
+        lat: 34.963021, lng: 139.952967,
+        hours: [
+            [["18:00", "21:00"]], // 日(祝)
+            [["17:30", "23:00"]], // 月
+            [["17:30", "23:00"]], // 火
+            [["17:30", "23:00"]], // 水
+            [["17:30", "23:00"]], // 木
+            [["17:30", "23:00"]], // 金
+            [["18:00", "21:00"]]  // 土
+        ],
+        closedText: "無休",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+    
+    { 
+        id: 31, name: "Ichinoyato coffee", genre: "カフェ・喫茶店☕", area: "千倉", 
+        lat: 34.964056, lng: 139.957551,
+        hours: [
+            [],                   // 日
+            [["08:30", "17:00"]], // 月
+            [["08:30", "17:00"]], // 火
+            [["08:30", "17:00"]], // 水
+            [["08:30", "17:00"]], // 木
+            [["08:30", "17:00"]], // 金
+            []                    // 土
+        ],
+        closedText: "水曜（他、木曜など不定休あり）",
+        updatedAt: "2026/03/03",
+        website: "https://ichinoyatocoffee.com/",
+        sns: "https://www.instagram.com/ichinoyatocoffee/"
+    },
+
+    { 
+        id: 32, name: "CafeMotto", genre: "カフェ・喫茶店☕", area: "千倉", 
+        lat: 34.963684, lng: 139.956806,
+        hours: [
+            [],                   // 日(定休)
+            [["11:00", "15:00"]], // 月
+            [["11:00", "15:00"]], // 火
+            [["11:00", "15:00"]], // 水
+            [],                   // 木(定休)
+            [],                   // 金(定休)
+            []                    // 土(定休)
+        ],
+        closedText: "木～日曜（※月・火・水のみ営業）",
+        updatedAt: "2026/03/03",
+        website: "https://cafemotto.jimdofree.com/",
+        sns: "https://www.instagram.com/cafe_motto/"
+    },
+
+    { 
+        id: 33, name: "小間惣製菓", genre: "和菓子", area: "千倉", 
+        lat: 34.960602, lng: 139.958603,
+        hours: [
+            [["08:00", "18:30"]], // 日
+            [["08:00", "18:30"]], // 月
+            [["08:00", "18:30"]], // 火
+            [["08:00", "18:30"]], // 水
+            [],                   // 木(定休)
+            [["08:00", "18:30"]], // 金
+            [["08:00", "18:30"]]  // 土
+        ],
+        closedText: "木曜",
+        updatedAt: "2026/03/03",
+        website: "https://www.komaso.jp/",
+        sns: ""
+    },
+
+    { 
+        id: 34, name: "オハナホルモン", genre: "焼肉・ホルモン", area: "千倉", 
+        lat: 34.963169, lng: 139.957940,
+        hours: [
+            [["18:00", "23:00"]], // 日
+            [["18:00", "23:00"]], // 月
+            [["18:00", "23:00"]], // 火
+            [["18:00", "23:00"]], // 水
+            [["18:00", "23:00"]], // 木
+            [["18:00", "23:00"]], // 金
+            [["18:00", "23:00"]]  // 土
+        ],
+        closedText: "不定休",
+        updatedAt: "2026/03/03",
+        website: "https://ohana-horumon.com/",
+        sns: ""
+    },
+
+    { 
+        id: 35, name: "もへじ", genre: "居酒屋🏮", area: "千倉", 
+        lat: 34.952199, lng: 139.960150,
+        hours: [
+            [], // 日(定休)
+            [], // 月(定休)
+            ["17:00","22:00"], // 火
+            ["17:00","22:00"], // 水
+            ["17:00","22:00"], // 木
+            ["17:00","22:00"], // 金
+            ["17:00","22:00"]  // 土
+        ],
+        closedText: "臨時休業",
+        updatedAt: "2026/03/03",
+        website: "https://moheji-chikura.com/",
+        sns: "https://www.instagram.com/moheji20190902/"
+    },
+
+    { 
+        id: 36, name: "鮨割烹 帆", genre: "寿司🍣", area: "千倉", 
+        lat: 34.955508, lng: 139.959992,
+        hours: [
+            [["18:00", "20:00"]], // 日
+            [["18:00", "20:00"]], // 月
+            [["18:00", "20:00"]], // 火
+            [["18:00", "20:00"]], // 水
+            [["18:00", "20:00"]], // 木
+            [["18:00", "20:00"]], // 金
+            [["18:00", "20:00"]]  // 土
+        ],
+        closedText: "無休、要予約",
+        updatedAt: "2026/03/03",
+        website: "https://g-kotobuki.net/cuisine/",
+        sns: "https://www.instagram.com/ginrinso_kotobuki/"
+    },
+
+    { 
+        id: 37, name: "花のえん", genre: "海鮮・シーフード🦐", area: "千倉", 
+        lat: 34.931464, lng: 139.950899,
+        hours: [
+            [["11:30", "14:30"]], // 日
+            [],                   // 月(定休)
+            [],                   // 火(定休)
+            [["11:30", "14:30"]], // 水
+            [["11:30", "14:30"]], // 木
+            [["11:30", "14:30"]], // 金
+            [["11:30", "14:30"]]  // 土
+        ],
+        closedText: "月曜・火曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 38, name: "みよし家", genre: "アジア料理", area: "三芳", 
+        lat: 35.061638, lng: 139.897665,
+        hours: [
+            [["11:00", "15:00"], ["17:00", "20:00"]], // 日
+            [],                                       // 月(定休)
+            [["11:00", "15:00"], ["17:00", "20:00"]], // 火
+            [["11:00", "15:00"], ["17:00", "20:00"]], // 水
+            [["11:00", "15:00"], ["17:00", "20:00"]], // 木
+            [["11:00", "15:00"], ["17:00", "20:00"]], // 金
+            [["11:00", "15:00"], ["17:00", "20:00"]]  // 土
+        ],
+        closedText: "月曜日",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 39, name: "タスカケ", genre: "カフェ・喫茶店☕", area: "富山", 
+        lat: 35.095773, lng: 139.890610,
+        hours: [
+            [["12:00", "17:00"]], // 日
+            [["12:00", "17:00"]], // 月
+            [],                   // 火(定休)
+            [],                   // 水(定休)
+            [],                   // 木(定休)
+            [["12:00", "17:00"]], // 金
+            [["12:00", "17:00"]]  // 土
+        ],
+        closedText: "火曜・水曜・木曜（※要SNS確認）",
+        updatedAt: "2026/03/03",
+        website: "https://www.instagram.com/tasukake_jp/",
+        sns: "https://tasukake.online/?srsltid=AfmBOoo-Xqwae0bk4IgkAn-IwjD4VhRiAEYiK6bWCO5HL9y-J6S8Zr5d"
+    },
+
+    { 
+        id: 40, name: "ルーラルガーデンカフェ", genre: "カフェ・喫茶店☕", area: "丸山", 
+        lat: 35.097621, lng: 139.951702,
+        hours: [
+            [], 
+            [], 
+            [], 
+            [], 
+            [], 
+            [], 
+            []
+        ],
+        closedText: "休業中",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+    
+    { 
+        id: 41, name: "ちん丼屋", genre: "海鮮・シーフード🦐", area: "三芳", 
+        lat: 35.024695, lng: 139.897528,
+        hours: [
+            [["11:00", "14:00"], ["17:00", "20:00"]], // 日
+            [["11:00", "14:00"], ["17:00", "20:00"]], // 月
+            [["11:00", "14:00"]],                     // 火
+            [],                                       // 水(定休)
+            [["11:00", "14:00"], ["17:00", "20:00"]], // 木
+            [["11:00", "14:00"], ["17:00", "20:00"]], // 金
+            [["11:00", "14:00"], ["17:00", "20:00"]]  // 土
+        ],
+        closedText: "水曜",
+        updatedAt: "2026/03/03",
+        website: "https://example.com",
+        sns: "https://www.instagram.com/chindonya_boso/"
+    },
+
+    { 
+        id: 42, name: "八州軒", genre: "ラーメン・中華🍜", area: "富浦", 
+        lat: 35.047368, lng: 139.834885,
+        hours: [
+            [["11:30", "15:00"], ["17:00", "19:00"]], // 日
+            [["11:30", "15:00"], ["17:00", "19:00"]], // 月
+            [["11:30", "15:00"], ["17:00", "19:00"]], // 火
+            [],                                       // 水(定休)
+            [["11:30", "15:00"], ["17:00", "19:00"]], // 木
+            [["11:30", "15:00"], ["17:00", "19:00"]], // 金
+            [["11:30", "15:00"], ["17:00", "19:00"]]  // 土
+        ],
+        closedText: "水曜日",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 43, name: "枇杷倶楽部 ダイニングカフェ", genre: "カフェ・喫茶店☕", area: "富浦", 
+        lat: 35.037741, lng: 139.837292,
+        hours: [
+            [["10:00", "16:00"]], // 日
+            [["10:00", "16:00"]], // 月
+            [["10:00", "16:00"]], // 火
+            [["10:00", "16:00"]], // 水
+            [],                   // 木
+            [["10:00", "16:00"]], // 金
+            [["10:00", "16:00"]]  // 土
+        ],
+        closedText: "年中無休（※年数回休業あり）",
+        updatedAt: "2026/03/03",
+        website: "https://www.biwakurabu.jp/eat/index.html",
+        sns: "https://www.instagram.com/biwakurabu/"
+    },
+
+    { 
+        id: 44, name: "たつみ中華", genre: "ラーメン・中華🍜", area: "富浦", 
+        lat: 35.044424, lng: 139.837664,
+        hours: [
+            [["10:00", "22:00"]], // 日
+            [["10:00", "22:00"]], // 月
+            [["10:00", "22:00"]], // 火
+            [["10:00", "22:00"]], // 水
+            [["10:00", "22:00"]], // 木
+            [["10:00", "22:00"]], // 金
+            [["10:00", "22:00"]]  // 土
+        ],
+        closedText: "無休（※店舗要確認）",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 45, name: "Lerisa＊Zakka&Dining Cafe", genre: "カフェ・喫茶店☕", area: "富浦", 
+        lat: 35.039964, lng: 139.834245,
+        hours: [
+            [["10:30", "15:00"]], // 日
+            [["10:30", "15:00"]], // 月
+            [["10:30", "15:00"]], // 火
+            [["10:30", "15:00"]], // 水
+            [],                   // 木(定休)
+            [],                   // 金(定休)
+            [["10:30", "15:00"]]  // 土
+        ],
+        closedText: "木曜・金曜",
+        updatedAt: "2026/03/03",
+        website: "https://le-risa.com/",
+        sns: "https://www.instagram.com/explore/locations/644021539/lerisa/"
+    },
+
+    { 
+        id: 46, name: "ROMI’s / ロミズ", genre: "ハンバーガー🍔", area: "富浦", 
+        lat: 35.038302, lng: 139.838011,
+        hours: [
+            [["10:00", "17:00"]], // 日
+            [["10:00", "17:00"]], // 月
+            [["10:00", "17:00"]], // 火
+            [["10:00", "17:00"]], // 水
+            [["10:00", "17:00"]], // 木
+            [["10:00", "17:00"]], // 金
+            [["10:00", "17:00"]]  // 土
+        ],
+        closedText: "年中無休",
+        updatedAt: "2026/03/03",
+        website: "https://www.romisocean.com/",
+        sns: "https://www.instagram.com/romis_company/"
+    },
+
+    { 
+        id: 47, name: "海鮮食堂ISOBA", genre: "海鮮・シーフード🦐", area: "富浦", 
+        lat: 35.037694, lng: 139.838468,
+        hours: [
+            [["10:30", "15:00"]], // 日
+            [["10:30", "15:00"]], // 月
+            [["10:30", "15:00"]], // 火
+            [],                   // 水(定休)
+            [["10:30", "15:00"]], // 木
+            [["10:30", "15:00"]], // 金
+            [["10:30", "15:30"]]  // 土
+        ],
+        closedText: "水曜",
+        updatedAt: "2026/03/03",
+        website: "https://ohyakusyou.com/ikamenchi/",
+        sns: ""
+    },
+
+    { 
+        id: 48, name: "おさかな倶楽部", genre: "海鮮・シーフード🦐", area: "富浦", 
+        lat: 35.037475, lng: 139.822300,
+        hours: [
+            [["11:00", "15:00"]], // 日
+            [["11:00", "15:00"]], // 月
+            [],                   // 火(定休)
+            [["11:00", "15:00"]], // 水
+            [["11:00", "15:00"]], // 木
+            [["11:00", "15:00"]], // 金
+            [["11:00", "15:00"]]  // 土
+        ],
+        closedText: "火曜(祝日は営業)",
+        updatedAt: "2026/03/03",
+        website: "https://tairyou.com/eat/",
+        sns: ""
+    },
+
+    { 
+        id: 49, name: "手づくり工房 万賀", genre: "ベーカリー🥖", area: "富浦", 
+        lat: 35.043829, lng: 139.834724,
+        hours: [
+            [["09:00", "19:00"]], // 日
+            [["09:00", "19:00"]], // 月
+            [["09:00", "19:00"]], // 火
+            [],                   // 水(定休)
+            [["09:00", "19:00"]], // 木
+            [["09:00", "19:00"]], // 金
+            [["09:00", "19:00"]]  // 土
+        ],
+        closedText: "水曜日",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 50, name: "まほろばキッチン", genre: "定食", area: "三芳", 
+        lat: 35.034181, lng: 139.894839,
+        hours: [
+            [["09:00", "17:00"]], // 日
+            [["09:00", "17:00"]], // 月
+            [["09:00", "17:00"]], // 火
+            [["09:00", "17:00"]], // 水
+            [["09:00", "17:00"]], // 木
+            [["09:00", "17:00"]], // 金
+            [["09:00", "17:00"]]  // 土
+        ],
+        closedText: "原則無休（10〜2月は17時まで）",
+        updatedAt: "2026/03/03",
+        website: "https://www.hinanosato.jp/eat/",
+        sns: ""
+    },
+    
+    { 
+        id: 51, name: "房農大竹料理店", genre: "イタリア料理", area: "三芳", 
+        lat: 35.023047, lng: 139.885943,
+        hours: [
+            [["11:00", "15:00"], ["17:00", "21:00"]], // 日
+            [["11:00", "15:00"], ["17:00", "21:00"]], // 月
+            [["11:00", "15:00"], ["17:00", "21:00"]], // 火
+            [],                                       // 水(定休)
+            [],                                       // 木(定休)
+            [["17:00", "21:00"]],                     // 金(夜のみ)
+            [["11:00", "15:00"], ["17:00", "21:00"]]  // 土
+        ],
+        closedText: "水曜・木曜（金曜は夜のみ・基本予約制）",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.instagram.com/hiro.pizze/"
+    },
+
+    { 
+        id: 52, name: "亀や 和草", genre: "和菓子", area: "三芳", 
+        lat: 35.034830, lng: 139.894009,
+        hours: [
+            [["09:00", "18:00"]], // 日
+            [["09:00", "18:00"]], // 月
+            [],                   // 火(定休)
+            [],                   // 水(定休)
+            [["09:00", "18:00"]], // 木
+            [["09:00", "18:00"]], // 金
+            [["09:00", "18:00"]]  // 土
+        ],
+        closedText: "火曜・水曜",
+        updatedAt: "2026/03/03",
+        website: "https://www.kameya-nagusa.com/",
+        sns: "https://www.instagram.com/kameyanagusa/"
+    },
+
+    { 
+        id: 53, name: "楽しい農園", genre: "レストラン🍴", area: "三芳", 
+        lat: 35.041448, lng: 139.902658,
+        hours: [
+            [], 
+            [], 
+            [], 
+            [], 
+            [], 
+            [], 
+            []
+        ],
+        closedText: "調査中",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.instagram.com/tanoshiinouen/"
+    },
+
+    { 
+        id: 54, name: "カフェ田舎の家", genre: "カフェ・喫茶店☕", area: "三芳", 
+        lat: 35.082293, lng: 139.900638,
+        hours: [
+            [["11:00", "17:00"]], // 日
+            [],                   // 月(定休)
+            [],                   // 火(定休)
+            [],                   // 水(定休)
+            [],                   // 木(定休)
+            [],                   // 金(定休)
+            [["11:00", "17:00"]]  // 土
+        ],
+        closedText: "月〜金曜（※土日のみ営業）",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 55, name: "犬掛・薬膳料理", genre: "薬膳料理", area: "三芳", 
+        lat: 35.073597, lng: 139.899464,
+        hours: [
+            [["17:00", "22:00"]], // 日
+            [],                   // 月(定休)
+            [["17:00", "22:00"]], // 火
+            [["17:00", "22:00"]], // 水
+            [["17:00", "22:00"]], // 木
+            [["17:00", "22:00"]], // 金
+            [["17:00", "22:00"]]  // 土
+        ],
+        closedText: "月曜（基本予約制）",
+        updatedAt: "2026/03/03",
+        website: "https://inukakeyakuzen.wixsite.com/my-site-1/projects-7",
+        sns: "https://www.instagram.com/inukake_yakuzen/"
+    },
+
+    { 
+        id: 56, name: "武平館", genre: "ラーメン・中華🍜", area: "富山", 
+        lat: 35.092388, lng: 139.848360,
+        hours: [
+            [["11:00", "14:00"], ["17:00", "19:30"]], // 日
+            [["11:00", "14:00"], ["17:00", "19:30"]], // 月
+            [["11:00", "14:00"], ["17:00", "19:30"]], // 火
+            [["11:00", "14:00"], ["17:00", "19:30"]], // 水
+            [],                                       // 木
+            [["11:00", "14:00"], ["17:00", "19:30"]], // 金
+            [["11:00", "14:00"], ["17:00", "19:30"]]  // 土
+        ],
+        closedText: "木曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.facebook.com/bheikan/?locale=ja_JP"
+    },
+
+    { 
+        id: 57, name: "さくちゃんラーメン", genre: "ラーメン・中華🍜", area: "丸山", 
+        lat: 35.096601, lng: 139.996201,
+        hours: [
+            ["11:00", "14:00"], // 日
+            [], // 月
+            [], // 火
+            [], // 水
+            [], // 木
+            [], // 金
+            ["11:00", "14:00"]  // 土
+        ],
+        closedText: "平日",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 58, name: "海のそば心 青倉商店", genre: "そば・うどん", area: "富山", 
+        lat: 35.100732, lng: 139.855900,
+        hours: [
+            [["08:30", "18:00"]], // 日
+            [["09:00", "18:00"]], // 月
+            [["09:00", "18:00"]], // 火
+            [["09:00", "18:00"]], // 水
+            [["09:00", "18:00"]], // 木
+            [["09:00", "18:00"]], // 金
+            [["08:30", "18:00"]]  // 土
+        ],
+        closedText: "無休（道の駅 富楽里とみやまに準ずる）",
+        updatedAt: "2026/03/03",
+        website: "https://www.aokura-sanga.com/tomiyama",
+        sns: "https://www.instagram.com/aokura_sangayaki/"
+    },
+
+    { 
+        id: 59, name: "百姓屋敷 じろえむ", genre: "和食", area: "三芳", 
+        lat: 35.044923, lng: 139.919403,
+        hours: [
+            [["10:00", "15:00"]], // 日
+            [["10:00", "15:00"]], // 月
+            [["10:00", "15:00"]], // 火
+            [["10:00", "15:00"]], // 水
+            [["10:00", "15:00"]], // 木
+            [["10:00", "15:00"]], // 金
+            [["10:00", "15:00"]]  // 土
+        ],
+        closedText: "不定休（完全予約制）",
+        updatedAt: "2026/03/03",
+        website: "https://jiroemu15.com/",
+        sns: "https://www.instagram.com/jiroemu15/"
+    },
+
+    { 
+        id: 60, name: "しんべえ", genre: "定食", area: "富山", 
+        lat: 35.092889, lng: 139.848546,
+        hours: [
+            [["11:00", "14:00"], ["17:00", "20:00"]], // 日
+            [["11:00", "14:00"], ["17:00", "20:00"]], // 月
+            [["11:00", "14:00"], ["17:00", "20:00"]], // 火
+            [["11:00", "14:00"], ["17:00", "20:00"]], // 水
+            [["11:00", "14:00"], ["17:00", "20:00"]], // 木
+            [["11:00", "14:00"], ["17:00", "20:00"]], // 金
+            [["11:00", "14:00"], ["17:00", "20:00"]]  // 土
+        ],
+        closedText: "不定休（SNS要確認）",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.instagram.com/oshokuji.shinbe/?hl=ja"
+    },
+    
+    { 
+        id: 61, name: "森のてーぶる by Banriho", genre: "カフェ・喫茶店☕", area: "富山", 
+        lat: 35.095879, lng: 139.858845,
+        hours: [
+            [["11:00", "17:00"]], // 日
+            [["11:00", "17:00"]], // 月
+            [],                   // 火(定休)
+            [],                   // 水(定休)
+            [],                   // 木(定休)
+            [["11:00", "17:00"]], // 金
+            [["11:00", "17:00"]]  // 土
+        ],
+        closedText: "火曜・水曜",
+        updatedAt: "2026/03/03",
+        website: "http://www.banriho.co.jp/store/morino_table.html",
+        sns: ""
+    },
+
+    { 
+        id: 62, name: "池田屋", genre: "定食", area: "富山", 
+        lat: 35.099793, lng: 139.918207,
+        hours: [
+            [["11:00", "20:00"]], // 日
+            [],                   // 月
+            [["11:00", "20:00"]], // 火
+            [["11:00", "20:00"]], // 水
+            [["11:00", "20:00"]], // 木
+            [["11:00", "20:00"]], // 金
+            [["11:00", "20:00"]]  // 土
+        ],
+        closedText: "月曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 63, name: "ごはん屋伊予", genre: "レストラン🍴", area: "丸山", 
+        lat: 35.100207, lng: 139.917258,
+        hours: [
+            ["11:30", "14:00"], // 日
+            [], // 月
+            [], // 火
+            ["11:45", "14:00"], // 水
+            ["11:45", "14:00"], // 木
+            ["11:45", "14:00"], // 金
+            ["11:30", "14:00"], // 土
+        ],
+        closedText: "月曜・火曜",
+        updatedAt: "2026/03/03",
+        website: "https://hegurihub.com/eatery/",
+        sns: "https://www.instagram.com/gohanyaiyo/"
+    },
+
+    { 
+        id: 64, name: "和光食堂", genre: "定食", area: "丸山", 
+        lat: 35.098953, lng: 139.928737,
+        hours: [
+            [["11:30", "14:30"], ["17:00", "20:00"]], // 日
+            [["11:30", "14:30"], ["17:00", "20:00"]], // 月
+            [],                                       // 火(定休)
+            [["11:30", "14:30"], ["17:00", "20:00"]], // 水
+            [["11:30", "14:30"], ["17:00", "20:00"]], // 木
+            [["11:30", "14:30"], ["17:00", "20:00"]], // 金
+            [["11:30", "14:30"], ["17:00", "20:00"]]  // 土
+        ],
+        closedText: "火曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.facebook.com/boso.wakou/?locale=ja_JP"
+    },
+
+    { 
+        id: 65, name: "もみじの手", genre: "カフェ・喫茶店☕", area: "丸山", 
+        lat: 35.062732, lng: 139.958979,
+        hours: [
+            [], // 日
+            [], // 月
+            [], // 火
+            [], // 水
+            [], // 木
+            [], // 金
+            []  // 土
+        ],
+        closedText: "SNSにて告知",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.instagram.com/momijinote/"
+    },
+
+    { 
+        id: 66, name: "和牛専門店 小柴牧場", genre: "フードコート", area: "富山", 
+        lat: 35.100318, lng: 139.855556,
+        hours: [
+            [["08:30", "18:00"]], // 日
+            [["09:00", "18:00"]], // 月
+            [["09:00", "18:00"]], // 火
+            [["09:00", "18:00"]], // 水
+            [["09:00", "18:00"]], // 木
+            [["09:00", "18:00"]], // 金
+            [["08:30", "18:00"]]  // 土
+        ],
+        closedText: "無休（道の駅 富楽里とみやまに準ずる）",
+        updatedAt: "2026/03/03",
+        website: "https://example.com",
+        sns: "https://www.instagram.com/furari_kosiba/"
+    },
+
+    { 
+        id: 67, name: "古民家 そばcafeMOMO", genre: "そば・うどん", area: "丸山", 
+        lat: 35.024359, lng: 139.966409,
+        hours: [
+            [["11:45", "16:00"]], // 日
+            [],                   // 月(定休)
+            [],                   // 火(定休)
+            [],                   // 水(定休)
+            [],                   // 木(定休)
+            [["11:45", "16:00"]], // 金
+            [["11:45", "16:00"]]  // 土
+        ],
+        closedText: "月～木曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 68, name: "一天張", genre: "とんかつ", area: "丸山", 
+        lat: 35.013580, lng: 139.959305,
+        hours: [
+            [["11:00", "13:45"]], // 日
+            [["11:00", "13:45"]], // 月
+            [["11:00", "13:45"]], // 火
+            [],                   // 水(定休)
+            [["11:00", "13:45"]], // 木
+            [["11:00", "13:45"]], // 金
+            [["11:00", "13:45"]]  // 土
+        ],
+        closedText: "水曜（現在はランチのみ）",
+        updatedAt: "2026/03/03",
+        website: "https://ittenbari-minamiboso.jimdosite.com/",
+        sns: ""
+    },
+
+    { 
+        id: 69, name: "とんかつとんとん", genre: "とんかつ", area: "和田", 
+        lat: 35.016125, lng: 139.967902,
+        hours: [
+            [["11:00", "13:30"]], // 日
+            [["11:00", "13:30"]], // 月
+            [["11:00", "13:30"]], // 火
+            [["11:00", "13:30"]], // 水
+            [],                   // 木(定休)
+            [],                   // 金(定休)
+            [["11:00", "13:30"]]  // 土
+        ],
+        closedText: "木曜・金曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 70, name: "テイクアウトカフェ ちいさなおうち", genre: "カフェ・喫茶店☕", area: "丸山", 
+        lat: 35.007744, lng: 139.975943,
+        hours: [
+            [["11:30", "16:00"]], // 日
+            [["11:30", "16:00"]], // 月
+            [],                   // 火(定休)
+            [],                   // 水(定休)
+            [],                   // 木(定休)
+            [["11:30", "16:00"]], // 金
+            [["11:30", "16:00"]]  // 土
+        ],
+        closedText: "火曜・水曜・木曜",
+        updatedAt: "2026/03/03",
+        website: "https://shinos5.wixsite.com/chiisanaouchi",
+        sns: "https://www.instagram.com/chiisanaouchi55/"
+    },
+    
+    { 
+        id: 71, name: "とと丸", genre: "海鮮・シーフード🦐", area: "丸山", 
+        lat: 35.008252, lng: 139.975699,
+        hours: [
+            [["09:00", "17:00"]], // 日
+            [["09:00", "17:00"]], // 月
+            [["09:00", "17:00"]], // 火
+            [["09:00", "17:00"]], // 水
+            [["09:00", "17:00"]], // 木
+            [["09:00", "17:00"]], // 金
+            [["09:00", "17:00"]]  // 土
+        ],
+        closedText: "無休（道の駅ローズマリー公園内）",
+        updatedAt: "2026/03/03",
+        website: "https://www.hanamaruichiba.com/totomaru/",
+        sns: ""
+    },
+
+    { 
+        id: 72, name: "カーサ フローラ花館", genre: "レストラン🍴", area: "丸山", 
+        lat: 35.006329, lng: 139.976303,
+        hours: [
+            [["17:30", "21:00"]], // 日
+            [["17:30", "21:00"]], // 月
+            [["17:30", "21:00"]], // 火
+            [],                   // 水(定休)
+            [],                   // 木(定休)
+            [["17:30", "21:00"]], // 金
+            [["17:30", "21:00"]]  // 土
+        ],
+        closedText: "水曜・木曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 73, name: "魚作", genre: "和食", area: "丸山", 
+        lat: 35.003125, lng: 139.968632,
+        hours: [
+            [["11:00","14:00"],["17:30","21:00"]], // 日
+            [], // 月
+            [["11:00","14:00"],["17:30","21:00"]], // 火
+            [["11:00","14:00"],["17:30","21:00"]], // 水
+            [["11:00","14:00"],["17:30","21:00"]], // 木
+            [["11:00","14:00"],["17:30","21:00"]], // 金
+            [["11:00","14:00"],["17:30","21:00"]]  // 土
+        ],
+        closedText: "月曜",
+        updatedAt: "2026/03/03",
+        website: "https://example.com",
+        sns: "https://r.goope.jp/gyosaku/"
+    },
+
+    { 
+        id: 74, name: "SUNRISE SHELL", genre: "カフェ・喫茶店☕", area: "丸山", 
+        lat: 34.998448, lng: 139.969601,
+        hours: [
+            [["11:00", "15:30"], ["17:00", "22:00"]], // 日
+            [["11:00", "15:30"], ["17:00", "22:00"]], // 月
+            [],                                       // 火(定休)
+            [],                                       // 水(定休)
+            [["11:00", "15:30"], ["17:00", "22:00"]], // 木
+            [["11:00", "15:30"], ["17:00", "22:00"]], // 金
+            [["08:30", "15:30"], ["17:00", "22:00"]]  // 土
+        ],
+        closedText: "火曜・水曜（木曜はランチのみ、土日は8:30〜）",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.instagram.com/sunriseshell07/"
+    },
+
+    { 
+        id: 75, name: "美浜寿し", genre: "寿司🍣", area: "丸山", 
+        lat: 34.996982, lng: 139.971847,
+        hours: [
+            [["11:00", "14:30"], ["17:00", "21:30"]], // 日
+            [["11:00", "14:30"], ["17:00", "21:30"]], // 月
+            [["11:00", "14:30"], ["17:00", "21:30"]], // 火
+            [["11:00", "14:30"], ["17:00", "21:30"]], // 水
+            [],                                       // 木(定休)
+            [["11:00", "14:30"], ["17:00", "21:30"]], // 金
+            [["11:00", "14:30"], ["17:00", "21:30"]]  // 土
+        ],
+        closedText: "木曜（祝日の場合は営業）",
+        updatedAt: "2026/03/03",
+        website: "https://mihamazushi.com/",
+        sns: "https://www.instagram.com/sushi_mihama/"
+    },
+
+    { 
+        id: 76, name: "Cafe et Grill 錦亭", genre: "鉄板焼き", area: "丸山", 
+        lat: 34.994768, lng: 139.969081,
+        hours: [
+            [["11:30", "14:00"], ["17:00", "20:00"]], // 日
+            [["11:30", "14:00"], ["17:00", "20:00"]], // 月
+            [["11:30", "14:00"], ["17:00", "20:00"]], // 火
+            [],                                       // 水(定休)
+            [["11:30", "14:00"], ["17:00", "20:00"]], // 木
+            [["11:30", "14:00"], ["17:00", "20:00"]], // 金
+            [["11:30", "14:00"], ["17:00", "20:00"]]  // 土
+        ],
+        closedText: "水曜（ディナーは要予約）",
+        updatedAt: "2026/03/03",
+        website: "https://nishikitei2024.wixsite.com/nishikitei",
+        sns: "https://instagram.com/example"
+    },
+
+    { 
+        id: 77, name: "里山そば・白浜製麺", genre: "そば・うどん", area: "白浜", 
+        lat: 34.921914, lng: 139.885252,
+        hours: [
+            [["10:30", "15:00"]], // 日
+            [],                   // 月(定休)
+            [],                   // 火(定休)
+            [],                   // 水(定休)
+            [],                   // 木(定休)
+            [],                   // 金(定休)
+            [["10:30", "15:00"]]  // 土
+        ],
+        closedText: "月〜金曜（土日のみ営業）",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 78, name: "一福", genre: "そば・うどん", area: "白浜", 
+        lat: 34.906566, lng: 139.893868,
+        hours: [
+            [],                   // 日(定休)
+            [["11:30", "19:00"]], // 月
+            [["11:30", "19:00"]], // 火
+            [],                   // 水(定休)
+            [["11:30", "19:00"]], // 木
+            [["11:30", "19:00"]], // 金
+            [["11:30", "19:00"]]  // 土
+        ],
+        closedText: "水曜・日曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 79, name: "日本料理 綱元 だいあみ", genre: "海鮮・シーフード🦐", area: "白浜", 
+        lat: 34.904177, lng: 138.888029,
+        hours: [
+            [], // 日
+            [], // 月
+            [], // 火(定休)
+            [], // 水
+            [], // 木
+            [], // 金
+            []  // 土
+        ],
+        closedText: "臨時休業",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 80, name: "Farmer's Concierge & カフェ ブーランジェリー", genre: "カフェ・喫茶店☕", area: "白浜", 
+        lat: 34.906232, lng: 139.877119,
+        hours: [
+            [["09:00", "17:00"]], // 日
+            [["09:00", "17:00"]], // 月
+            [],                   // 火
+            [["09:00", "17:00"]], // 水
+            [["09:00", "17:00"]], // 木
+            [["09:00", "17:00"]], // 金
+            [["09:00", "17:00"]]  // 土
+        ],
+        closedText: "火曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+    
+    { 
+        id: 81, name: "居食房とりい", genre: "居酒屋🏮", area: "白浜", 
+        lat: 34.906668, lng: 139.869287,
+        hours: [
+            [["17:00", "21:00"]], // 日
+            [["17:00", "21:00"]], // 月
+            [], // 火
+            [],                   // 水(定休)
+            [["17:00", "21:00"]], // 木
+            [["17:00", "21:00"]], // 金
+            [["17:00", "21:00"]]  // 土
+        ],
+        closedText: "水曜",
+        updatedAt: "2026/03/03",
+        website: "https://www.awashirahama.com/nagao/dining/index.html",
+        sns: "https://www.facebook.com/BAR.DEL.MAR.SHIRAHAMA/"
+    },
+
+    { 
+        id: 82, name: "バルデルマル", genre: "海鮮・シーフード🦐", area: "白浜", 
+        lat: 34.910732, lng: 139.859307,
+        hours: [
+            [["11:00", "14:00"], ["18:00", "20:00"]], // 日
+            [["11:00", "14:00"], ["18:00", "20:00"]], // 月
+            [],                                       // 火(定休)
+            [["11:00", "14:00"], ["18:00", "20:00"]], // 水
+            [["11:00", "14:00"], ["18:00", "20:00"]], // 木
+            [["11:00", "14:00"], ["18:00", "20:00"]], // 金
+            [["11:00", "14:00"], ["18:00", "20:00"]]  // 土
+        ],
+        closedText: "水曜",
+        updatedAt: "2026/03/03",
+        website: "https://example.com",
+        sns: "https://instagram.com/example"
+    },
+
+    { 
+        id: 83, name: "BLUTO’S CAFE", genre: "カフェ・喫茶店☕", area: "白浜", 
+        lat: 34.910207, lng: 139.871681,
+        hours: [
+            [["11:00", "17:00"]], // 日
+            [],                   // 月(定休)
+            [],                   // 火(定休)
+            [],                   // 水(定休)
+            [["11:00", "18:00"]], // 木
+            [["11:00", "18:00"]], // 金
+            [["11:00", "17:00"]]  // 土
+        ],
+        closedText: "木曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.instagram.com/blutos_cafe/"
+    },
+
+    { 
+        id: 84, name: "土日だけ食堂", genre: "和食", area: "白浜", 
+        lat: 34.904075, lng: 139.882677,
+        hours: [
+            [["08:00", "20:00"]], // 日
+            [],                   // 月(定休)
+            [],                   // 火(定休)
+            [],                   // 水(定休)
+            [],                   // 木(定休)
+            [],                   // 金(定休)
+            [["08:00", "20:00"]]  // 土
+        ],
+        closedText: "月〜金曜（土日のみ営業）",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 85, name: "オステリア イルファーロ", genre: "イタリア料理", area: "白浜", 
+        lat: 34.907518, lng: 139.885199,
+        hours: [
+            [["11:00", "14:00"], ["17:00", "21:00"]], // 日
+            [],                                       // 月(定休)
+            [],                                       // 火(定休)
+            [["11:00", "14:00"], ["17:00", "21:00"]], // 水
+            [["11:00", "14:00"], ["17:00", "21:00"]], // 木
+            [["11:00", "14:00"], ["17:00", "21:00"]], // 金
+            [["11:00", "14:00"], ["17:00", "21:00"]]  // 土
+        ],
+        closedText: "月曜(祝日の場合営業)・火曜、ディナー要予約",
+        updatedAt: "2026/03/03",
+        website: "https://osteriailfaro.webu.jp/",
+        sns: "https://www.instagram.com/osteria_ilfaro/"
+    },
+
+    { 
+        id: 86, name: "甘味処 いいだや", genre: "カフェ・喫茶店☕", area: "白浜", 
+        lat: 34.906392, lng: 139.891960,
+        hours: [
+            [["10:30", "17:00"]], // 日
+            [["10:30", "17:00"]], // 月
+            [["10:30", "17:00"]], // 火
+            [],                   // 水(定休)
+            [],                   // 木(定休)
+            [["10:30", "17:00"]], // 金
+            [["10:30", "17:00"]]  // 土
+        ],
+        closedText: "水曜・木曜",
+        updatedAt: "2026/03/03",
+        website: "https://sites.google.com/view/shirahamaiidaya/",
+        sns: ""
+    },
+
+    { 
+        id: 87, name: "野島寿司", genre: "寿司🍣", area: "白浜", 
+        lat: 34.904425, lng: 139.888725,
+        hours: [
+            [["11:00", "20:30"]], // 日
+            [["11:00", "20:30"]], // 月
+            [[]],                 // 火(定休)
+            [[]],                 // 水(定休)
+            [["11:00", "20:30"]], // 木
+            [["11:00", "20:30"]], // 金
+            [["11:00", "20:30"]]  // 土
+        ],
+        closedText: "火・水曜（ウェブサイト要確認）",
+        updatedAt: "2026/03/03",
+        website: "https://nojimazusi.jimdofree.com/",
+        sns: ""
+    },
+
+    { 
+        id: 88, name: "ライトハウス", genre: "スナック", area: "白浜", 
+        lat: 34.907008, lng: 139.897869,
+        hours: [
+            [["19:30", "00:00"]], // 日
+            [[]],                 // 月
+            [["19:30", "00:00"]], // 火
+            [["19:30", "00:00"]], // 水
+            [["19:30", "00:00"]], // 木
+            [["19:30", "00:00"]], // 金
+            [["19:30", "00:00"]]  // 土
+        ],
+        closedText: "月曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 89, name: "お食事処 松大丸", genre: "海鮮・シーフード🦐", area: "千倉", 
+        lat: 34.917919, lng: 139.937657,
+        hours: [
+            [["11:00", "15:00"]], // 日
+            [["11:00", "15:00"]], // 月
+            [["11:00", "15:00"]], // 火
+            [["11:00", "15:00"]], // 水
+            [["11:00", "15:00"]], // 木
+            [["11:00", "15:00"]], // 金
+            [["11:00", "15:00"]]  // 土
+        ],
+        closedText: "不定休",
+        updatedAt: "2026/03/03",
+        website: "https://www.shodaimaru.com/content2.html",
+        sns: ""
+    },
+
+    { 
+        id: 90, name: "ことぶき", genre: "定食", area: "白浜", 
+        lat: 34.907494, lng: 139.895590,
+        hours: [
+            [[], []], // 日
+            [[], []] // 月
+            [[], []], // 火
+            [[], []], // 水
+            [[], []], // 木
+            [[], []], // 金
+            [[], []]  // 土
+        ],
+        closedText: "調査中",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+    
+    { 
+        id: 91, name: "亀の家 三愛", genre: "定食", area: "白浜", 
+        lat: 34.902912, lng: 139.887945,
+        hours: [
+            [["11:00", "16:00"]], // 日
+            [["11:00", "16:00"]], // 月
+            [["11:00", "16:00"]], // 火
+            [["11:00", "16:00"]], // 水
+            [["11:00", "16:00"]], // 木
+            [["11:00", "16:00"]], // 金
+            [["11:00", "16:00"]]  // 土
+        ],
+        closedText: "不定休",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 92, name: "まつ善", genre: "うなぎ・和食", area: "白浜", 
+        lat: 34.907475, lng: 139.898105,
+        hours: [
+            [["11:00", "14:00"], ["16:00", "19:00"]], // 日
+            [["11:00", "14:00"], ["16:00", "19:00"]], // 月
+            [["11:00", "14:00"], ["16:00", "19:00"]], // 火
+            [["11:00", "14:00"], ["16:00", "19:00"]], // 水
+            [["11:00", "14:00"], ["16:00", "19:00"]], // 木
+            [["11:00", "14:00"], ["16:00", "19:00"]], // 金
+            [["11:00", "14:00"], ["16:00", "19:00"]]  // 土
+        ],
+        closedText: "不定休",
+        updatedAt: "2026/03/03",
+        website: "https://ghtz200.gorp.jp/",
+        sns: ""
+    },
+
+    { 
+        id: 93, name: "仁幸", genre: "定食", area: "白浜", 
+        lat: 34.903091, lng: 139.888587,
+        hours: [
+            [], // 日
+            [], // 月
+            [], // 火
+            [], // 水
+            [], // 木
+            [], // 金
+            []  // 土
+        ],
+        closedText: "調査中",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 94, name: "さざえ屋", genre: "海鮮・シーフード🦐", area: "白浜", 
+        lat: 34.904242, lng: 139.888538,
+        hours: [
+            [["11:00", "15:00"]], // 日
+            [["11:00", "15:00"]], // 月
+            [["11:00", "15:00"]], // 火
+            [["11:00", "15:00"]], // 水
+            [[]],                 // 木(定休)
+            [["11:00", "15:00"]], // 金
+            [["11:00", "15:00"]]  // 土
+        ],
+        closedText: "木曜",
+        updatedAt: "2026/03/03",
+        website: "https://www.sazaeya.com/",
+        sns: ""
+    },
+
+    { 
+        id: 95, name: "いそや", genre: "定食", area: "白浜", 
+        lat: 34.903277, lng: 139.888652,
+        hours: [
+            [["10:30","15:00"]], //日
+            [],                  //月
+            [],                  //火
+            [],                  //水
+            [],                  //木
+            [],                  //金
+            [["10:30","15:00"]]  //土
+        ],
+        closedText: "調査中",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 96, name: "御食事処わたなべ", genre: "定食", area: "白浜", 
+        lat: 34.912209, lng: 139.924953,
+        hours: [
+            [["11:30", "13:00"], ["17:00", "20:00"]], // 日
+            [["11:30", "13:00"], ["17:00", "20:00"]], // 月
+            [["11:30", "13:00"], ["17:00", "20:00"]], // 火
+            [["11:30", "13:00"], ["17:00", "20:00"]], // 水
+            [["11:30", "13:00"], ["17:00", "20:00"]], // 木
+            [["11:30", "13:00"], ["17:00", "20:00"]], // 金
+            [["11:30", "13:00"], ["17:00", "20:00"]]  // 土
+        ],
+        closedText: "調査中",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 97, name: "みはらし亭", genre: "居酒屋🏮", area: "白浜", 
+        lat: 34.903920, lng: 139.887689,
+        hours: [
+            [["11:30", "14:00"],["17:00", "22:00"]], // 日
+            [["11:30", "14:00"],["17:00", "22:00"]], // 月
+            [["11:30", "14:00"],["17:00", "22:00"]], // 火
+            [[]],                                    // 水(定休)
+            [["11:30", "14:00"],["17:00", "22:00"]], // 木
+            [["11:30", "14:00"],["17:00", "22:00"]], // 金
+            [["11:30", "14:00"],["17:00", "22:00"]]  // 土
+        ],
+        closedText: "日曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.instagram.com/miharashi_tei/"
+    },
+
+    { 
+        id: 98, name: "みずるめ", genre: "海鮮・シーフード🦐", area: "白浜", 
+        lat: 34.907531, lng: 139.893500,
+        hours: [
+            [["11:30", "14:00"], ["17:00", "22:00"]], // 日
+            [["11:30", "14:00"], ["17:00", "22:00"]], // 月
+            [["11:30", "14:00"], ["17:00", "22:00"]], // 火
+            [[]],                                     // 水
+            [["11:30", "14:00"], ["17:00", "22:00"]], // 木
+            [["11:30", "14:00"], ["17:00", "22:00"]], // 金
+            [["11:30", "14:00"], ["17:00", "22:00"]]  // 土
+        ],
+        closedText: "第3火曜定休、第2・第3木曜はランチ営業無し",
+        updatedAt: "2026/03/03",
+        website: "https://mizurume.stars.ne.jp/",
+        sns: "https://www.facebook.com/Mizurume"
+    },
+
+    { 
+        id: 99, name: "漁師料理いちまる", genre: "海鮮・シーフード🦐", area: "千倉", 
+        lat: 34.921102, lng: 139.941580,
+        hours: [
+            [["11:30", "15:00"], ["17:00", "22:00"]], // 日
+            [["11:30", "15:00"], ["17:00", "22:00"]], // 月
+            [],                                       // 火(定休)
+            [["11:30", "15:00"], ["17:00", "22:00"]], // 水
+            [["11:30", "15:00"], ["17:00", "22:00"]], // 木
+            [["11:30", "15:00"], ["17:00", "22:00"]], // 金
+            [["11:30", "15:00"], ["17:00", "22:00"]]  // 土
+        ],
+        closedText: "火曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 100, name: "Hamburg & cafe ICHIROKU", genre: "ハンバーグ", area: "千倉", 
+        lat: 34.940012, lng: 139.958648,
+        hours: [
+            [["11:00", "15:00"], ["17:00", "21:00"]], // 日
+            [],                                       // 月
+            [],                                       // 火
+            [["11:00", "15:00"], ["17:00", "21:00"]], // 水
+            [["11:00", "15:00"], ["17:00", "21:00"]], // 木
+            [["11:00", "15:00"], ["17:00", "21:00"]], // 金
+            [["11:00", "15:00"], ["17:00", "21:00"]]  // 土
+        ],
+        closedText: "月・火曜（SNS要確認）",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.instagram.com/hamburgcafe16/"
+    },
+    
+    { 
+        id: 101, name: "房州ラーメン", genre: "ラーメン・中華🍜", area: "千倉", 
+        lat: 34.924951, lng: 139.940212,
+        hours: [
+            [["10:30", "16:00"]], // 日
+            [["10:30", "16:00"]], // 月
+            [["10:30", "16:00"]], // 火
+            [["10:30", "16:00"]], // 水
+            [],                   // 木(定休)
+            [["10:30", "16:00"]], // 金
+            [["10:30", "16:00"]]  // 土
+        ],
+        closedText: "木曜（月1回金曜休あり・スープ次第終了）",
+        updatedAt: "2026/03/03",
+        website: "https://www.bousyuu-net.com/",
+        sns: ""
+    },
+
+    { 
+        id: 102, name: "えびす家", genre: "ラーメン・中華🍜", area: "千倉", 
+        lat: 34.932316, lng: 139.953169,
+        hours: [
+            [["11:00", "14:30"]], // 日
+            [["11:00", "14:30"]], // 月
+            [],                   // 火
+            [["11:00", "14:30"]], // 水
+            [["11:00", "14:30"]], // 木
+            [["11:00", "14:30"]], // 金
+            [["11:00", "14:30"]]  // 土
+        ],
+        closedText: "火曜、臨時休業あり",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.instagram.com/ebisuya_chikura/?hl=ja"
+    },
+
+    { 
+        id: 103, name: "Burger FIRST", genre: "ハンバーガー🍔", area: "千倉", 
+        lat: 34.930644, lng: 139.952017,
+        hours: [
+            [["11:00", "16:00"]], // 日
+            [["11:00", "16:00"]], // 月
+            [["11:00", "16:00"]], // 火
+            [["11:00", "16:00"]], // 水
+            [["11:00", "16:00"]], // 木
+            [["11:00", "16:00"]], // 金
+            [["11:00", "16:00"]]  // 土
+        ],
+        closedText: "不定休あり",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.instagram.com/burger_first_1301/"
+    },
+
+    { 
+        id: 104, name: "らーめん ちくら製作所", genre: "ラーメン・中華🍜", area: "千倉", 
+        lat: 34.930082, lng: 139.952226,
+        hours: [
+            [["10:00", "15:00"]], // 日
+            [["10:00", "15:00"]], // 月
+            [["10:00", "15:00"]], // 火
+            [],                   // 水
+            [["10:00", "15:00"]], // 木
+            [["10:00", "15:00"]], // 金
+            [["10:00", "15:00"]]  // 土
+        ],
+        closedText: "火曜",
+        updatedAt: "2026/03/03",
+        website: "https://www.chikura-seisakusho.com/",
+        sns: "https://www.facebook.com/zatsuyoukakari/?locale=ja_JP"
+    },
+
+    { 
+        id: 105, name: "カフェ凪", genre: "カフェ・喫茶店☕", area: "千倉", 
+        lat: 34.935361, lng: 139.954905,
+        hours: [
+            [["11:00", "18:00"]], // 日
+            [],                   // 月
+            [],                   // 火
+            [["11:00", "18:00"]], // 水
+            [["11:00", "18:00"]], // 木
+            [["11:00", "18:00"]], // 金
+            [["11:00", "18:00"]]  // 土
+        ],
+        closedText: "月・火曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 106, name: "クッチーナ カーナ", genre: "イタリア料理", area: "千倉", 
+        lat: 34.938671, lng: 139.959085,
+        hours: [
+            [["11:00", "14:00"]], // 日
+            [["11:00", "14:00"]], // 月
+            [["11:00", "14:00"]], // 火
+            [["11:00", "14:00"]], // 水
+            [],                   // 木
+            [["11:00", "14:00"]], // 金
+            [["11:00", "14:00"]]  // 土
+        ],
+        closedText: "木曜、不定休あり（SNS要確認）",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.instagram.com/cucina_ca_na/"
+    },
+
+    { 
+        id: 107, name: "旬膳 はな房", genre: "海鮮・シーフード🦐", area: "千倉", 
+        lat: 34.929744, lng: 139.952610,
+        hours: [
+            [["10:45", "20:00"]], // 日
+            [["11:00", "20:00"]], // 月
+            [["11:00", "20:00"]], // 火
+            [],                   // 水(定休)
+            [["11:00", "20:00"]], // 木
+            [["11:00", "20:00"]], // 金
+            [["10:45", "20:00"]]  // 土
+        ],
+        closedText: "水曜（12～3、7、8月は不定休）",
+        updatedAt: "2026/03/03",
+        website: "https://hanabou.jp/",
+        sns: ""
+    },
+
+    { 
+        id: 108, name: "本場讃岐のうどん 天作", genre: "そば・うどん", area: "千倉", 
+        lat: 34.925886, lng: 139.946466,
+        hours: [
+            [["11:30", "14:30"]], // 日
+            [["11:30", "14:30"]], // 月
+            [["11:30", "14:30"]], // 火
+            [["11:30", "14:30"]], // 水
+            [],                   // 木
+            [["11:30", "14:30"]], // 金
+            [["11:30", "14:30"],["17:00", "19:30"]]  // 土
+        ],
+        closedText: "木曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.instagram.com/tensaku1039/"
+    },
+
+    //{ 
+        //id: 109, name: "うちごはん里海", genre: "定食", area: "千倉", 
+        //lat: 34.941178, lng: 139.960836,
+        //hours: [
+            //[["11:30", "14:00"], ["17:30", "21:00"]], // 日
+            //[["11:30", "14:00"], ["17:30", "21:00"]], // 月
+            //[["11:30", "14:00"], ["17:30", "21:00"]], // 火
+            //[["11:30", "14:00"], ["17:30", "21:00"]], // 水
+            //[],                                       // 木(定休)
+            //[["11:30", "14:00"], ["17:30", "21:00"]], // 金
+            //[["11:30", "14:00"], ["17:30", "21:00"]]  // 土
+        //],
+        //closedText: "木曜"
+    //},
+
+    { 
+        id: 110, name: "市場食堂 せん政水産", genre: "定食", area: "千倉", 
+        lat: 34.929911, lng: 139.952051,
+        hours: [
+            [["09:00", "17:00"]], // 日
+            [["09:00", "17:00"]], // 月
+            [["09:00", "17:00"]], // 火
+            [["09:00", "17:00"]], // 水
+            [["09:00", "17:00"]], // 木
+            [["09:00", "17:00"]], // 金
+            [["09:00", "17:00"]]  // 土
+        ],
+        closedText: "水曜（1～4、8月は休まず営業）",
+        updatedAt: "2026/03/03",
+        website: "https://senmasasuisan.com/",
+        sns: "https://www.instagram.com/senmasasuisan/"
+    },
+    
+    { 
+        id: 111, name: "レストラン tall tree", genre: "洋食", area: "千倉", 
+        lat: 34.926825, lng: 139.941279,
+        hours: [
+            [["11:00", "14:00"], ["17:00", "19:00"]], // 日
+            [["11:00", "14:00"], ["17:00", "19:00"]], // 月
+            [],                                       // 火
+            [],                                       // 水
+            [["11:00", "14:00"], ["17:00", "19:00"]], // 木
+            [["11:00", "14:00"], ["17:00", "19:00"]], // 金
+            [["11:00", "14:00"], ["17:00", "19:00"]]  // 土
+        ],
+        closedText: "火・水・第3曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 112, name: "とんかつ屋みやはん", genre: "とんかつ", area: "千倉", 
+        lat: 34.935491, lng: 139.956240,
+        hours: [
+            [["11:00", "14:30"], ["17:00", "19:30"]], // 日
+            [["11:00", "14:30"], ["17:00", "19:30"]], // 月
+            [["11:00", "14:30"]],                     // 火
+            [],                                       // 水(定休)
+            [["11:00", "14:30"]],                     // 木
+            [["11:00", "14:30"], ["17:00", "19:30"]], // 金
+            [["11:00", "14:30"], ["17:00", "19:30"]]  // 土
+        ],
+        closedText: "水曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.instagram.com/miyahan2018/"
+    },
+
+    { 
+        id: 113, name: "CAFE IVY", genre: "カフェ・喫茶店☕", area: "千倉", 
+        lat: 34.959959, lng: 139.959257,
+        hours: [
+            [["10:00", "18:00"]], // 日
+            [["10:00", "18:00"]], // 月
+            [],                   // 火
+            [["10:00", "18:00"]], // 水
+            [["10:00", "18:00"]], // 木
+            [["10:00", "18:00"]], // 金
+            [["10:00", "18:00"]]  // 土
+        ],
+        closedText: "火曜（調査中）",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 114, name: "串味", genre: "居酒屋🏮", area: "千倉", 
+        lat: 34.958816, lng: 139.960766,
+        hours: [
+            [["17:00", "23:00"]], // 日
+            [["17:00", "23:00"]], // 月
+            [["17:00", "23:00"]], // 火
+            [["17:00", "23:00"]], // 水
+            [["17:00", "23:00"]], // 木
+            [["17:00", "23:00"]], // 金
+            [["17:00", "23:00"]]  // 土
+        ],
+        closedText: "調査中",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 115, name: "とん亭いとう", genre: "とんかつ", area: "千倉", 
+        lat: 34.957866, lng: 139.959086,
+        hours: [
+            [["11:00", "14:00"], ["17:00", "20:00"]], // 日
+            [["11:00", "14:00"], ["17:00", "20:00"]], // 月
+            [["11:00", "14:00"], ["17:00", "20:00"]], // 火
+            [],                                       // 水
+            [["11:00", "14:00"], ["17:00", "20:00"]], // 木
+            [["11:00", "14:00"], ["17:00", "20:00"]], // 金
+            [["11:00", "14:00"], ["17:00", "20:00"]]  // 土
+        ],
+        closedText: "木曜（祝日の場合は営業）",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 116, name: "ストロベリーポット", genre: "カフェ・喫茶店☕", area: "千倉", 
+        lat: 34.948145, lng: 139.963226,
+        hours: [
+            [["11:00", "16:00"]], // 日
+            [["11:00", "16:00"]], // 月
+            [],                   // 火(定休)
+            [["11:00", "16:00"]], // 水
+            [["11:00", "16:00"]], // 木
+            [["11:00", "16:00"]], // 金
+            [["11:00", "16:00"]]  // 土
+        ],
+        closedText: "火曜",
+        updatedAt: "2026/03/03",
+        website: "http://www.strawberrypot.com/",
+        sns: "https://www.instagram.com/strawberrypot.seacafe/"
+    },
+
+    //{ 
+        //id: 117, name: "イソラ・ベッラ", genre: "カフェ・喫茶店☕", area: "千倉", 
+        //lat: 34.967656, lng: 139.956576,
+        //hours: [
+            //[["11:30", "14:00"], ["17:30", "20:30"]], // 日
+            //[],                                       // 月(定休)
+            //[],                                       // 火(定休)
+            //[["11:30", "14:00"], ["17:30", "20:30"]], // 水
+            //[["11:30", "14:00"], ["17:30", "20:30"]], // 木
+            //[["11:30", "14:00"], ["17:30", "20:30"]], // 金
+            //[["11:30", "14:00"], ["17:30", "20:30"]]  // 土
+        //],
+        //closedText: "月曜・火曜"
+    //},
+
+    { 
+        id: 118, name: "Sunrise Sea", genre: "アジア料理", area: "千倉", 
+        lat: 34.963557, lng: 139.959797,
+        hours: [
+            ["11:00", "22:00"], 
+            ["11:00", "22:00"], 
+            ["11:00", "22:00"], 
+            ["11:00", "22:00"], 
+            ["11:00", "22:00"], 
+            ["11:00", "22:00"], 
+            ["11:00", "22:00"]
+        ],
+        closedText: "第2・4木曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.facebook.com/sunrisesea.boso/?locale=ja_JP"
+    },
+
+    { 
+        id: 119, name: "よりみち", genre: "居酒屋🏮", area: "千倉", 
+        lat: 34.987081, lng: 139.965983,
+        hours: [
+            [["17:00", "23:00"]], // 日
+            [["17:00", "23:00"]], // 月
+            [["17:00", "23:00"]], // 火
+            [],                   // 水(定休)
+            [["17:00", "23:00"]], // 木
+            [["17:00", "23:00"]], // 金
+            [["17:00", "23:00"]]  // 土
+        ],
+        closedText: "水曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 120, name: "Caribbean Stand（カリビアンスタンド）", genre: "コーヒーショップ☕", area: "千倉", 
+        lat: 34.967331, lng: 139.959105,
+        hours: [
+            ["9:00","17:00"], 
+            ["9:00","17:00"], 
+            ["9:00","17:00"], 
+            [], 
+            [], 
+            ["9:00","17:00"], 
+            ["9:00","17:00"]
+        ],
+        closedText: "水・木曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.instagram.com/chikura_tsunagu_hotel/p/Cw4M7DMP7gI/?hl=sr"
+    },
+    
+    { 
+        id: 121, name: "みやび屋", genre: "居酒屋🏮", area: "千倉", 
+        lat: 34.977592, lng: 139.965324,
+        hours: [
+            [["17:30", "23:00"]], // 日
+            [["17:30", "23:00"]], // 月
+            [["17:30", "23:00"]], // 火
+            [["17:30", "23:00"]], // 水
+            [],                   // 木
+            [["17:30", "23:00"]], // 金
+            [["17:30", "23:00"]]  // 土
+        ],
+        closedText: "木曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 122, name: "シアター型鉄板焼きBaknos", genre: "鉄板焼き", area: "千倉", 
+        lat: 34.979066, lng: 139.966282,
+        hours: [
+            [["11:30", "14:00"],["17:45", "21:30"]], // 日
+            [["17:45", "21:30"]],                    // 月
+            [["17:45", "21:30"]],                    // 火
+            [["17:45", "21:30"]],                    // 水
+            [["17:45", "21:30"]],                    // 木
+            [["17:45", "21:30"]],                    // 金
+            [["11:30", "14:00"],["17:45", "21:30"]]  // 土
+        ],
+        closedText: "無休（ホテル休館日に準ずる・完全予約制）",
+        updatedAt: "2026/03/03",
+        website: "https://baknos.jp/",
+        sns: "https://yumesaki-marche.com/news/detail.html?CN=269449"
+    },
+
+    { 
+        id: 123, name: "華乃蔵", genre: "ラーメン・中華🍜", area: "千倉", 
+        lat: 34.986505, lng: 139.970086,
+        hours: [
+            [["11:00", "14:30"]], // 日
+            [],                   // 月
+            [["11:00", "14:00"]], // 火
+            [["11:00", "14:30"]], // 水
+            [["11:00", "14:30"]], // 木
+            [["11:00", "14:00"]], // 金
+            [["11:00", "14:30"]]  // 土
+        ],
+        closedText: "月曜、火曜はセルフ営業",
+        updatedAt: "2026/03/03",
+        website: "https://www.chikura-hananokura.com/",
+        sns: "https://www.instagram.com/hananokura2017/?hl=ja"
+    },
+
+    { 
+        id: 124, name: "Vista", genre: "カフェ・喫茶店☕", area: "富浦", 
+        lat: 35.035927, lng: 139.824759,
+        hours: [
+            [["10:00", "17:30"]], // 日
+            [],                   // 月(定休)
+            [],                   // 火(定休)
+            [["10:00", "17:30"]], // 水
+            [["10:00", "17:30"]], // 木
+            [["10:00", "17:30"]], // 金
+            [["10:00", "17:30"]]  // 土
+        ],
+        closedText: "月・火曜",
+        updatedAt: "2026/03/03",
+        website: "https://www.cafevista.net/",
+        sns: ""
+    },
+
+    { 
+        id: 125, name: "炭火やき鳥と創作料理 遊鳥", genre: "やきとり", area: "千倉", 
+        lat: 34.970263, lng: 139.954346,
+        hours: [
+            [],                   // 日
+            [["17:30", "22:00"]], // 月
+            [["17:30", "22:00"]], // 火
+            [["17:30", "22:00"]], // 水
+            [["17:30", "22:00"]], // 木
+            [["17:30", "22:00"]], // 金
+            [["17:30", "22:00"]]  // 土
+        ],
+        closedText: "月曜",
+        updatedAt: "2026/03/03",
+        website: "https://www.yucho.biz/",
+        sns: ""
+    },
+
+    { 
+        id: 126, name: "綱元", genre: "海鮮・シーフード🦐", area: "千倉", 
+        lat: 34.977868, lng: 139.965518,
+        hours: [
+            [["11:00", "20:00"]], // 日
+            [["11:00", "17:00"]], // 月
+            [],                   // 火(定休)
+            [["11:00", "17:00"]], // 水
+            [["11:00", "17:00"]], // 木
+            [["11:00", "17:00"]], // 金
+            [["11:00", "20:00"]]  // 土
+        ],
+        closedText: "火曜（祝日の場合は営業、翌日休み）",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 127, name: "カーサマリーナ", genre: "レストラン🍴", area: "千倉", 
+        lat: 34.975116, lng: 139.958881,
+        hours: [
+            [["10:30", "17:00"]], // 日
+            [["10:30", "17:00"]], // 月
+            [["10:30", "17:00"]], // 火
+            [["10:30", "17:00"]], // 水
+            [],                   // 木
+            [["10:30", "17:00"]], // 金
+            [["10:30", "17:00"]]  // 土
+        ],
+        closedText: "火曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.facebook.com/CasaMarina0124/"
+    },
+
+    { 
+        id: 128, name: "ホルモン酒場NOBU's HOUSE", genre: "焼肉・ホルモン", area: "千倉", 
+        lat: 34.977706, lng: 139.965317,
+        hours: [
+            [["11:00", "14:00"],["17:00", "22:00"]], // 日
+            [], // 月
+            [], // 火
+            [["11:00", "14:00"],["17:00", "22:00"]], // 水
+            [["11:00", "14:00"],["17:00", "22:00"]], // 木
+            [["11:00", "14:00"],["17:00", "22:00"]], // 金
+            [["11:00", "14:00"],["17:00", "22:00"]]  // 土
+        ],
+        closedText: "月・火曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.instagram.com/nobus.house29/"
+    },
+
+    { 
+        id: 129, name: "そば処 仁や 千倉", genre: "そば・うどん", area: "千倉", 
+        lat: 34.971202, lng: 139.960710,
+        hours: [
+            [["10:30", "14:15"], ["17:00", "18:30"]], // 日
+            [["10:30", "14:15"], ["17:00", "18:30"]], // 月
+            [],                                       // 火
+            [["10:30", "14:15"], ["17:00", "18:30"]], // 水
+            [["10:30", "14:15"], ["17:00", "18:30"]], // 木
+            [["10:30", "14:15"], ["17:00", "18:30"]], // 金
+            [["10:30", "14:15"], ["17:00", "18:30"]]  // 土
+        ],
+        closedText: "火曜（不定休あり）",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.instagram.com/sobadokoro_niiya/?hl=ja"
+    },
+
+    { 
+        id: 130, name: "寿司と地魚料理大徳家", genre: "寿司🍣", area: "千倉", 
+        lat: 34.975201, lng: 139.962803,
+        hours: [
+            [["12:00", "15:00"], ["17:00", "21:00"]], // 日
+            [["12:00", "15:00"], ["17:00", "21:00"]], // 月
+            [],                                       // 火(定休)
+            [["12:00", "15:00"], ["17:00", "21:00"]], // 水
+            [["12:00", "15:00"], ["17:00", "21:00"]], // 木
+            [["12:00", "15:00"], ["17:00", "21:00"]], // 金
+            [["12:00", "15:00"], ["17:00", "21:00"]]  // 土
+        ],
+        closedText: "火曜（祝日の場合営業、翌水曜休み）",
+        updatedAt: "2026/03/03",
+        website: "https://daitokuya.co.jp/",
+        sns: "https://www.instagram.com/daitokuya1869/"
+    },
+    
+    { 
+        id: 131, name: "あいづ", genre: "そば・うどん", area: "千倉", 
+        lat: 34.979877, lng: 139.940414,
+        hours: [
+            [["11:30", "15:00"]], // 日
+            [],                   // 月
+            [],                   // 火
+            [],                   // 水
+            [["11:30", "15:00"]], // 木
+            [["11:30", "15:00"]], // 金
+            [["11:30", "15:00"]]  // 土
+        ],
+        closedText: "月～水曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 132, name: "せいざんカフェ", genre: "カフェ・喫茶店☕", area: "千倉", 
+        lat: 34.967099, lng: 139.959099,
+        hours: [
+            [["11:30", "15:00"],["17:00", "21:00"]], // 日
+            [],                                      // 月(定休)
+            [],                                      // 火(定休)
+            [["11:30", "15:00"]],                    // 水
+            [["11:30", "15:00"]],                    // 木
+            [["11:30", "15:00"],["17:00", "21:00"]], // 金
+            [["11:30", "15:00"],["17:00", "21:00"]]  // 土
+        ],
+        closedText: "月曜・火曜",
+        updatedAt: "2026/03/03",
+        website: "https://chikura.tsunaguhotel.jp/dininghall/",
+        sns: "https://www.instagram.com/seizan_cafe/"
+    },
+
+    { 
+        id: 133, name: "房州麺処ちゃいなはうす", genre: "ラーメン・中華🍜", area: "千倉", 
+        lat: 34.976852, lng: 139.964501,
+        hours: [
+            [["11:00", "14:30"],["17:00","20:00"]], // 日
+            [["11:00", "14:30"],["17:00","20:00"]], // 月
+            [["11:00", "14:30"],["17:00","20:00"]], // 火
+            [],                                     // 水
+            [["11:00", "14:30"],["17:00","20:00"]], // 木
+            [["11:00", "14:30"],["17:00","20:00"]], // 金
+            [["11:00", "14:30"],["17:00","20:00"]]  // 土
+        ],
+        closedText: "木・金曜（祝日の場合営業）",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 134, name: "四季波", genre: "寿司🍣", area: "千倉", 
+        lat: 34.970009, lng: 139.959651,
+        hours: [
+            [["11:00", "14:00"], ["17:00", "21:00"]], // 日
+            [["11:00", "14:00"], ["17:00", "21:00"]], // 月
+            [["11:00", "14:00"], ["17:00", "21:00"]], // 火
+            [["11:00", "14:00"], ["17:00", "21:00"]], // 水
+            [],                                       // 木
+            [["11:00", "14:00"], ["17:00", "21:00"]], // 金
+            [["11:00", "14:00"], ["17:00", "21:00"]]  // 土
+        ],
+        closedText: "木曜",
+        updatedAt: "2026/03/03",
+        website: "https://sushi-shikinami.jp/",
+        sns: ""
+    },
+
+    { 
+        id: 135, name: "釣りキッチン", genre: "居酒屋🏮", area: "千倉", 
+        lat: 34.977248, lng: 139.951705,
+        hours: [
+            [["11:30", "14:30"],["17:00", "23:00"]], 
+            [["11:30", "14:30"],["17:00", "23:00"]], 
+            [], 
+            [["11:30", "14:30"],["17:00", "23:00"]], 
+            [["11:30", "14:30"],["17:00", "23:00"]], 
+            [["11:30", "14:30"],["17:00", "23:00"]], 
+            [["11:30", "14:30"],["17:00", "23:00"]]
+        ],
+        closedText: "火曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.instagram.com/tsurin2024/"
+    },
+
+    { 
+        id: 136, name: "浜の郷", genre: "日本料理", area: "千倉", 
+        lat: 34.975334, lng: 139.962893,
+        hours: [
+            [["11:00", "14:00"], ["17:30", "20:00"]], // 日
+            [],                                       // 月
+            [["11:00", "14:00"], ["17:30", "20:00"]], // 火
+            [["11:00", "14:00"], ["17:30", "20:00"]], // 水
+            [["11:00", "14:00"], ["17:30", "20:00"]], // 木
+            [["11:00", "14:00"], ["17:30", "20:00"]], // 金
+            [["11:00", "14:00"], ["17:30", "20:00"]]  // 土
+        ],
+        closedText: "月曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.instagram.com/hamanogou/"
+    },
+
+    { 
+        id: 137, name: "オドーリ・キッチン", genre: "イタリア料理", area: "白浜", 
+        lat: 34.905970, lng: 139.900770,
+        hours: [
+            [["11:00", "15:00"], ["18:00", "21:00"]], // 日
+            [["11:00", "15:00"], ["18:00", "21:00"]], // 月
+            [["11:00", "15:00"], ["18:00", "21:00"]], // 火
+            [["11:00", "15:00"], ["18:00", "21:00"]], // 水
+            [],                                       // 木(定休)
+            [["11:30", "15:00"], ["18:00", "21:00"]], // 金
+            [["11:30", "15:00"], ["18:00", "21:00"]]  // 土
+        ],
+        closedText: "木曜、第2・4水曜",
+        updatedAt: "2026/03/03",
+        website: "http://odori-kitchen.com/",
+        sns: "https://www.instagram.com/odorikitchen/"
+    },
+
+    { 
+        id: 138, name: "ランチ＆スナック ステラ", genre: "スナック", area: "和田", 
+        lat: 35.024701, lng: 139.990720,
+        hours: [
+            [["11:00", "14:00"],["18:00", "23:00"]], 
+            [["11:00", "14:00"],["18:00", "23:00"]], 
+            [], 
+            [["11:00", "14:00"],["18:00", "23:00"]], 
+            [["11:00", "14:00"],["18:00", "23:00"]], 
+            [["11:00", "14:00"],["18:00", "23:00"]], 
+            [["11:00", "14:00"],["18:00", "23:00"]]
+        ],
+        closedText: "火曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 139, name: "ミネックス", genre: "定食", area: "和田", 
+        lat: 35.020023, lng: 139.979187,
+        hours: [
+            ["11:30", "21:30"], 
+            ["11:30", "21:30"], 
+            ["11:30", "21:30"], 
+            ["11:30", "21:30"], 
+            ["11:30", "21:30"], 
+            ["11:30", "21:30"], 
+            ["11:30", "21:30"]
+        ],
+        closedText: "不定休",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 140, name: "大和食堂", genre: "ラーメン・中華🍜", area: "和田", 
+        lat: 35.020215, lng: 139.979367,
+        hours: [
+            [["11:00", "17:00"]], // 日
+            [["11:00", "17:00"]], // 月
+            [],                   // 火
+            [["11:00", "17:00"]], // 水
+            [["11:00", "17:00"]], // 木
+            [["11:00", "17:00"]], // 金
+            [["11:00", "17:00"]]  // 土
+        ],
+        closedText: "火曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+    
+    { 
+        id: 141, name: "さかな", genre: "海鮮・シーフード🦐", area: "和田", 
+        lat: 35.035642, lng: 140.016188,
+        hours: [
+            [["11:00", "14:00"], ["17:00", "21:00"]], // 日
+            [],                                       // 月(定休)
+            [["11:00", "14:00"], ["17:00", "21:00"]], // 火
+            [["11:00", "14:00"], ["17:00", "21:00"]], // 水
+            [["11:00", "14:00"], ["17:00", "21:00"]], // 木
+            [["11:00", "14:00"], ["17:00", "21:00"]], // 金
+            [["11:00", "14:00"], ["17:00", "21:00"]]  // 土
+        ],
+        closedText: "月曜（祝日の場合は翌火曜）",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 142, name: "レストラン＆バー SAYAN", genre: "洋食", area: "千倉", 
+        lat: 34.955212, lng: 139.961838,
+        hours: [
+            [["11:30", "14:00"], ["18:00", "22:00"]], // 日
+            [],                                       // 月
+            [],                                       // 火
+            [["11:30", "14:00"], ["18:00", "22:00"]], // 水
+            [["11:30", "14:00"], ["18:00", "22:00"]], // 木
+            [["11:30", "14:00"], ["18:00", "22:00"]], // 金
+            [["11:30", "14:00"], ["18:00", "22:00"]]  // 土
+        ],
+        closedText: "月・火曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 143, name: "菊川食堂", genre: "定食", area: "千倉", 
+        lat: 34.976162, lng: 139.954893,
+        hours: [
+            [["11:00", "15:00"],["16:30","20:00"]], // 日
+            [["11:00", "15:00"],["16:30","20:00"]], // 月
+            [["11:00", "15:00"],["16:30","20:00"]], // 火
+            [["11:00", "15:00"],["16:30","20:00"]], // 水
+            [],                                     // 木
+            [["11:00", "15:00"],["16:30","20:00"]], // 金
+            [["11:00", "15:00"],["16:30","20:00"]]  // 土
+        ],
+        closedText: "木曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.instagram.com/kikukawa.chikura/"
+    },
+
+    { 
+        id: 144, name: "seaside kitchen grow", genre: "レストラン🍴", area: "和田", 
+        lat: 35.036453, lng: 140.011730,
+        hours: [
+            [["11:00", "14:30"]],                     // 日
+            [],                                       // 月(定休)
+            [],                                       // 火(定休)
+            [["11:00", "14:30"], ["17:00", "21:00"]], // 水
+            [["11:00", "14:30"], ["17:00", "21:00"]], // 木
+            [["11:00", "14:30"], ["17:00", "21:00"]], // 金
+            [["11:00", "14:30"], ["17:00", "21:00"]]  // 土
+        ],
+        closedText: "月・火曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.instagram.com/seaside_kitchen_grow/"
+    },
+
+    { 
+        id: 145, name: "手打ちそば はなうら", genre: "そば・うどん", area: "和田", 
+        lat: 35.041090, lng: 140.045900,
+        hours: [
+            [["11:00", "14:00"]], //日
+            [["11:00", "14:00"]], //月
+            [["11:00", "14:00"]], //火
+            [["11:00", "14:00"]], //水
+            [],                   //木
+            [],                   //金
+            [["11:00", "14:00"]]  //土
+        ],
+        closedText: "木・金曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 146, name: "シーフードコート白渚", genre: "海鮮・シーフード🦐", area: "和田", 
+        lat: 35.032957, lng: 140.005746,
+        hours: [
+            [["11:00", "15:30"]], // 日
+            [["11:00", "15:30"]], // 月
+            [],                   // 火(定休)
+            [],                   // 水(定休)
+            [],                   // 木(定休)
+            [["11:00", "15:30"]], // 金
+            [["11:00", "15:30"]]  // 土
+        ],
+        closedText: "火・水・木曜",
+        updatedAt: "2026/03/03",
+        website: "https://www.seafoodcourt.jp/",
+        sns: "https://www.instagram.com/seafoodcourt.shirasuka/"
+    },
+
+    { 
+        id: 147, name: "笑福", genre: "居酒屋🏮", area: "和田", 
+        lat: 35.036415, lng: 140.014745,
+        hours: [
+            [["11:00", "14:00"], ["17:00", "21:00"]], // 日
+            [["11:00", "14:00"], ["17:00", "21:00"]], // 月
+            [["11:00", "14:00"], ["17:00", "21:00"]], // 火
+            [],                                       // 水(定休)
+            [],                                       // 木(定休)
+            [["11:00", "14:00"], ["17:00", "21:00"]], // 金
+            [["11:00", "14:00"], ["17:00", "21:00"]]  // 土
+        ],
+        closedText: "水・木曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 148, name: "カフェ ラ プラージュ", genre: "カフェ・喫茶店☕", area: "和田", 
+        lat: 35.039259, lng: 140.019057,
+        hours: [
+            [], // 日：3部制
+            [], // 月
+            [], // 火
+            [], // 水(定休)
+            [], // 木
+            [], // 金
+            []  // 土：3部制
+        ],
+        closedText: "臨時休業",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.instagram.com/cafe.la.plage/"
+    },
+
+    { 
+        id: 149, name: "隠れ屋敷 典膳", genre: "日本料理", area: "丸山", 
+        lat: 35.078864, lng: 139.952135,
+        hours: [
+            [["11:30", "15:00"], ["17:00", "21:00"]], // 全日共通
+            [["11:30", "15:00"], ["17:00", "21:00"]],
+            [["11:30", "15:00"], ["17:00", "21:00"]],
+            [["11:30", "15:00"], ["17:00", "21:00"]],
+            [["11:30", "15:00"], ["17:00", "21:00"]],
+            [["11:30", "15:00"], ["17:00", "21:00"]],
+            [["11:30", "15:00"], ["17:00", "21:00"]]
+        ],
+        closedText: "不定休（完全予約制）",
+        updatedAt: "2026/03/03",
+        website: "https://www.tenzen.chiba.jp/",
+        sns: ""
+    },
+
+    { 
+        id: 150, name: "牛たん 市川 藏", genre: "牛タン🐮", area: "丸山", 
+        lat: 35.060659, lng: 139.893669,
+        hours: [
+            [["10:30", "14:00"]], // 日
+            [],                   // 月
+            [],                   // 火
+            [],                   // 水
+            [],                   // 木
+            [],                   // 金
+            [["10:30", "14:00"]]  // 土
+        ],
+        closedText: "月～金曜",
+        updatedAt: "2026/03/03",
+        website: "https://kura-minamiboso.com/",
+        sns: "https://www.instagram.com/gyutan_ichikawa_kura/"
+    },
+    
+    { 
+        id: 151, name: "龍神", genre: "ラーメン・中華🍜", area: "千倉", 
+        lat: 34.963388, lng: 139.957637,
+        hours: [
+            [["11:00", "14:00"]], // 日
+            [["11:00", "20:00"]], // 月
+            [["11:00", "20:00"]], // 火
+            [["11:00", "20:00"]], // 水
+            [["11:00", "20:00"]], // 木(定休)
+            [["11:00", "20:00"]], // 金
+            [["11:00", "20:00"]]  // 土
+        ],
+        closedText: "調査中",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 152, name: "ベーカリー＆カフェFika", genre: "ベーカリー🥖", area: "千倉", 
+        lat: 34.963254, lng: 139.958010,
+        hours: [
+            [["10:00", "14:00"]], // 日
+            [],                   // 月(定休)
+            [["10:00", "17:00"]], // 火
+            [],                   // 水
+            [["10:00", "17:00"]], // 木
+            [["10:00", "17:00"]], // 金
+            [["10:00", "17:00"]]  // 土
+        ],
+        closedText: "水曜、第2・3・4・5日曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.instagram.com/fika.pan/"
+    },
+
+    { 
+        id: 153, name: "居酒屋ごん", genre: "居酒屋🏮", area: "千倉", 
+        lat: 34.962057, lng: 139.958584,
+        hours: [
+            [],                 
+            [["17:00", "22:00"]],
+            [["17:00", "22:00"]],
+            [["17:00", "22:00"]],
+            [["17:00", "22:00"]],
+            [["17:00", "22:00"]],
+            [["17:00", "22:00"]]
+        ],
+        closedText: "日曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.instagram.com/izakaya.gonchan/"
+    },
+
+    { 
+        id: 154, name: "ル・セーベ", genre: "スイーツ🍰", area: "千倉", 
+        lat: 34.960279, lng: 139.959181,
+        hours: [
+            [["09:00", "19:00"]], // 日
+            [["09:00", "19:00"]], // 月
+            [["09:00", "19:00"]], // 火
+            [],                   // 水(定休)
+            [["09:00", "19:00"]], // 木
+            [["09:00", "19:00"]], // 金
+            [["09:00", "19:00"]]  // 土
+        ],
+        closedText: "水曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 155, name: "ちどり", genre: "和食", area: "千倉", 
+        lat: 34.958804, lng: 139.959597,
+        hours: [
+            [["11:00", "14:00"], ["18:00", "24:00"]], // 日
+            [["11:00", "14:00"], ["18:00", "24:00"]], // 月
+            [["11:00", "14:00"], ["18:00", "24:00"]], // 火
+            [["11:00", "14:00"], ["18:00", "24:00"]], // 水
+            [["11:00", "14:00"], ["18:00", "24:00"]], // 木
+            [["11:00", "14:00"], ["18:00", "24:00"]], // 金
+            [["11:00", "14:00"], ["18:00", "24:00"]]  // 土
+        ],
+        closedText: "調査中",
+        updatedAt: "2026/03/03",
+        website: "http://chidori-chikura.com/",
+        sns: "https://instagram.com/example"
+    },
+
+    { 
+        id: 156, name: "スナック華恋", genre: "スナック🎤", area: "千倉", 
+        lat: 34.958932, lng: 139.960811,
+        hours: [
+            [["19:00", "23:59"]], // 全日共通(不定休)
+            [["19:00", "23:59"]],
+            [["19:00", "23:59"]],
+            [["19:00", "23:59"]],
+            [["19:00", "23:59"]],
+            [["19:00", "23:59"]],
+            [["19:00", "23:59"]]
+        ],
+        closedText: "調査中",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    //{ 
+        //id: 157, name: "スナック絆", genre: "スナック🎤", area: "千倉", 
+        //lat: 34.959534, lng: 139.961448,
+        //hours: [
+            //[["19:00", "23:59"]], // 全日共通(不定休)
+            //[["19:00", "23:59"]],
+            //[["19:00", "23:59"]],
+            //[["19:00", "23:59"]],
+            //[["19:00", "23:59"]],
+            //[["19:00", "23:59"]],
+            //[["19:00", "23:59"]]
+        //],
+        //closedText: "不定休"
+    //},
+
+    { 
+        id: 158, name: "まると", genre: "定食", area: "千倉", 
+        lat: 34.957430, lng: 139.961394,
+        hours: [
+            [],                   // 日
+            [],                   // 月
+            [["06:30", "15:00"]], // 火
+            [["06:30", "15:00"]], // 水
+            [["06:30", "15:00"]], // 木
+            [["06:30", "15:00"]], // 金
+            [["06:30", "15:00"]]  // 土
+        ],
+        closedText: "日・月曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 159, name: "茶茶", genre: "軽食", area: "千倉", 
+        lat: 34.955835, lng: 139.961542,
+        hours: [
+            ["11:30", "20:00"], 
+            ["11:30", "20:00"], 
+            [], 
+            ["11:30", "20:00"], 
+            ["11:30", "20:00"], 
+            ["11:30", "20:00"], 
+            ["11:30", "20:00"]
+        ],
+        closedText: "火曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 160, name: "赤トウガラシ", genre: "焼肉・ホルモン", area: "千倉", 
+        lat: 34.952750, lng: 139.963404,
+        hours: [
+            [["17:00", "23:00"]], // 日
+            [["17:00", "23:00"]], // 月
+            [["17:00", "23:00"]], // 火
+            [["17:00", "23:00"]], // 水
+            [["17:00", "23:00"]], // 木
+            [["17:00", "23:00"]], // 金
+            [["17:00", "23:00"]]  // 土
+        ],
+        closedText: "不定休",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+    
+    { 
+        id: 161, name: "GGパン工房", genre: "ベーカリー🥖", area: "千倉", 
+        lat: 34.927990, lng: 139.942602,
+        hours: [
+            [["10:00", "17:00"]], // 日
+            [[]],                 // 月
+            [[]],                 // 火
+            [[]],                 // 水
+            [[]],                 // 木
+            [[]],                 // 金
+            [["10:00", "17:00"]]  // 土
+        ],
+        closedText: "月～金曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 162, name: "オトハマ318", genre: "カフェ・喫茶店☕", area: "白浜", 
+        lat: 34.911063, lng: 139.922400,
+        hours: [
+            [["11:00", "15:00"],["18:00", "21:00"]], // 日
+            [],                                      // 月
+            [],                                      // 火
+            [],                                      // 水
+            [],                                      // 木
+            [],                                      // 金
+            [["11:00", "15:00"],["18:00", "21:00"]]  // 土
+        ],
+        closedText: "月～金曜（祝日営業）",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 163, name: "花月堂", genre: "スイーツ🍰", area: "白浜", 
+        lat: 34.907829, lng: 139.895237,
+        hours: [
+            [["09:30", "18:30"]], // 日
+            [["09:30", "18:30"]], // 月
+            [["09:30", "18:30"]], // 火
+            [],                   // 水(定休)
+            [["09:30", "18:30"]], // 木
+            [["09:30", "18:30"]], // 金
+            [["09:30", "18:30"]]  // 土
+        ],
+        closedText: "水曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.instagram.com/kagetsu218/"
+    },
+
+    { 
+        id: 164, name: "Bicycle&cafe FeAI", genre: "カフェ・喫茶店☕", area: "白浜", 
+        lat: 34.906834, lng: 139.894534,
+        hours: [
+            [["9:00", "17:00"]], //日 
+            [],                  //月
+            [],                  //火
+            [["9:00", "17:00"]], //水
+            [],                  //木
+            [],                  //金
+            [["9:00", "17:00"]]  //土
+        ],
+        closedText: "月・火・木・金曜、SNS要確認",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.instagram.com/minamiboso_feal/"
+    },
+
+    { 
+        id: 165, name: "Bar FRAGLA", genre: "バー🍸", area: "白浜", 
+        lat: 34.905904, lng: 139.895674,
+        hours: [
+            [["19:00", "23:00"]], //日
+            [["19:00", "23:00"]], //月
+            [["19:00", "23:00"]], //火
+            [["19:00", "23:00"]], //水
+            [["19:00", "23:00"]], //木
+            [["19:00", "23:00"]], //金
+            [["19:00", "23:00"]]  //土
+        ],
+        closedText: "調査中",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.facebook.com/barfragla/?locale=ja_JP"
+    },
+
+    { 
+        id: 166, name: "染谷キッチンベーカリー", genre: "ベーカリー🥖", area: "白浜", 
+        lat: 34.911184, lng: 139.864752,
+        hours: [
+            [],                //日
+            [],                //月
+            ["11:00","16:00"], //火
+            [],                //水
+            [],                //木
+            ["11:00","16:00"], //金
+            ["11:00","16:00"]  //土
+        ],
+        closedText: "日・月・水・木曜、第3土曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 167, name: "fox cafe", genre: "カフェ・喫茶店☕", area: "白浜", 
+        lat: 34.910105, lng: 139.860981,
+        hours: [
+            [],                   //日
+            [["10:00", "17:00"]], //月
+            [["10:00", "17:00"]], //火
+            [["10:00", "17:00"]], //水
+            [["10:00", "17:00"]], //木
+            [["10:00", "17:00"]], //金
+            []                    //土
+        ],
+        closedText: "土・日曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 168, name: "喫茶ダイヤモンドヘッド", genre: "カフェ・喫茶店☕", area: "千倉", 
+        lat: 34.967796, lng: 139.959656,
+        hours: [
+            [["11:00", "15:30"]], // 日
+            [],                   // 月(定休)
+            [],                   // 火(定休)
+            [],                   // 水(定休)
+            [],                   // 木(定休)
+            [],                   // 金(定休)
+            [["11:00", "15:30"]]  // 土
+        ],
+        closedText: "月〜金曜（土日のみ営業）",
+        updatedAt: "2026/03/03",
+        website: "https://cafe-dh.sakura.ne.jp/",
+        sns: ""
+    },
+
+    { 
+        id: 169, name: "なぎさカフェ", genre: "カフェ・喫茶店☕", area: "千倉", 
+        lat: 34.974636, lng: 139.962504,
+        hours: [
+            [["11:30", "16:00"]], // 日
+            [],                   // 月(定休)
+            [["11:30", "16:00"]], // 火
+            [["11:30", "16:00"]], // 水
+            [["11:30", "16:00"]], // 木
+            [["11:30", "16:00"]], // 金：夜営業あり
+            [["11:30", "16:00"]]  // 土：夜営業あり
+        ],
+        closedText: "月曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 170, name: "とっち麹カフェ", genre: "カフェ・喫茶店☕", area: "千倉", 
+        lat: 34.981055, lng: 139.966721,
+        hours: [
+            ["11:30", "16:30"], 
+            [], 
+            [], 
+            [], 
+            [], 
+            [], 
+            ["11:30", "16:30"]
+        ],
+        closedText: "月～金曜、土日予約推奨",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.instagram.com/tocchi_cafe/"
+    },
+    
+    { 
+        id: 171, name: "ふる里学舎パン工房", genre: "ベーカリー🥖", area: "千倉", 
+        lat: 34.986209, lng: 139.966866,
+        hours: [
+            ["9:00", "16:00"], 
+            ["9:00", "16:00"], 
+            ["9:00", "16:00"], 
+            [], 
+            ["9:00", "16:00"], 
+            ["9:00", "16:00"], 
+            ["9:00", "16:00"]
+        ],
+        closedText: "水曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 172, name: "Cafeteria Chester", genre: "カフェ・喫茶店☕", area: "千倉", 
+        lat: 34.992170, lng: 139.969505,
+        hours: [
+            [["11:00", "16:00"]], // 日
+            [],                   // 月(定休)
+            [],                   // 火(定休)
+            [],                   // 水(定休)
+            [],                   // 木(定休)
+            [],                   // 金(定休)
+            [["11:00", "16:00"]]  // 土
+        ],
+        closedText: "月～金曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 173, name: "ききょう", genre: "スナック🎤", area: "千倉", 
+        lat: 34.993273, lng: 139.967789,
+        hours: [
+            [["19:00", "23:59"]], // 全日共通(不定休)
+            [["19:00", "23:59"]],
+            [["19:00", "23:59"]],
+            [["19:00", "23:59"]],
+            [["19:00", "23:59"]],
+            [["19:00", "23:59"]],
+            [["19:00", "23:59"]]
+        ],
+        closedText: "不定休（深夜業態）",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 174, name: "stand O", genre: "カフェ・喫茶店☕", area: "千倉", 
+        lat: 34.996409, lng: 139.971855,
+        hours: [
+            [["07:30", "13:00"]], // 日
+            [],                   // 月(定休)
+            [],                   // 火(定休)
+            [],                   // 水(定休)
+            [],                   // 木(定休)
+            [],                   // 金(定休)
+            [["07:30", "13:00"]]  // 土
+        ],
+        closedText: "月〜金曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.instagram.com/stand_o8017/"
+    },
+
+    { 
+        id: 175, name: "L.L.L.coffee", genre: "カフェ・喫茶店☕", area: "丸山", 
+        lat: 34.998083, lng: 139.972419,
+        hours: [
+            [], // 日
+            [], // 月
+            [], // 火(定休)
+            [], // 水(定休)
+            [], // 木
+            [], // 金
+            []  // 土
+        ],
+        closedText: "臨時休業",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.instagram.com/l_l_l_coffee/"
+    },
+
+    { 
+        id: 176, name: "レンタサイクル cococafe", genre: "カフェ・喫茶店☕", area: "丸山", 
+        lat: 35.005845, lng: 139.972460,
+        hours: [
+            [["10:00", "17:00"]], // 全日共通(不定休)
+            [["10:00", "17:00"]],
+            [["10:00", "17:00"]],
+            [["10:00", "17:00"]],
+            [["10:00", "17:00"]],
+            [["10:00", "17:00"]],
+            [["10:00", "17:00"]]
+        ],
+        closedText: "不定休（調査中）",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.instagram.com/cococafe_bicycle4630/"
+    },
+
+    { 
+        id: 177, name: "花カフェ", genre: "カフェ・喫茶店☕", area: "和田", 
+        lat: 35.022514, lng: 139.988100,
+        hours: [
+            [],                   // 日
+            [["11:00", "15:30"]], // 月
+            [["11:00", "15:30"]], // 火
+            [["11:00", "15:30"]], // 水
+            [["11:00", "15:30"]], // 木
+            [["11:00", "15:30"]], // 金
+            []                    // 土
+        ],
+        closedText: "土・日曜",
+        updatedAt: "2026/03/03",
+        website: "https://www.minami.awa-school.ac.jp/hana_cafe/index.html",
+        sns: "https://www.instagram.com/ranmanhanacafe/"
+    },
+
+    { 
+        id: 178, name: "オリーブ", genre: "カフェ・喫茶店☕", area: "白浜", 
+        lat: 34.903870, lng: 139.887350,
+        hours: [
+            [["10:00", "18:00"]], //日
+            [["10:00", "18:00"]], //月
+            [["10:00", "18:00"]], //火
+            [["10:00", "18:00"]], //水
+            [["10:00", "18:00"]], //木
+            [["10:00", "18:00"]], //金
+            [["10:00", "18:00"]]  //土
+        ],
+        closedText: "年中無休",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 179, name: "とと・かふえ", genre: "カフェ・喫茶店☕", area: "千倉", 
+        lat: 34.929724, lng: 139.952046,
+        hours: [
+            [["09:00", "17:00"]], // 日
+            [["09:00", "17:00"]], // 月
+            [["09:00", "17:00"]], // 火
+            [["09:00", "17:00"]], // 水
+            [["09:00", "17:00"]], // 木
+            [["09:00", "17:00"]], // 金
+            [["09:00", "17:00"]]  // 土
+        ],
+        closedText: "水曜（1～3、8月は無休）",
+        updatedAt: "2026/03/03",
+        website: "https://shiokaze-oukoku.jp/shops/",
+        sns: "https://www.instagram.com/shiokazeoukoku/"
+    },
+
+    { 
+        id: 180, name: "ボタリズムコーヒーロースター", genre: "コーヒーショップ☕", area: "千倉", 
+        lat: 34.960455, lng: 139.957397,
+        hours: [
+            [["11:00", "15:00"]], // 日
+            [["11:00", "15:30"]], // 月
+            [["11:00", "15:30"]], // 火
+            [["11:00", "15:30"]], // 水
+            [["11:00", "15:30"]], // 木
+            [["11:00", "15:30"]], // 金
+            []                    // 土
+        ],
+        closedText: "土曜",
+        updatedAt: "2026/03/03",
+        website: "https://botarhythm.com/?srsltid=AfmBOopFmLr8OEoccrul98Feczv7vL2Cxl1kmBW1HeVkF58H3d-veEVv",
+        sns: "https://www.instagram.com/botarhythm/?hl=ja"
+    },
+    
+    { 
+        id: 181, name: "STONEWELL", genre: "ベーカリー🥖", area: "富山", 
+        lat: 35.086449, lng: 139.843537,
+        hours: [
+            [["09:00", "17:00"]], // 日
+            [["09:00", "17:00"]], // 月
+            [],                   // 火
+            [],                   // 水
+            [["09:00", "17:00"]], // 木
+            [["09:00", "17:00"]], // 金
+            [["09:00", "17:00"]]  // 土
+        ],
+        closedText: "火・水曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 182, name: "タンタンメンかずさ", genre: "ラーメン・中華🍜", area: "富山", 
+        lat: 35.085566, lng: 139.846000,
+        hours: [
+            [["11:30", "20:00"]], // 日
+            [],                   // 月(定休)
+            [["11:30", "20:00"]], // 火
+            [["11:30", "20:00"]], // 水
+            [["11:30", "20:00"]], // 木
+            [["11:30", "20:00"]], // 金
+            [["11:30", "20:00"]]  // 土
+        ],
+        closedText: "月曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    //{ 
+        //id: 183, name: "BusCamp&Cafe127", genre: "カフェ・喫茶店☕", area: "富浦", 
+        //lat: 35.057567, lng: 139.828858,
+        //hours: [
+            //[], // 日
+            //[], // 月
+            //[], // 火
+            //[], // 水
+            //[], // 木
+            //[], // 金
+            //[]  // 土
+        //],
+        //closedText: "閉業"
+    //},
+
+    { 
+        id: 184, name: "ラーメンさとら", genre: "ラーメン・中華🍜", area: "富浦", 
+        lat: 35.035707, lng: 139.851113,
+        hours: [
+            [["11:00", "14:30"]], // 日
+            [],                   // 月
+            [],                   // 火
+            [],                   // 水
+            [],                   // 木
+            [],                   // 金
+            [["11:00", "14:30"]]  // 土
+        ],
+        closedText: "月～金曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 185, name: "福㐂軒", genre: "定食", area: "富浦", 
+        lat: 35.035836, lng: 139.854167,
+        hours: [
+            [["11:00", "14:00"], ["17:00", "21:00"]], // 日
+            [["11:00", "14:00"], ["17:00", "21:00"]], // 月
+            [["11:00", "14:00"], ["17:00", "21:00"]], // 火
+            [],                                       // 水(定休)
+            [["11:00", "14:00"], ["17:00", "21:00"]], // 木
+            [["11:00", "14:00"], ["17:00", "21:00"]], // 金
+            [["11:00", "14:00"], ["17:00", "21:00"]]  // 土
+        ],
+        closedText: "水曜・第3火曜",
+        updatedAt: "2026/03/03",
+        website: "https://fukkian.com/cuisine.html",
+        sns: ""
+    },
+
+    { 
+        id: 186, name: "南房総 やまと寿司 冨浦店", genre: "寿司🍣", area: "富浦", 
+        lat: 35.038047, lng: 139.849471,
+        hours: [
+            [["11:00", "20:30"]],
+            [["11:00", "19:00"]],
+            [["11:00", "19:00"]],
+            [["11:00", "19:00"]],
+            [["11:00", "19:00"]],
+            [["11:00", "19:00"]],
+            [["11:00", "20:30"]]
+        ],
+        closedText: "年中無休",
+        updatedAt: "2026/03/03",
+        website: "https://yamato-f.jp/stores/tomiura?acc=yamato-sushi",
+        sns: "https://www.instagram.com/yamato.tomiuraten/"
+    },
+
+    { 
+        id: 187, name: "浜焼き屋", genre: "海鮮・シーフード🦐", area: "富浦", 
+        lat: 35.038394, lng: 139.850007,
+        hours: [
+            [["10:00", "20:00"]], //日
+            [["10:30", "19:00"]], //月
+            [["10:30", "19:00"]], //火
+            [["10:30", "19:00"]], //水
+            [["10:30", "19:00"]], //木
+            [["10:30", "19:00"]], //金
+            [["10:00", "20:00"]]  //土
+        ],
+        closedText: "年中無休",
+        updatedAt: "2026/03/03",
+        website: "https://bosonoeki-tomiura.jp/hamayaki/",
+        sns: "https://www.instagram.com/hamayakiya/"
+    },
+
+    { 
+        id: 188, name: "天丼うしおや", genre: "海鮮・シーフード🦐", area: "富浦", 
+        lat: 35.038402, lng: 139.849661,
+        hours: [
+            ["10:30","20:30"], 
+            ["10:30","19:00"], 
+            ["10:30","19:00"], 
+            ["10:30","19:00"], 
+            ["10:30","19:00"], 
+            ["10:30","19:00"], 
+            ["10:30","20:30"]
+        ],
+        closedText: "年中無休",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 189, name: "うさぎ亭", genre: "レストラン🍴", area: "富浦", 
+        lat: 35.035580, lng: 139.827129,
+        hours: [
+            ["12:00", "16:00"], 
+            [], 
+            [], 
+            [], 
+            [], 
+            ["12:00", "16:00"], 
+            ["12:00", "16:00"]
+        ],
+        closedText: "月～木曜",
+        updatedAt: "2026/03/03",
+        website: "https://example.com",
+        sns: "https://instagram.com/example"
+    },
+
+    { 
+        id: 190, name: "浜焼市場 きよっぱち", genre: "海鮮・シーフード🦐", area: "三芳", 
+        lat: 35.012700, lng: 139.893175,
+        hours: [
+            [["10:30", "20:00"]], // 日〜土すべて共通
+            [["10:30", "20:00"]],
+            [["10:30", "20:00"]],
+            [["10:30", "20:00"]],
+            [["10:30", "20:00"]],
+            [["10:30", "20:00"]],
+            [["10:30", "20:00"]]
+        ],
+        closedText: "無休（完全予約制）",
+        updatedAt: "2026/03/03",
+        website: "http://www.kiyoppachi.jp/",
+        sns: ""
+    },
+    
+    { 
+        id: 191, name: "くまカフェ", genre: "カフェ・喫茶店☕", area: "三芳", 
+        lat: 35.011326, lng: 139.893223,
+        hours: [
+            [], 
+            ["11:00", "18:30"], 
+            [], 
+            [], 
+            ["11:00", "18:30"], 
+            ["11:00", "18:30"], 
+            ["11:00", "18:30"]
+        ],
+        closedText: "日・火・水曜",
+        updatedAt: "2026/03/03",
+        website: "https://kumacafe.jp/",
+        sns: ""
+    },
+
+    { 
+        id: 192, name: "エンゼル", genre: "カフェ・喫茶店☕", area: "富浦", 
+        lat: 35.056786, lng: 139.829133,
+        hours: [
+            [["09:30", "15:00"]], //日
+            [],                   //月
+            [["09:30", "15:00"]], //火
+            [["09:30", "15:00"]], //水
+            [["09:30", "15:00"]], //木
+            [["09:30", "15:00"]], //金
+            [["09:30", "15:00"]]  //土
+        ],
+        closedText: "月曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 193, name: "THE CHIKURA UMI BASECAMP", genre: "カフェ・喫茶店☕", area: "千倉", 
+        lat: 34.992911, lng: 139.970033,
+        hours: [
+            [["11:30", "14:00"]], // 全日共通(不定休)
+            [["11:30", "14:00"]],
+            [["11:30", "14:00"]],
+            [["11:30", "14:00"]],
+            [["11:30", "14:00"]],
+            [["11:30", "14:00"]],
+            [["11:30", "14:00"]]
+        ],
+        closedText: "不定休",
+        updatedAt: "2026/03/03",
+        website: "https://chikuraumi.basecamp.style/",
+        sns: "https://www.instagram.com/thechikuraumibasecamp/"
+    },
+
+    { 
+        id: 194, name: "スナック虎兎", genre: "スナック🎤", area: "千倉", 
+        lat: 34.957861, lng: 139.959571,
+        hours: [
+            [["19:30", "23:59"]], // 深夜業態
+            [],
+            [["19:30", "23:59"]],
+            [["19:30", "23:59"]],
+            [["19:30", "23:59"]],
+            [["19:30", "23:59"]],
+            [["19:30", "23:59"]]
+        ],
+        closedText: "月曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 195, name: "焼肉ホルモンかずちゃん", genre: "焼肉・ホルモン", area: "千倉", 
+        lat: 34.969035, lng: 139.955012,
+        hours: [
+            [],                   // 日(定休)
+            [["18:00", "21:00"]], // 月
+            [],                   // 火(定休)
+            [["18:00", "21:00"]], // 水
+            [["18:00", "21:00"]], // 木
+            [["18:00", "22:00"]], // 金
+            [["18:00", "22:00"]]  // 土
+        ],
+        closedText: "日曜・火曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: "https://www.instagram.com/horu_kazu/"
+    },
+    
+    { 
+        id: 196, name: "マツフォルニアコーヒー", genre: "カフェ・喫茶店☕", area: "和田", 
+        lat: 35.024611, lng: 139.991539,
+        hours: [
+            [["10:00", "14:00"]], // 基本土日中心を想定
+            [["10:00", "15:00"]],
+            [["10:00", "15:00"]],
+            [],
+            [],
+            [["10:00", "15:00"]],
+            [["10:00", "14:00"]]
+        ],
+        closedText: "水・木曜（SNS要確認）",
+        updatedAt: "2026/03/03",
+        website: "https://www.matsufornia.com/",
+        sns: "https://www.instagram.com/matsufornia/"
+    },
+
+    { 
+        id: 197, name: "大洋堂菓子舗", genre: "和菓子", area: "千倉", 
+        lat: 34.986986, lng: 139.966875,
+        hours: [
+            [["10:00", "18:00"]], // 日
+            [["10:00", "18:00"]], // 月
+            [["10:00", "18:00"]], // 火
+            [["10:00", "18:00"]], // 水
+            [["10:00", "18:00"]], // 木
+            [["10:00", "18:00"]], // 金
+            [["10:00", "18:00"]]  // 土
+        ],
+        closedText: "調査中",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 198, name: "竹岡式ラーメン 佐竹", genre: "ラーメン・中華🍜", area: "千倉", 
+        lat: 34.918120, lng: 139.938932,
+        hours: [
+            [["11:00", "17:00"]], // 日
+            [["11:00", "17:00"]], // 月
+            [["11:00", "17:00"]], // 火
+            [],                   // 水
+            [["11:00", "17:00"]], // 木
+            [["11:00", "17:00"]], // 金
+            [["11:00", "17:00"]]  // 土
+        ],
+        closedText: "水曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 199, name: "山小屋café 風の道", genre: "カフェ・喫茶店☕", area: "白浜", 
+        lat: 34.921296, lng: 139.885026,
+        hours: [
+            [["09:00", "15:00"]], // 日
+            [["09:00", "15:00"]], // 月
+            [],                   // 火(定休)
+            [],                   // 水(定休)
+            [],                   // 木(定休)
+            [["09:00", "15:00"]], // 金
+            [["09:00", "15:00"]]  // 土
+        ],
+        closedText: "火～木曜",
+        updatedAt: "2026/03/03",
+        website: "",
+        sns: ""
+    },
+
+    { 
+        id: 200, name: "静かな海辺のSUP屋さんkupono", genre: "カフェ・喫茶店☕", area: "富浦", 
+        lat: 35.045275, lng: 139.833308,
+        hours: [
+            [["10:00", "17:00"]], // 全日共通(不定休)
+            [["10:00", "17:00"]],
+            [["10:00", "17:00"]],
+            [["10:00", "17:00"]],
+            [["10:00", "17:00"]],
+            [["10:00", "17:00"]],
+            [["10:00", "17:00"]]
+        ],
+        closedText: "不定休",
+        updatedAt: "2026/03/03",
+        website: "https://beach-kupono.jp/",
+        sns: "https://www.instagram.com/kupono_sup/"
+    },
+
+      { id: 201, name: "わだい処 和田浜", genre: "定食", area: "和田", 
+        lat: 35.042762, lng: 140.020737,
+        hours: [
+            [["10:00", "15:30"]], // 日
+            [["10:00", "15:30"]], // 月
+            [["10:00", "15:30"]], // 火
+            [["10:00", "15:30"]], // 水
+            [["10:00", "15:30"]], // 木
+            [["10:00", "15:30"]], // 金
+            [["10:00", "15:30"]]  // 土
+        ],
+        closedText: "不定休（ウェブサイト要確認）",
+        updatedAt: "2026/03/03",
+        website: "http://wa-o.awa.jp/restaurant.html",
+        sns: ""
+    },
+
+    ];
+
+        let favorites = JSON.parse(localStorage.getItem('minamiboso_favs')) || [];
+        let showFavoritesOnly = false;
+        let userPos = null;
+
+        // 営業判定ロジック
+        function getBusinessStatus(shop, targetDate = new Date()) {
+            const day = targetDate.getDay();
+            const time = targetDate.getHours() * 100 + targetDate.getMinutes();
+            let todaysSchedule = shop.hours[day];
+
+            if (!todaysSchedule || todaysSchedule.length === 0) {
+                return { label: "定休日", class: "status-closed", text: "本日はお休みです" };
+            }
+
+            // ["11:00", "15:00"] のような記述揺れを [["11:00", "15:00"]] に自動補正
+            if (typeof todaysSchedule[0] === 'string') {
+                todaysSchedule = [todaysSchedule];
+            }
+
+            let isOpen = false;
+            let timeInfo = [];
+
+            todaysSchedule.forEach(slot => {
+                if (Array.isArray(slot) && slot.length === 2 && slot[0] && slot[1]) {
+                    const start = parseInt(slot[0].replace(":", ""));
+                    const end = parseInt(slot[1].replace(":", ""));
+                    if (time >= start && time <= end) isOpen = true;
+                    timeInfo.push(`${slot[0]}〜${slot[1]}`);
+                }
+            });
+
+            if (timeInfo.length === 0) {
+                return { label: "定休日", class: "status-closed", text: "本日はお休みです" };
+            }
+
+            return isOpen 
+                ? { label: "営業中", class: "status-open", text: timeInfo.join(" / ") } 
+                : { label: "準備中", class: "status-closed", text: timeInfo.join(" / ") };
+        }
+
+        // カード生成（Googleマップ・SNS・更新日 対応版）
+        function createCard(shop, targetDate) {
+            const status = getBusinessStatus(shop, targetDate);
+            const isFav = favorites.includes(shop.id);
+            const distance = userPos ? calculateDistance(userPos.lat, userPos.lng, shop.lat, shop.lng) : "---";
+            
+            // 【修正】Google Maps 公式の正確な検索用リンクを生成
+            const mapUrl = (shop.lat && shop.lng) 
+                ? `https://www.google.com/maps/search/?api=1&query=${shop.lat},${shop.lng}`
+                : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(shop.name + ' 南房総市')}`;
+
+            // SNSアイコンの自動判定
+            let snsIcon = "fa-hashtag";
+            if (shop.sns) {
+                if (shop.sns.includes("instagram.com")) snsIcon = "fa-instagram";
+                else if (shop.sns.includes("twitter.com") || shop.sns.includes("x.com")) snsIcon = "fa-twitter";
+                else if (shop.sns.includes("facebook.com")) snsIcon = "fa-facebook";
+            }
+
+            return `
+                <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 hover:shadow-xl transition-all group flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="${status.class}">${status.label}</span>
+                            
+                            <div class="flex items-center gap-3 text-lg">
+                                ${shop.website ? `<a href="${shop.website}" target="_blank" rel="noopener noreferrer" class="text-slate-300 hover:text-blue-500 transition-colors" title="公式サイトへ"><i class="fas fa-globe"></i></a>` : ''}
+                                ${shop.sns ? `<a href="${shop.sns}" target="_blank" rel="noopener noreferrer" class="text-slate-300 hover:text-pink-500 transition-colors" title="SNSへ"><i class="fab ${snsIcon}"></i></a>` : ''}
+                                <button onclick="toggleFavorite(${shop.id})" class="text-slate-300 hover:text-rose-500 transition-colors ml-1">
+                                    <i class="fas fa-heart ${isFav ? 'favorite-active' : ''}"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-1">${shop.area} / ${shop.genre}</div>
+                        
+                        <a href="${mapUrl}" target="_blank" rel="noopener noreferrer" class="block">
+                            <h3 class="text-xl font-black text-slate-800 mb-2 group-hover:text-blue-600 transition-colors">
+                                ${shop.name} <i class="fas fa-external-link-alt text-xs opacity-0 group-hover:opacity-100 ml-1"></i>
+                            </h3>
+                        </a>
+
+                        <div class="flex items-center text-slate-400 text-xs font-bold mb-4">
+                            <i class="fas fa-map-marker-alt mr-1"></i>現在地から ${distance}km
+                            <a href="${mapUrl}" target="_blank" rel="noopener noreferrer" class="ml-auto text-blue-500 hover:underline">
+                                地図で見る <i class="fas fa-chevron-right ml-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-slate-50 rounded-2xl p-3 text-[11px] font-bold text-slate-500 mt-auto relative">
+                        <i class="far fa-clock mr-1 text-blue-500"></i>${status.text}
+                        ${shop.closedText ? `<div class="mt-1 text-[9px] text-slate-400">※ ${shop.closedText}</div>` : ''}
+                        
+                        ${shop.updatedAt ? `<div class="absolute bottom-3 right-3 text-[9px] text-slate-400 font-normal"><i class="fas fa-sync-alt mr-1"></i>情報更新: ${shop.updatedAt}</div>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLon/2)**2;
+            return (R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))).toFixed(1);
+        }
+
+        function render() {
+            const area = document.getElementById('filter-area').value;
+            const genre = document.getElementById('filter-genre').value;
+            const search = document.getElementById('search-text').value.toLowerCase();
+            const nowOpenOnly = document.getElementById('filter-now-open').checked;
+            const customDate = document.getElementById('filter-datetime').value;
+            const targetDate = customDate ? new Date(customDate) : new Date();
+
+            const config = areaConfigs[area] || areaConfigs['all'];
+            document.getElementById('area-visual').style.backgroundImage = `url('${config.img}')`;
+            document.getElementById('current-area-jp').textContent = config.jp;
+            document.getElementById('current-area-en').textContent = config.en;
+            document.getElementById('area-description').textContent = config.desc;
+
+            const filtered = shopList.filter(shop => {
+                const status = getBusinessStatus(shop, targetDate);
+                if (nowOpenOnly && status.label !== "営業中") return false;
+                if (area !== 'all' && shop.area !== area) return false;
+                if (genre !== 'all' && shop.genre !== genre) return false;
+                if (search && !shop.name.toLowerCase().includes(search)) return false;
+                if (showFavoritesOnly && !favorites.includes(shop.id)) return false;
+                return true;
+            });
+
+            document.getElementById('shop-container').innerHTML = filtered.map(shop => createCard(shop, targetDate)).join('');
+        }
+
+        function toggleFavorite(id) {
+            const idx = favorites.indexOf(id);
+            if (idx > -1) favorites.splice(idx, 1); else favorites.push(id);
+            localStorage.setItem('minamiboso_favs', JSON.stringify(favorites));
+            render();
+        }
+
+        document.getElementById('show-favorites').addEventListener('click', (e) => {
+            showFavoritesOnly = !showFavoritesOnly;
+            e.target.classList.toggle('bg-rose-500');
+            e.target.classList.toggle('text-white');
+            render();
+        });
+
+        ['filter-area', 'filter-genre', 'search-text', 'filter-now-open', 'filter-datetime'].forEach(id => {
+            document.getElementById(id).addEventListener('input', render);
+        });
+
+        setInterval(() => {
+            document.getElementById('real-time-clock').textContent = new Date().toLocaleString('ja-JP');
+        }, 1000);
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(pos => {
+                userPos = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                render();
+            });
+        }
+
+        render();
+    </script>
+</body>
+</html>
