@@ -3,17 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>南房総 拠点ガイド | コンプリート版</title>
+    
+    <title>南房総 飲食店・カフェ営業時間ガイド | 今開いているお店がすぐわかる</title>
+    <meta name="description" content="南房総市（千倉、白浜、富浦、和田など）の飲食店、カフェ、居酒屋、ラーメン店など全201件を網羅したローカルガイド。「今営業中」のお店や、現在地から近いお店を一発検索できます。">
+    <meta name="keywords" content="南房総, ランチ, カフェ, 居酒屋, 営業時間, グルメ, 千倉, 白浜, 富浦">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="南房総 飲食店・カフェ営業時間ガイド">
+    <meta property="og:description" content="南房総エリア全201店舗を網羅！「今開いているお店」や現在地からの距離がパッとわかる便利ガイドです。">
+    <meta property="og:url" content="https://あなたのサイトのURL.com/"> <meta property="og:site_name" content="南房総 飲食店ガイド">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1542332213-31f87348057f?auto=format&fit=crop&w=1200"> <meta name="twitter:card" content="summary_large_image">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap');
         body { font-family: 'Noto Sans JP', sans-serif; }
         .favorite-active { color: #ef4444 !important; }
         
-        /* 営業状態ラベルのスタイル */
-        .status-open { background: #dcfce7; color: #166534; padding: 4px 12px; rounded-full: 9999px; font-weight: bold; font-size: 12px; border-radius: 999px; }
-        .status-closed { background: #f1f5f9; color: #64748b; padding: 4px 12px; rounded-full: 9999px; font-weight: bold; font-size: 12px; border-radius: 999px; }
+        /* 営業状態ラベルのスタイル（2カラム向けにスリム化） */
+        .status-open { background: #dcfce7; color: #166534; padding: 2px 8px; font-weight: bold; font-size: 10px; border-radius: 999px; }
+        .status-closed { background: #f1f5f9; color: #64748b; padding: 2px 8px; font-weight: bold; font-size: 10px; border-radius: 999px; }
 
         #area-visual {
             position: relative;
@@ -59,65 +71,80 @@
             </div>
         </aside>
 
-        <section id="right-content" class="p-6 lg:p-10">
-            <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-5 mb-10 sticky top-0 z-40">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                    <select id="filter-area" class="bg-slate-50 border-none rounded-2xl p-3 font-bold text-sm ring-1 ring-slate-100">
-                        <option value="all">すべての地区</option>
-                        <option value="富浦">富浦</option><option value="富山">富山</option>
-                        <option value="千倉">千倉</option><option value="白浜">白浜</option>
-                        <option value="和田">和田</option><option value="丸山">丸山</option>
-                        <option value="三芳">三芳</option>
-                    </select>
-                    <select id="filter-genre" class="bg-slate-50 border-none rounded-2xl p-3 font-bold text-sm ring-1 ring-slate-100">
-                                <option value="all">すべてのジャンル</option>
-                                <option value="うなぎ・和食">うなぎ・和食</option>
-                                <option value="海鮮・シーフード🦐">海鮮・シーフード🦐</option>
-                                <option value="洋食">洋食</option>
-                                <option value="カフェ・喫茶店☕">カフェ・喫茶店☕</option>
-                                <option value="ラーメン・中華🍜">ラーメン・中華🍜</option>
-                                <option value="ピザ🍕">ピザ🍕</option>
-                                <option value="居酒屋🏮">居酒屋🏮</option>
-                                <option value="コーヒーショップ☕">コーヒーショップ☕</option>
-                                <option value="焼肉・ホルモン">焼肉・ホルモン</option>
-                                <option value="そば・うどん">そば・うどん</option>
-                                <option value="ベーカリー🥖">ベーカリー🥖</option>
-                                <option value="寿司🍣">寿司🍣</option>
-                                <option value="和菓子">和菓子</option>
-                                <option value="アジア料理">アジア料理</option>
-                                <option value="ハンバーガー🍔">ハンバーガー🍔</option>
-                                <option value="ハンバーグ">ハンバーグ</option>
-                                <option value="イタリア料理">イタリア料理</option>
-                                <option value="定食">定食</option>
-                                <option value="レストラン🍴">レストラン🍴</option>
-                                <option value="薬膳料理">薬膳料理</option>
-                                <option value="とんかつ">とんかつ</option>
-                                <option value="スナック">スナック</option>
-                                <option value="鉄板焼き">鉄板焼き</option>
-                                <option value="やきとり">やきとり</option>
-                                <option value="牛タン🐮">牛タン🐮</option>
-                                <option value="スイーツ🍰">スイーツ🍰</option>
-                                <option value="軽食">軽食</option>
-                                <option value="バー🍸">バー🍸</option>
-                    </select>
-                    <input type="text" id="search-text" placeholder="店名検索..." class="bg-slate-50 border-none rounded-2xl p-3 font-bold text-sm ring-1 ring-slate-100">
-                    <button id="show-favorites" class="px-6 py-3 rounded-2xl font-black text-sm text-slate-500 hover:bg-rose-50 transition-all border border-slate-100">
-                        <i class="fas fa-heart mr-2"></i>お気に入り
-                    </button>
-                </div>
-                <div class="flex items-center gap-4 text-xs font-bold text-slate-500 px-2">
-                    <label class="flex items-center cursor-pointer">
-                        <input type="checkbox" id="filter-now-open" class="mr-2 w-4 h-4 accent-blue-600"> 現在営業中のみ
-                    </label>
-                    <div class="flex items-center">
-                        <i class="far fa-calendar-alt mr-2"></i>
-                        <input type="datetime-local" id="filter-datetime" class="bg-transparent border-none focus:ring-0">
+<section id="right-content" class="p-4 lg:p-10">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-3 mb-6 sticky top-2 z-40">
+                <div class="flex flex-col gap-2 mb-3">
+                    
+                    <div class="grid grid-cols-2 gap-2">
+                        <select id="filter-area" class="w-full bg-slate-50 border-none rounded-xl p-2.5 font-bold text-[13px] ring-1 ring-slate-200 focus:ring-blue-500">
+                            <option value="all">すべての地区</option>
+                            <option value="富浦">富浦</option><option value="富山">富山</option>
+                            <option value="千倉">千倉</option><option value="白浜">白浜</option>
+                            <option value="和田">和田</option><option value="丸山">丸山</option>
+                            <option value="三芳">三芳</option>
+                        </select>
+                        <select id="filter-genre" class="w-full bg-slate-50 border-none rounded-xl p-2.5 font-bold text-[13px] ring-1 ring-slate-200 focus:ring-blue-500 text-ellipsis overflow-hidden">
+                            <option value="all">すべてのジャンル</option>
+                            <option value="うなぎ・和食">うなぎ・和食</option>
+                            <option value="海鮮・シーフード🦐">海鮮・シーフード🦐</option>
+                            <option value="洋食">洋食</option>
+                            <option value="カフェ・喫茶店☕">カフェ・喫茶店☕</option>
+                            <option value="ラーメン・中華🍜">ラーメン・中華🍜</option>
+                            <option value="ピザ🍕">ピザ🍕</option>
+                            <option value="居酒屋🏮">居酒屋🏮</option>
+                            <option value="コーヒーショップ☕">コーヒーショップ☕</option>
+                            <option value="焼肉・ホルモン">焼肉・ホルモン</option>
+                            <option value="そば・うどん">そば・うどん</option>
+                            <option value="ベーカリー🥖">ベーカリー🥖</option>
+                            <option value="寿司🍣">寿司🍣</option>
+                            <option value="和菓子">和菓子</option>
+                            <option value="アジア料理">アジア料理</option>
+                            <option value="ハンバーガー🍔">ハンバーガー🍔</option>
+                            <option value="ハンバーグ">ハンバーグ</option>
+                            <option value="イタリア料理">イタリア料理</option>
+                            <option value="定食">定食</option>
+                            <option value="レストラン🍴">レストラン🍴</option>
+                            <option value="薬膳料理">薬膳料理</option>
+                            <option value="とんかつ">とんかつ</option>
+                            <option value="スナック">スナック</option>
+                            <option value="鉄板焼き">鉄板焼き</option>
+                            <option value="やきとり">やきとり</option>
+                            <option value="牛タン🐮">牛タン🐮</option>
+                            <option value="スイーツ🍰">スイーツ🍰</option>
+                            <option value="軽食">軽食</option>
+                            <option value="バー🍸">バー🍸</option>
+                        </select>
                     </div>
+                    
+                    <div class="grid grid-cols-[1fr_auto] gap-2">
+                        <input type="text" id="search-text" placeholder="店名検索..." class="w-full bg-slate-50 border-none rounded-xl p-2.5 font-bold text-[13px] ring-1 ring-slate-200 focus:ring-blue-500">
+                        <button id="show-favorites" class="px-4 py-2.5 rounded-xl font-black text-[13px] text-slate-500 hover:bg-rose-50 transition-all border border-slate-200 flex items-center justify-center whitespace-nowrap">
+                            <i class="fas fa-heart mr-1.5"></i>お気に入り
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between gap-2 text-[11px] font-bold text-slate-500 px-1 mt-3">
+                    <div class="flex items-center gap-3">
+                        <label class="flex items-center cursor-pointer whitespace-nowrap">
+                            <input type="checkbox" id="filter-now-open" class="mr-1.5 w-4 h-4 accent-blue-600"> 営業中のみ
+                        </label>
+                        <div class="flex items-center bg-slate-50 rounded-lg px-2 py-1 ring-1 ring-slate-200 min-w-0 hidden sm:flex">
+                            <i class="far fa-calendar-alt mr-1.5 text-slate-400 shrink-0"></i>
+                            <input type="datetime-local" id="filter-datetime" class="bg-transparent border-none focus:ring-0 text-[11px] p-0 m-0 w-full min-w-[120px]">
+                        </div>
+                    </div>
+                    
+                    <button id="toggle-view-btn" onclick="toggleView()" class="px-4 py-2 bg-blue-600 text-white rounded-xl whitespace-nowrap shadow-sm hover:bg-blue-700 transition-colors flex items-center justify-center">
+                        <i class="fas fa-map-marked-alt mr-1.5"></i>地図で見る
+                    </button>
                 </div>
             </div>
 
-            <div id="shop-container" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div id="shop-container" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 lg:gap-6">
                 </div>
+
+            <div id="map-container" class="hidden w-full h-[60vh] lg:h-[75vh] rounded-3xl shadow-sm border border-slate-200 z-10 relative mt-2 overflow-hidden"></div>
         </section>
     </div>
 
@@ -136,7 +163,7 @@
 
         // ★ここに全201件のデータを入れます
         const shopList = [
-            { 
+    { 
         id: 1, name: "うなぎ 新都", genre: "うなぎ・和食", area: "和田", 
         lat: 35.024681, lng: 139.991821,
         // 日, 月, 火, 水, 木, 金, 土
@@ -149,10 +176,14 @@
             [["11:30", "15:00"], ["17:00", "21:00"]], // 金
             [["11:30", "15:00"], ["17:00", "21:00"]]  // 土
         ],
-        closedText: "火曜・不定休",
+        closedText: "火曜・不定休、夜営業は要予約",
+        description:"和田町特産のツチクジラ料理と、注文後に備長炭で焼き上げる関東風うなぎを提供する老舗 。",
         updatedAt: "2026/03/03",
         website: "https://www.shinmiyako.jp/",
-        sns: "https://www.facebook.com/shinmiyako/?locale=ja_JP"
+        sns: "https://www.facebook.com/shinmiyako/?locale=ja_JP",
+        mapUrl: "https://maps.app.goo.gl/69j5ssFKi1hRDxzv9",
+        image: "./images/shop-1-1.jpg",
+        video: "",
     },
 
     { 
@@ -168,9 +199,11 @@
             [["10:30", "20:30"]]  // 土
         ],
         closedText: "無休",
+        description:"南房総の地魚を用いた絶品海鮮丼と、自家製なめろうメンチが自慢の大型食堂 。",
         updatedAt: "2026/03/03",
         website: "https://bosonoeki-tomiura.jp/tomiuratei/",
-        sns: "https://www.instagram.com/yamato.tomiura/"
+        sns: "https://www.instagram.com/yamato.tomiura/",
+        mapUrl: "https://maps.app.goo.gl/Z9Ns6pbdb8qdL5Jr6"
     },
 
     { 
@@ -186,9 +219,11 @@
             [["11:00", "15:00"]]  // 土
         ],
         closedText: "火・水曜",
+        description:"千倉の海辺で週末を中心に本格的な手作りピザを提供し、地元住民や観光客に愛される隠れ家的店舗。",
         updatedAt: "2026/03/03",
         website: "https://sites.google.com/view/pizza-indys/%E3%83%9B%E3%83%BC%E3%83%A0?authuser=0",
-        sns: "https://www.instagram.com/pizzaindys/"
+        sns: "https://www.instagram.com/pizzaindys/",
+        mapUrl: "https://maps.app.goo.gl/1i49ezXDiCBaPXoHA"
     },
 
     { 
@@ -204,9 +239,11 @@
             [["11:00", "16:00"]]  // 土
         ],
         closedText: "木曜",
+        description:"日本橋日山の和牛100%・200gの特大パティと三芳の地元野菜を挟んだ、究極のご当地バーガー 。",
         updatedAt: "2026/03/03",
         website: "https://bingo1101.com/",
-        sns: "https://www.instagram.com/bingoburger.minamiboso/"
+        sns: "https://www.instagram.com/bingoburger.minamiboso/",
+        mapUrl: "https://maps.app.goo.gl/KzSCQqR6jnv3qH239"
     },
 
     { 
@@ -222,9 +259,11 @@
             []                    // 土(定休)
         ],
         closedText: "土・日曜日",
+        description:"丸山エリアで平日昼のみ営業し、地元住民の日常的な食生活を温かく支える素朴な定食店。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/MZrgKuQYT9VFYXBJ8"
     },
 
     { 
@@ -240,9 +279,11 @@
             [["09:30", "16:30"]]  // 土
         ],
         closedText: "月・火曜",
+        description:"日本酪農発祥の地で味わう濃厚牛乳ソフトと、地元産「大井里米」を用いた自然薯丼が名物の体験型カフェ 。",
         updatedAt: "2026/03/03",
         website: "https://www.ikiiki.oi.minamiboso.org/%E3%81%8A%E9%A3%9F%E4%BA%8B",
-        sns: "https://www.instagram.com/mineoka_ikiikikan/"
+        sns: "https://www.instagram.com/mineoka_ikiikikan/",
+        mapUrl: "https://maps.app.goo.gl/omiJY1X3ZL9kMXVp6"
     },
 
     { 
@@ -258,9 +299,11 @@
             [["10:00", "19:00"]]  // 土
         ],
         closedText: "無休",
+        description:"自家製アジフライを挟んだ名物「▢ぱん」サンドや、特産びわソフトが楽しめる開放的なカフェ 。",
         updatedAt: "2026/03/03",
         website: "https://bosonoeki-tomiura.jp/cafe/",
-        sns: "https://www.instagram.com/tomiura.cafe/"
+        sns: "https://www.instagram.com/tomiura.cafe/",
+        mapUrl: "https://maps.app.goo.gl/5Zo5zrxd9qaKj3Yz7"
     },
 
     { 
@@ -276,9 +319,11 @@
             []  // 土
         ],
         closedText: "2026春再オープン予定",
+        description:"2026年春の再オープンが待たれる、富山エリアの新たな文化・交流拠点となるモダンカフェ。",
         updatedAt: "2026/03/03",
         website: "https://shibuya-iwai-park.com/",
-        sns: "https://www.instagram.com/ship_iwai_park"
+        sns: "https://www.instagram.com/ship_iwai_park",
+        mapUrl: "https://maps.app.goo.gl/uqDRvweW6RNY2GUQ7"
     },
 
     { 
@@ -294,9 +339,11 @@
             [["08:30", "18:00"]]  // 土
         ],
         closedText: "無休（道の駅 富楽里とみやまに準ずる）",
+        description:"道の駅富楽里とみやま内で、朝から地元客やドライバーの胃袋を満たす使い勝手の良い定番ラーメン店。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.instagram.com/ramen_watanabe_/"
+        sns: "https://www.instagram.com/ramen_watanabe_/",
+        mapUrl: "https://maps.app.goo.gl/3PThQFsd1LVV8m4E8"
     },
 
     { 
@@ -312,9 +359,11 @@
             [["17:00", "00:00"]]  // 土
         ],
         closedText: "不定休",
+        description:"全国から厳選した日本酒と、それに寄り添う「かつお梅しそなめろう」等のお酒が進む創作料理の店 。",
         updatedAt: "2026/03/03",
         website: "https://sakigake.org/",
-        sns: "https://www.instagram.com/_sakigake___/"
+        sns: "https://www.instagram.com/_sakigake___/",
+        mapUrl: "https://maps.app.goo.gl/Bn6nD6BdrmsEe4gB9"
     },
 
     { 
@@ -330,9 +379,11 @@
             [["18:00", "21:00"]]  // 土
         ],
         closedText: "水・日曜",
+        description:"富浦の地魚を熟練の技で握り、地元客からの信頼が厚く口コミでも高く評価されるアットホームな寿司処 。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/87EpGkgCToW888968"
     },
 
     { 
@@ -348,9 +399,11 @@
             [["13:00", "17:00"]]  // 土
         ],
         closedText: "水・木曜日",
+        description:"富浦エリアで午後のひとときを涼やかに彩る、夏季を中心に人気を集めるかき氷・喫茶店。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.instagram.com/tomiura_kooriya/"
+        sns: "https://www.instagram.com/tomiura_kooriya/",
+        mapUrl: "https://maps.app.goo.gl/5EwyYNpqSaz2pYgd9"
     },
 
     { 
@@ -366,9 +419,11 @@
             [["11:00", "15:30"],["15:30", "17:30"]]  // 土
         ],
         closedText: "後半はカフェ営業",
+        description:"千葉県産「粒すけ」の極上銀シャリと、ご飯が進む18種の房総おかずを堪能できる新鋭の定食店 。",
         updatedAt: "2026/03/03",
         website: "https://www.rokuza.com/news/44/",
-        sns: "https://www.instagram.com/shiosai_furari/"
+        sns: "https://www.instagram.com/shiosai_furari/",
+        mapUrl: "https://maps.app.goo.gl/MkUDppZKHfsDjsDE7"
     },
 
     { 
@@ -384,9 +439,11 @@
             [["08:30", "18:00"]]  // 土
         ],
         closedText: "無休（道の駅 富楽里とみやまに準ずる）",
+        description:"卵・乳製品不使用にこだわり、毎日店内で焼き上げるモチモチ食感のジャンボソフトフランスパンが看板 。",
         updatedAt: "2026/03/03",
         website: "https://furapan.com/",
-        sns: "https://x.com/FURAPAN2023"
+        sns: "https://x.com/FURAPAN2023",
+        mapUrl: "https://maps.app.goo.gl/PCDEK8PwipSnayy19"
     },
 
     { 
@@ -402,9 +459,11 @@
             []                    // 土(定休)
         ],
         closedText: "水曜・土曜",
+        description:"美味しいコーヒーとグラタンなどの軽食をシェアして楽しめる、サウナ愛好家にも人気の喫茶店 。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/9YVyudQrr7GDQz939"
     },
 
     { 
@@ -420,9 +479,11 @@
             [["08:30", "18:00"]]  // 土
         ],
         closedText: "不定休（道の駅に準ずる）",
+        description:"コノシロのすり身を使ったふわふわの「つみれ汁」が看板の、道の駅で長年愛される手作り惣菜店 。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/CvNGkLvWQDmp9tgP7"
     },
 
     { 
@@ -438,9 +499,11 @@
             [[]]  // 暫定
         ],
         closedText: "調査中",
+        description:"富山エリアで新鮮な肉とホルモン焼きを提供する、地域コミュニティに密着した焼肉店。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.instagram.com/deguchihorumon708/"
+        sns: "https://www.instagram.com/deguchihorumon708/",
+        mapUrl: "https://maps.app.goo.gl/6VGkn31fpfKMdH917"
     },
 
     { 
@@ -456,9 +519,11 @@
             [["11:00", "15:00"], ["17:00", "22:00"]]  // 土
         ],
         closedText: "水曜",
+        description:"前菜盛り合わせからハモの特製ウニソース揚げまで、和洋折衷のこだわりコース料理も味わえる本格蕎麦処 。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/QizHWNor7KHPX3oM6"
     },
     
     { 
@@ -474,9 +539,11 @@
             [["11:00", "15:30"],["17:00", "21:00"]]  // 土
         ],
         closedText: "火曜",
+        description:"日本初のさんが焼専門店として、無添加の海鮮とオリジナル「さんが出汁」の特製麺を提供する革新的な店舗 。",
         updatedAt: "2026/03/03",
         website: "https://www.aokura-sanga.com/",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/ru96iY5oTLVnaDjf6"
     },
 
     { 
@@ -492,9 +559,11 @@
             [["17:30", "21:00"]]  // 土
         ],
         closedText: "火曜・水曜",
+        description:"岩井海岸近くの一軒家で、名物の「漬けハマグリ」や充実した一品料理をくつろぎながら味わえる寿司店 。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/QztBDxskuqadm5tk6"
     },
 
     { 
@@ -510,9 +579,11 @@
             [["11:00", "20:00"]]  // 土
         ],
         closedText: "水・木・金曜",
+        description:"太東ビーチを望む絶景テラスで、名物「海プリン」や海鮮を楽しめる、サーファーが集うカフェバー 。",
         updatedAt: "2026/03/03",
         website: "https://taito-namioto.com/",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/SazL3HUaJ3PAKjqR8"
     },
 
     { 
@@ -528,9 +599,11 @@
             [["10:00", "16:00"]]  // 土
         ],
         closedText: "火・水曜",
+        description:"小さなコテージを改装した手作りの空間で、こだわりのコーヒーと地元野菜のスープ、素朴なパンを味わえるカフェ 。",
         updatedAt: "2026/03/03",
         website: "http://wadapan.com/",
-        sns: "https://www.instagram.com/wadapan215/"
+        sns: "https://www.instagram.com/wadapan215/",
+        mapUrl: "https://maps.app.goo.gl/NSWxwZd1G6ybmKE9A"
     },
 
     { 
@@ -546,9 +619,11 @@
             [["11:00", "14:00"], ["18:00", "22:00"]]  // 土
         ],
         closedText: "火曜",
+        description:"和田エリアで昼夜問わず地元住民に親しまれている、ボリューム満点でメニュー豊富な中華料理店。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/QBTW3KbgD2rEGv13A"
     },
 
     { 
@@ -564,9 +639,11 @@
             [["17:00", "20:30"]]  // 土
         ],
         closedText: "水曜",
+        description:"和田エリアで夜営業を中心とし、地域住民の宴会や特別な日の食事に利用されるこだわりのうなぎと和食の店。",
         updatedAt: "2026/03/03",
         website: "https://unajin.owst.jp/",
-        sns: "https://www.instagram.com/unajin.official/"
+        sns: "https://www.instagram.com/unajin.official/",
+        mapUrl: "https://maps.app.goo.gl/2RbziYDzHVmZQhgQ9"
     },
     
     { 
@@ -582,9 +659,11 @@
             [["07:00", "17:00"]]  // 土
         ],
         closedText: "無休",
+        description:"和田エリアで早朝から夕方まで通し営業を行い、地元民の朝食やランチを支える地域密着型のベーカリー 。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/Bx8TdHDPH57XUeTC7"
     },
 
     { 
@@ -600,9 +679,11 @@
             []                    // 土(定休)
         ],
         closedText: "金曜以外（金曜以外は予約制）",
+        description:"自家製酵母と自社畑の小麦・柑橘類を使用し、金曜のみ営業する徹底した品質至上主義のマイクロクラフトベーカリー 。",
         updatedAt: "2026/03/03",
         website: "https://kujikaoven.handcrafted.jp/",
-        sns: "https://www.instagram.com/kujikatheoven/"
+        sns: "https://www.instagram.com/kujikatheoven/",
+        mapUrl: "https://maps.app.goo.gl/wiVAqhCQBueDgPrB8"
     },
 
     { 
@@ -618,9 +699,11 @@
             [["09:00", "18:00"]]  // 土
         ],
         closedText: "月曜（祝日の場合は翌火曜）",
+        description:"和田浦の捕鯨文化を映す「くじら饅頭」や名物「さざえ最中」など、遊び心溢れる房州銘菓を創造する和菓子店 。",
         updatedAt: "2026/03/03",
         website: "https://boso-seieido.com/",
-        sns: "https://www.facebook.com/sazae.monaka/?locale=ja_JP"
+        sns: "https://www.facebook.com/sazae.monaka/?locale=ja_JP",
+        mapUrl: "https://maps.app.goo.gl/WvfSGAkqmuA33xQ59"
     },
 
     { 
@@ -636,9 +719,11 @@
             [["10:30", "17:00"]]  // 土
         ],
         closedText: "月曜・火曜（不定休あり）",
+        description:"ヘミングウェイの世界観と千倉の海を重ね、名物「サザエカレー」と自家製ケーキでスローな時間を過ごせる喫茶店 。",
         updatedAt: "2026/03/03",
         website: "https://www.sandcafe.jp/sandcafe/",
-        sns: "https://www.facebook.com/sandcafe.chikura/?locale=ja_JP"
+        sns: "https://www.facebook.com/sandcafe.chikura/?locale=ja_JP",
+        mapUrl: "https://maps.app.goo.gl/s6XPA645yYWLb2QX6"
     },
 
     { 
@@ -654,9 +739,11 @@
             [["18:00", "23:00"]]  // 土
         ],
         closedText: "水曜",
+        description:"千倉エリアの夜を彩り、地元客がアットホームな雰囲気で杯を交わす、地域住民の憩いの場となる居酒屋。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.instagram.com/wagaya_1223/"
+        sns: "https://www.instagram.com/wagaya_1223/",
+        mapUrl: "https://maps.app.goo.gl/absz5QsxCHFshiU2A"
     },
 
     { 
@@ -672,9 +759,11 @@
             [["18:00", "21:00"]]  // 土
         ],
         closedText: "無休",
+        description:"千倉の地元住民が日常的に集い、新鮮な海産物と酒を気軽に楽しむことができる地域密着型の居酒屋。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/rAf9Cmj2nJr4im4w9"
     },
     
     { 
@@ -690,9 +779,11 @@
             []                    // 土
         ],
         closedText: "水曜（他、木曜など不定休あり）",
+        description:"築100年の古民家風空間で、高品質な自家焙煎スペシャルティコーヒーと自家製バスクチーズケーキを味わえる隠れ家ロースタリー。",
         updatedAt: "2026/03/03",
         website: "https://ichinoyatocoffee.com/",
-        sns: "https://www.instagram.com/ichinoyatocoffee/"
+        sns: "https://www.instagram.com/ichinoyatocoffee/",
+        mapUrl: "https://maps.app.goo.gl/Nx8CGvYD5mFWtC5dA"
     },
 
     { 
@@ -708,9 +799,11 @@
             []                    // 土(定休)
         ],
         closedText: "木～日曜（※月・火・水のみ営業）",
+        description:"月・火・水の週3日限定営業で、小型犬同伴可能なアットホームな空間にて手作りスイーツを提供するプライベート感溢れるカフェ。",
         updatedAt: "2026/03/03",
         website: "https://cafemotto.jimdofree.com/",
-        sns: "https://www.instagram.com/cafe_motto/"
+        sns: "https://www.instagram.com/cafe_motto/",
+        mapUrl: "https://maps.app.goo.gl/hjdRrao9kYBxXEkW8"
     },
 
     { 
@@ -726,9 +819,11 @@
             [["08:00", "18:30"]]  // 土
         ],
         closedText: "木曜",
+        description:"南房総特産の食用花「キンセンカ」を散りばめた「花ふわり」など、和と洋を融合させたこだわりの手作りスイーツを届ける老舗菓子店。",
         updatedAt: "2026/03/03",
         website: "https://www.komaso.jp/",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/brdkmpLPHcEsvkG77"
     },
 
     { 
@@ -744,9 +839,11 @@
             [["18:00", "23:00"]]  // 土
         ],
         closedText: "不定休",
+        description:"千倉の海辺に合う洋風の店内で、無煙ロースターを使用し、臭みのない新鮮な豚ホルモンや特製もつ煮をソムリエ厳選ワインと楽しむ専門店。",
         updatedAt: "2026/03/03",
         website: "https://ohana-horumon.com/",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/3uihycz2WYZVr3hv5"
     },
 
     { 
@@ -762,9 +859,11 @@
             ["17:00","22:00"]  // 土
         ],
         closedText: "臨時休業",
+        description:"南房総の地魚や自家菜園野菜を使った創作和食に加え、先代直伝スープの特製ラーメンや錦爽どりの唐揚げが絶品の地元密着型居酒屋。",
         updatedAt: "2026/03/03",
         website: "https://moheji-chikura.com/",
-        sns: "https://www.instagram.com/moheji20190902/"
+        sns: "https://www.instagram.com/moheji20190902/",
+        mapUrl: "https://maps.app.goo.gl/tgiErjoqhdzkFmGs8"
     },
 
     { 
@@ -780,9 +879,11 @@
             [["18:00", "20:00"]]  // 土
         ],
         closedText: "無休、要予約",
+        description:"利酒師の板長が厳選した酒と共に、旬の地魚を用いた豪華な舟盛りや、赤酢のシャリで丹念に握るこだわりの本格江戸前寿司を堪能できる割烹。",
         updatedAt: "2026/03/03",
         website: "https://g-kotobuki.net/cuisine/",
-        sns: "https://www.instagram.com/ginrinso_kotobuki/"
+        sns: "https://www.instagram.com/ginrinso_kotobuki/",
+        mapUrl: "https://maps.app.goo.gl/ZFihDXuL2ZLLHbC6A"
     },
 
     { 
@@ -798,9 +899,11 @@
             [["11:30", "14:30"]]  // 土
         ],
         closedText: "月曜・火曜",
+        description:"千倉の新鮮な魚介と郷土料理に徹底してこだわり、日本酒やワインと合わせて本格的な魚料理をゆったりと楽しめる海鮮食事処。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/SzYyrRiKQsecgNQ27"
     },
 
     { 
@@ -816,9 +919,11 @@
             [["11:00", "15:00"], ["17:00", "20:00"]]  // 土
         ],
         closedText: "月曜日",
+        description:"植物性素材を活用したヴィーガン対応のモダンアジアンコースや、こだわりの手作り餃子を提供する三芳エリアの革新的なアジア料理店。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/cTjfUernUTU6dEbK7"
     },
 
     { 
@@ -834,9 +939,11 @@
             [["12:00", "17:00"]]  // 土
         ],
         closedText: "火曜・水曜・木曜（※要SNS確認）",
+        description:"週末を中心に営業し、SNS発信を基盤として富山の豊かな自然に囲まれた洗練された空間で特別な時間を提供するデザインカフェ。",
         updatedAt: "2026/03/03",
         website: "https://www.instagram.com/tasukake_jp/",
-        sns: "https://tasukake.online/?srsltid=AfmBOoo-Xqwae0bk4IgkAn-IwjD4VhRiAEYiK6bWCO5HL9y-J6S8Zr5d"
+        sns: "https://tasukake.online/?srsltid=AfmBOoo-Xqwae0bk4IgkAn-IwjD4VhRiAEYiK6bWCO5HL9y-J6S8Zr5d",
+        mapUrl: "https://maps.app.goo.gl/Wg8zUYGTVzJfoW4a9"
     },
 
     { 
@@ -852,9 +959,11 @@
             []
         ],
         closedText: "休業中",
+        description:"丸山地区ののどかな自然環境の中に佇む、ギャラリーを併設したくつろぎのカフェ空間（※現在は休業中）。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/SPKa5Ze2epzwJS1H8"
     },
     
     { 
@@ -870,9 +979,11 @@
             [["11:00", "14:00"], ["17:00", "20:00"]]  // 土
         ],
         closedText: "水曜",
+        description:"道の駅至近に位置し、多様な海鮮メニューや定食で地元住民から観光客まで幅広い層の胃袋を満たす、三芳エリア屈指の人気大衆食堂。",
         updatedAt: "2026/03/03",
-        website: "https://example.com",
-        sns: "https://www.instagram.com/chindonya_boso/"
+        website: "",
+        sns: "https://www.instagram.com/chindonya_boso/",
+        mapUrl: "https://maps.app.goo.gl/gmmkLQhafaQLJ3Wx9"
     },
 
     { 
@@ -888,9 +999,11 @@
             [["11:30", "15:00"], ["17:00", "19:00"]]  // 土
         ],
         closedText: "水曜日",
+        description:"豚骨・鶏ガラ・煮干しの栄養満点スープと自家製とろけるチャーシューが乗った具だくさん「五目ラーメン」が名物の国道127号沿い中華店。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/hjsyG8chSk1uNK1Q8"
     },
 
     { 
@@ -906,9 +1019,11 @@
             [["10:00", "16:00"]]  // 土
         ],
         closedText: "年中無休（※年数回休業あり）",
+        description:"自社工場で作る名物「枇杷ソフト」やオリジナル「枇杷カレー」など、特産の房州びわを贅沢に使ったメニューを花畑の景色と共に楽しむカフェ。",
         updatedAt: "2026/03/03",
         website: "https://www.biwakurabu.jp/eat/index.html",
-        sns: "https://www.instagram.com/biwakurabu/"
+        sns: "https://www.instagram.com/biwakurabu/",
+        mapUrl: "https://maps.app.goo.gl/ue4qpk3iVUmQnTeS7"
     },
 
     { 
@@ -924,9 +1039,11 @@
             [["10:00", "22:00"]]  // 土
         ],
         closedText: "無休（※店舗要確認）",
+        description:"朝10時から夜22時までの無休・通し営業という圧倒的な利便性で、安定した中華メニューを提供し富浦の地域生活を支える食堂。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/vvP21cH6pEGDkDfE8"
     },
 
     { 
@@ -942,9 +1059,11 @@
             [["10:30", "15:00"]]  // 土
         ],
         closedText: "木曜・金曜",
+        description:"雑貨店を併設し、こだわりのランチやカフェメニューを洗練されたおしゃれな空間でゆったりと楽しめる、富浦の隠れ家的ダイニングカフェ。",
         updatedAt: "2026/03/03",
         website: "https://le-risa.com/",
-        sns: "https://www.instagram.com/explore/locations/644021539/lerisa/"
+        sns: "https://www.instagram.com/explore/locations/644021539/lerisa/",
+        mapUrl: "https://maps.app.goo.gl/6aAFqh2rT2XztTCB7"
     },
 
     { 
@@ -960,9 +1079,11 @@
             [["10:00", "17:00"]]  // 土
         ],
         closedText: "年中無休",
+        description:"カリフォルニア直輸入のスクールバスを店舗とし、厳選素材の手作りパティを使用した本格バーガーを愛犬と共に楽しめるアメリカンダイナー。",
         updatedAt: "2026/03/03",
         website: "https://www.romisocean.com/",
-        sns: "https://www.instagram.com/romis_company/"
+        sns: "https://www.instagram.com/romis_company/",
+        mapUrl: "https://maps.app.goo.gl/Fi92dG3kL4Kh99T1A"
     },
 
     { 
@@ -978,9 +1099,11 @@
             [["10:30", "15:30"]]  // 土
         ],
         closedText: "水曜",
+        description:"地元の新鮮な魚介定食や、富浦名物の郷土料理「イカメンチ」などを提供し、海の幸を気軽に存分に味わえる大衆海鮮食堂。",
         updatedAt: "2026/03/03",
         website: "https://ohyakusyou.com/ikamenchi/",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/q7ojtiyCELmPG4Qo9"
     },
 
     { 
@@ -996,9 +1119,11 @@
             [["11:00", "15:00"]]  // 土
         ],
         closedText: "火曜(祝日は営業)",
+        description:"漁業協同組合直営の強みを活かし、その日水揚げされた極めて鮮度の高い地魚を売り切れ御免で提供する、行列必至の超人気海鮮食堂。",
         updatedAt: "2026/03/03",
         website: "https://tairyou.com/eat/",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/vWpbPto42KwRnjoG9"
     },
 
     { 
@@ -1014,9 +1139,11 @@
             [["09:00", "19:00"]]  // 土
         ],
         closedText: "水曜日",
+        description:"商店街の洗練された店構えで、黒ゴマやベルギー産チョコを使った種類豊富な手作りパンやケーキ、和菓子を提供する地域密着のベーカリー。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/xyHuxuBvnGt2KPMn9"
     },
 
     { 
@@ -1032,9 +1159,11 @@
             [["09:00", "17:00"]]  // 土
         ],
         closedText: "原則無休（10〜2月は17時まで）",
+        description:"道の駅「鄙の里」内にあり、行列のできる名物「ビンゴバーガー」や地元食材の惣菜、大判焼きなどをテイクアウトで気軽に楽しめる施設。",
         updatedAt: "2026/03/03",
         website: "https://www.hinanosato.jp/eat/",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/ifex77m1rw2aGgwi9"
     },
     
     { 
@@ -1050,9 +1179,11 @@
             [["11:00", "15:00"], ["17:00", "21:00"]]  // 土
         ],
         closedText: "水曜・木曜（金曜は夜のみ・基本予約制）",
+        description:"週末を中心とした営業形態で、厳選された地元食材を用いた本格的なピザやイタリア料理を落ち着いた空間で提供する完全予約制のレストラン。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.instagram.com/hiro.pizze/"
+        sns: "https://www.instagram.com/hiro.pizze/",
+        mapUrl: "https://maps.app.goo.gl/GaRyTXKXum6AQ16G8"
     },
 
     { 
@@ -1068,9 +1199,11 @@
             [["09:00", "18:00"]]  // 土
         ],
         closedText: "火曜・水曜",
+        description:"三芳エリアの自然に根ざし、伝統的な製法を守りながらも地元食材を取り入れた、季節感あふれる美しい和菓子を提供する専門店。",
         updatedAt: "2026/03/03",
         website: "https://www.kameya-nagusa.com/",
-        sns: "https://www.instagram.com/kameyanagusa/"
+        sns: "https://www.instagram.com/kameyanagusa/",
+        mapUrl: "https://maps.app.goo.gl/i21RB8M295pGdThp8"
     },
 
     { 
@@ -1086,9 +1219,11 @@
             []
         ],
         closedText: "調査中",
+        description:"三芳地区の農園でその時期に採れた旬の野菜や地元食材をふんだんに使用し、季節ごとの豊かな郷土料理を提供する農村レストラン。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.instagram.com/tanoshiinouen/"
+        sns: "https://www.instagram.com/tanoshiinouen/",
+        mapUrl: "https://maps.app.goo.gl/YPfHmjqZ7Xm7coT47"
     },
 
     { 
@@ -1104,9 +1239,11 @@
             [["11:00", "17:00"]]  // 土
         ],
         closedText: "月〜金曜（※土日のみ営業）",
+        description:"土日のみの週末限定営業で、三芳ののどかな田園風景の中で都会の喧騒から離れてリラックスできる、居心地の良い古民家風カフェ。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/Q6CGjLniGTD5AvQj7"
     },
 
     { 
@@ -1122,9 +1259,11 @@
             [["17:00", "22:00"]]  // 土
         ],
         closedText: "月曜（基本予約制）",
+        description:"完全予約制にて夜の時間帯を中心に営業し、地元の薬草や厳選食材を用いた本格的かつ健康志向の薬膳料理を提供する隠れ家レストラン。",
         updatedAt: "2026/03/03",
         website: "https://inukakeyakuzen.wixsite.com/my-site-1/projects-7",
-        sns: "https://www.instagram.com/inukake_yakuzen/"
+        sns: "https://www.instagram.com/inukake_yakuzen/",
+        mapUrl: "https://maps.app.goo.gl/VSn6whv4Kt2hnRTH6"
     },
 
     { 
@@ -1140,9 +1279,11 @@
             [["11:00", "14:00"], ["17:00", "19:30"]]  // 土
         ],
         closedText: "木曜",
+        description:"富山エリアで長きにわたり愛され、昼夜の二部制営業で安定した味わいのラーメンやボリューム満点の中華定食を提供する老舗中華店。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.facebook.com/bheikan/?locale=ja_JP"
+        sns: "https://www.facebook.com/bheikan/?locale=ja_JP",
+        mapUrl: "https://maps.app.goo.gl/SnvJYdzhY6kXsahB8"
     },
 
     { 
@@ -1158,9 +1299,11 @@
             ["11:00", "14:00"]  // 土
         ],
         closedText: "平日",
+        description:"ニンニクと玉ねぎの甘み、キムチの酸味が調和したピリ辛醤油スープと大判豚バラ肉が絶妙な、週末（土日）限定営業のこだわりラーメン店。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/qB9R4q9VdV8t7hqY8"
     },
 
     { 
@@ -1176,9 +1319,11 @@
             [["08:30", "18:00"]]  // 土
         ],
         closedText: "無休（道の駅 富楽里とみやまに準ずる）",
+        description:"道の駅「富楽里とみやま」の営業に準じ、南房総名物の「さんが焼き」をはじめとする伝統的な郷土料理や蕎麦を無休で提供する食事処。",
         updatedAt: "2026/03/03",
         website: "https://www.aokura-sanga.com/tomiyama",
-        sns: "https://www.instagram.com/aokura_sangayaki/"
+        sns: "https://www.instagram.com/aokura_sangayaki/",
+        mapUrl: "https://maps.app.goo.gl/1QfGht5yyqoX5YPT9"
     },
 
     { 
@@ -1194,9 +1339,11 @@
             [["10:00", "15:00"]]  // 土
         ],
         closedText: "不定休（完全予約制）",
+        description:"江戸時代から続く築300年の農家で、平飼いの自家製「じろえむ卵」やその日畑で採れた無農薬野菜の「お任せ御膳」を味わう完全予約制レストラン。",
         updatedAt: "2026/03/03",
         website: "https://jiroemu15.com/",
-        sns: "https://www.instagram.com/jiroemu15/"
+        sns: "https://www.instagram.com/jiroemu15/",
+        mapUrl: "https://maps.app.goo.gl/2WDEnxW7ZrTzLZmc9"
     },
 
     { 
@@ -1212,9 +1359,11 @@
             [["11:00", "14:00"], ["17:00", "20:00"]]  // 土
         ],
         closedText: "不定休（SNS要確認）",
+        description:"富山エリアに位置し、昼夜営業とSNSを通じた積極的な発信を行いながら、地元客に愛されるアットホームで温かい定食を提供する食事処。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.instagram.com/oshokuji.shinbe/?hl=ja"
+        sns: "https://www.instagram.com/oshokuji.shinbe/?hl=ja",
+        mapUrl: "https://maps.app.goo.gl/bwbnRXFuFpAx5B1G6"
     },
     
     { 
@@ -1230,9 +1379,11 @@
             [["11:00", "17:00"]]  // 土
         ],
         closedText: "火曜・水曜",
+        description:"天然石や夏期の大クワガタ展示を併設し、ラーメンも提供する異色のエンタメ系カフェ空間",
         updatedAt: "2026/03/03",
         website: "http://www.banriho.co.jp/store/morino_table.html",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/JeARjtBUeoEmD7fS6"
     },
 
     { 
@@ -1248,9 +1399,11 @@
             [["11:00", "20:00"]]  // 土
         ],
         closedText: "月曜",
+        description:"月曜定休で昼夜問わず富山エリアの日常食を支える、地域密着型のオーソドックスな定食店",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/5a4q1ZNtx7Rb6U5B9"
     },
 
     { 
@@ -1266,9 +1419,11 @@
             ["11:30", "14:00"], // 土
         ],
         closedText: "月曜・火曜",
+        description:"スチコンで焼き上げる特製ポークハンバーグと肉厚アジフライが絶品の地元密着型洋食店",
         updatedAt: "2026/03/03",
         website: "https://hegurihub.com/eatery/",
-        sns: "https://www.instagram.com/gohanyaiyo/"
+        sns: "https://www.instagram.com/gohanyaiyo/",
+        mapUrl: "https://maps.app.goo.gl/Yn7Cunhd1rgakyib7"
     },
 
     { 
@@ -1284,9 +1439,11 @@
             [["11:30", "14:30"], ["17:00", "20:00"]]  // 土
         ],
         closedText: "火曜",
+        description:"芝麻醤を使わない独特な進化を遂げた「タンタンメン」が一部で熱狂的な話題を呼ぶ老舗食堂",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.facebook.com/boso.wakou/?locale=ja_JP"
+        sns: "https://www.facebook.com/boso.wakou/?locale=ja_JP",
+        mapUrl: "https://maps.app.goo.gl/7G4PqKmqqqUm5DGe6"
     },
 
     { 
@@ -1302,9 +1459,11 @@
             []  // 土
         ],
         closedText: "SNSにて告知",
+        description:"定休日の概念を持たず、営業日をSNSでのみ告知する丸山エリアのミステリアスな隠れ家カフェ",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.instagram.com/momijinote/"
+        sns: "https://www.instagram.com/momijinote/",
+        mapUrl: "https://maps.app.goo.gl/xstXDFBkmfDzsffQ7"
     },
 
     { 
@@ -1320,9 +1479,11 @@
             [["08:30", "18:00"]]  // 土
         ],
         closedText: "無休（道の駅 富楽里とみやまに準ずる）",
+        description:"道の駅に準じた無休体制で、本格的な和牛の旨味を手軽に堪能できる専門店舗",
         updatedAt: "2026/03/03",
-        website: "https://example.com",
-        sns: "https://www.instagram.com/furari_kosiba/"
+        website: "",
+        sns: "https://www.instagram.com/furari_kosiba/",
+        mapUrl: "https://maps.app.goo.gl/PhkoFdbG5jDXd5GA6"
     },
 
     { 
@@ -1338,9 +1499,11 @@
             [["11:45", "16:00"]]  // 土
         ],
         closedText: "月～木曜",
+        description:"丸山の長閑な風景に溶け込む、金・土・日のみ営業を行い風情ある空間を提供する古民家蕎麦店",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/KV4VuTuaY26EQPRYA"
     },
 
     { 
@@ -1356,9 +1519,11 @@
             [["11:00", "13:45"]]  // 土
         ],
         closedText: "水曜（現在はランチのみ）",
+        description:"肉厚で食べ応え抜群の高級銘柄「岩中ポーク」を贅沢に使用したヒレカツが名物の専門店",
         updatedAt: "2026/03/03",
         website: "https://ittenbari-minamiboso.jimdosite.com/",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/x6NykcmFjyyew3CZ8"
     },
 
     { 
@@ -1374,9 +1539,11 @@
             [["11:00", "13:30"]]  // 土
         ],
         closedText: "木曜・金曜",
+        description:"木・金曜定休でランチタイムのみ稼働し、サクサクの絶妙な揚げ具合にこだわる豚カツ店",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/VJVzUbhjuHeaGKkf9"
     },
 
     { 
@@ -1392,9 +1559,11 @@
             [["11:30", "16:00"]]  // 土
         ],
         closedText: "火曜・水曜・木曜",
+        description:"無農薬野菜や天日干し玄米を用い、海辺の風を感じながら楽しむオーガニック・ヴィーガンカフェ",
         updatedAt: "2026/03/03",
         website: "https://shinos5.wixsite.com/chiisanaouchi",
-        sns: "https://www.instagram.com/chiisanaouchi55/"
+        sns: "https://www.instagram.com/chiisanaouchi55/",
+        mapUrl: "https://maps.app.goo.gl/gjNiYyVWwyoA54RY6"
     },
     
     { 
@@ -1410,9 +1579,11 @@
             [["09:00", "17:00"]]  // 土
         ],
         closedText: "無休（道の駅ローズマリー公園内）",
+        description:"道の駅内で南房総名物「くじらめし」や豪快な海鮮タワー丼を堪能できる鮮魚丼専門店",
         updatedAt: "2026/03/03",
         website: "https://www.hanamaruichiba.com/totomaru/",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/MBDJFz63PThDUU3v6"
     },
 
     { 
@@ -1428,9 +1599,11 @@
             [["17:30", "21:00"]]  // 土
         ],
         closedText: "水曜・木曜",
+        description:"オーシャンビューを背景に、地元産の新鮮な鯵を使った手作りの「さんが焼き」を味わえる店",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/rEhd3nMUr1sTJ4My6"
     },
 
     { 
@@ -1446,9 +1619,11 @@
             [["11:00","14:00"],["17:30","21:00"]]  // 土
         ],
         closedText: "月曜",
+        description:"圧倒的ボリュームのアナゴ丼や新鮮な地魚定食で、サーファーや若者から絶大な支持を集める和食処",
         updatedAt: "2026/03/03",
-        website: "https://example.com",
-        sns: "https://r.goope.jp/gyosaku/"
+        website: "",
+        sns: "https://r.goope.jp/gyosaku/",
+        mapUrl: "https://maps.app.goo.gl/9QkFHet6NwB9hRMi7"
     },
 
     { 
@@ -1464,9 +1639,11 @@
             [["08:30", "15:30"], ["17:00", "22:00"]]  // 土
         ],
         closedText: "火曜・水曜（木曜はランチのみ、土日は8:30〜）",
+        description:"本格的なアジア料理から名物スイーツ「バナナスプリット」まで楽しめる広々としたダイナー",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.instagram.com/sunriseshell07/"
+        sns: "https://www.instagram.com/sunriseshell07/",
+        mapUrl: "https://maps.app.goo.gl/2tNHuTjtPy7w5TPZ8"
     },
 
     { 
@@ -1482,9 +1659,11 @@
             [["11:00", "14:30"], ["17:00", "21:30"]]  // 土
         ],
         closedText: "木曜（祝日の場合は営業）",
+        description:"代名詞たる「天然マグロの中トロ」と幻のシマアジなど旬の地魚を握る本格派の老舗寿司店",
         updatedAt: "2026/03/03",
         website: "https://mihamazushi.com/",
-        sns: "https://www.instagram.com/sushi_mihama/"
+        sns: "https://www.instagram.com/sushi_mihama/",
+        mapUrl: "https://maps.app.goo.gl/yeNbCpdbgpjLgUMq6"
     },
 
     { 
@@ -1500,9 +1679,11 @@
             [["11:30", "14:00"], ["17:00", "20:00"]]  // 土
         ],
         closedText: "水曜（ディナーは要予約）",
+        description:"房総フラワーライン沿いで、シェフが目の前で焼き上げる臨場感抜群の鉄板焼きディナーを提供する名店",
         updatedAt: "2026/03/03",
         website: "https://nishikitei2024.wixsite.com/nishikitei",
-        sns: "https://instagram.com/example"
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/pXHjDXHLTp7ZVYgJ8"
     },
 
     { 
@@ -1518,9 +1699,11 @@
             [["10:30", "15:00"]]  // 土
         ],
         closedText: "月〜金曜（土日のみ営業）",
+        description:"犬連れ可能なテラス席を備え、市原市から通うご夫婦が土日限定で打つ秘境の「里山そば」",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/GRG1A1n4Es3N2u2z8"
     },
 
     { 
@@ -1536,14 +1719,16 @@
             [["11:30", "19:00"]]  // 土
         ],
         closedText: "水曜・日曜",
+        description:"だしの効いた絶品麺つゆと、ボリューム満点の丼物・そばセットが地元住民に愛される老舗蕎麦処",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/adLQDbXNwDw6eAfH7"
     },
 
     { 
         id: 79, name: "日本料理 綱元 だいあみ", genre: "海鮮・シーフード🦐", area: "白浜", 
-        lat: 34.904177, lng: 138.888029,
+        lat: 34.904177, lng: 139.888029,
         hours: [
             [], // 日
             [], // 月
@@ -1554,9 +1739,11 @@
             []  // 土
         ],
         closedText: "臨時休業",
+        description:"白浜の豊かな海鮮資源を活かした本格的な日本料理を提供する、現在臨時休業中の割烹",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/74BkSHuCp9UxYqBM9"
     },
 
     { 
@@ -1572,9 +1759,11 @@
             [["09:00", "17:00"]]  // 土
         ],
         closedText: "火曜",
+        description:"白浜エリアで農の恵みと焼きたてパンの豊かなマリアージュを提供するコンシェルジュ型カフェ",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/PjjDQatpojrrDUQu8"
     },
     
     { 
@@ -1590,9 +1779,11 @@
             [["17:00", "21:00"]]  // 土
         ],
         closedText: "水曜",
+        description:"絶品と謳われる「大山地鶏のたたき」を肴に、白浜の夜を彩る地元密着型の人気居酒屋",
         updatedAt: "2026/03/03",
-        website: "https://www.awashirahama.com/nagao/dining/index.html",
-        sns: "https://www.facebook.com/BAR.DEL.MAR.SHIRAHAMA/"
+        website: "",
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/ug9fR9oN5WAmK2hn9"
     },
 
     { 
@@ -1608,9 +1799,11 @@
             [["11:00", "14:00"], ["18:00", "20:00"]]  // 土
         ],
         closedText: "水曜",
+        description:"新鮮な魚介とソーセージが器いっぱいに敷き詰められた絶品パエリアが名物の本格派スペインバル",
         updatedAt: "2026/03/03",
-        website: "https://example.com",
-        sns: "https://instagram.com/example"
+        website: "https://www.awashirahama.com/nagao/dining/index.html",
+        sns: "https://www.facebook.com/BAR.DEL.MAR.SHIRAHAMA/",
+        mapUrl: "https://maps.app.goo.gl/E3j69KPjFYLqkE7M8"
     },
 
     { 
@@ -1626,9 +1819,11 @@
             [["11:00", "17:00"]]  // 土
         ],
         closedText: "木曜",
+        description:"パエリアから自家製あんバタークロワッサンまで、多彩な洋食とスイーツが揃う憩いの空間",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.instagram.com/blutos_cafe/"
+        sns: "https://www.instagram.com/blutos_cafe/",
+        mapUrl: "https://maps.app.goo.gl/FdjCn93t9k3k9JL48"
     },
 
     { 
@@ -1644,9 +1839,11 @@
             [["08:00", "20:00"]]  // 土
         ],
         closedText: "月〜金曜（土日のみ営業）",
+        description:"その名の通り週末の白浜でのみ暖簾を掲げ、朝8時から通し営業で和食を提供する限定食堂",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/1StHLK8CB98rdWja7"
     },
 
     { 
@@ -1662,9 +1859,11 @@
             [["11:00", "14:00"], ["17:00", "21:00"]]  // 土
         ],
         closedText: "月曜(祝日の場合営業)・火曜、ディナー要予約",
+        description:"里見伏姫牛や朝採れ野菜など、南房総の食材でイタリア各州の郷土料理を表現する星付きシェフの店",
         updatedAt: "2026/03/03",
         website: "https://osteriailfaro.webu.jp/",
-        sns: "https://www.instagram.com/osteria_ilfaro/"
+        sns: "https://www.instagram.com/osteria_ilfaro/",
+        mapUrl: "https://maps.app.goo.gl/BBwwKxAGRXddaUaJ6"
     },
 
     { 
@@ -1680,9 +1879,11 @@
             [["10:30", "17:00"]]  // 土
         ],
         closedText: "水曜・木曜",
+        description:"太平洋を一望しつつ、房州産天草を100%使用した手作り寒天のあんみつに癒される甘味処",
         updatedAt: "2026/03/03",
         website: "https://sites.google.com/view/shirahamaiidaya/",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/nbAwxLdszJSiGMLN8"
     },
 
     { 
@@ -1698,9 +1899,11 @@
             [["11:00", "20:30"]]  // 土
         ],
         closedText: "火・水曜（ウェブサイト要確認）",
+        description:"野島崎灯台周辺の観光地において、新鮮な地魚をふんだんに使った「地魚にぎり」が人気を集める老舗",
         updatedAt: "2026/03/03",
         website: "https://nojimazusi.jimdofree.com/",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/wKKdFiR2P4QpEWVY7"
     },
 
     { 
@@ -1716,9 +1919,11 @@
             [["19:30", "00:00"]]  // 土
         ],
         closedText: "月曜",
+        description:"白浜の夜更けを彩る、深夜0時まで営業し地元コミュニティの社交場として機能するナイトスナック",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/z5ntgoxyNmoSDFEV8"
     },
 
     { 
@@ -1734,9 +1939,11 @@
             [["11:00", "15:00"]]  // 土
         ],
         closedText: "不定休",
+        description:"刺身盛り合わせと煮魚が同時に楽しめる豪華な「おすすめ定食」やアジのなめろうが名物の食堂",
         updatedAt: "2026/03/03",
         website: "https://www.shodaimaru.com/content2.html",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/j4rA2YW1X52c2Ln6A"
     },
 
     { 
@@ -1752,9 +1959,11 @@
             [[], []]  // 土
         ],
         closedText: "調査中",
+        description:"白浜エリアに位置し、今後の展開や詳細な名物料理の発掘が待たれる現在調査中の定食店",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/Xi9RguMrjXSM56HW8"
     },
     
     { 
@@ -1770,9 +1979,11 @@
             [["11:00", "16:00"]]  // 土
         ],
         closedText: "不定休",
+        description:"白浜の海辺で長年親しまれる、地元密着型の心温まる定番定食食堂。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/ASkanhkgGg7yVvhP6"
     },
 
     { 
@@ -1788,9 +1999,11 @@
             [["11:00", "14:00"], ["16:00", "19:00"]]  // 土
         ],
         closedText: "不定休",
+        description:"弾力のある食感の絶品うなぎと、南房総ならではの大ぶりな地魚寿司を堪能できる和食処 。",
         updatedAt: "2026/03/03",
         website: "https://ghtz200.gorp.jp/",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/kLWU2fmKmQYH8pez6"
     },
 
     { 
@@ -1806,9 +2019,11 @@
             []  // 土
         ],
         closedText: "調査中",
+        description:"地域の日常的な食卓を支え続ける、素朴で味わい深いローカル定食店。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/uagcKfBybWQHW6cBA"
     },
 
     { 
@@ -1824,9 +2039,11 @@
             [["11:00", "15:00"]]  // 土
         ],
         closedText: "木曜",
+        description:"店内の生けすから揚げる鮮度抜群の「伊勢えび丸ごと一尾定食」が自慢の磯料理専門店 。",
         updatedAt: "2026/03/03",
         website: "https://www.sazaeya.com/",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/jNubJaBxSKc1gyzH6"
     },
 
     { 
@@ -1842,9 +2059,11 @@
             [["10:30","15:00"]]  //土
         ],
         closedText: "調査中",
+        description:"週末の昼下がりに白浜の潮風を感じながら、飾らない定番の味が楽しめるアットホームな定食店。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/CZzTWpnAdHbLFyZy8"
     },
 
     { 
@@ -1860,9 +2079,11 @@
             [["11:30", "13:00"], ["17:00", "20:00"]]  // 土
         ],
         closedText: "調査中",
+        description:"新鮮な海鮮丼や名物なめろう定食など、豊富な海の幸メニューで海辺の食欲を満たすお食事処 。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/LjJY3JRkdKWXGumV8"
     },
 
     { 
@@ -1878,9 +2099,11 @@
             [["11:30", "14:00"],["17:00", "22:00"]]  // 土
         ],
         closedText: "日曜",
+        description:"目の前に広がる太平洋の絶景とともに、ボリューム満点のあじづくし定食を味わえる海鮮居酒屋 。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.instagram.com/miharashi_tei/"
+        sns: "https://www.instagram.com/miharashi_tei/",
+        mapUrl: "https://maps.app.goo.gl/4vmm1ozwCs7oXfo87"
     },
 
     { 
@@ -1896,9 +2119,11 @@
             [["11:30", "14:00"], ["17:00", "22:00"]]  // 土
         ],
         closedText: "第3火曜定休、第2・第3木曜はランチ営業無し",
+        description:"伝統の磯料理と絶品さんが焼を提供し、特別な日にはアワビ・伊勢海老も味わえる完全予約対応の和食海鮮処 。",
         updatedAt: "2026/03/03",
         website: "https://mizurume.stars.ne.jp/",
-        sns: "https://www.facebook.com/Mizurume"
+        sns: "https://www.facebook.com/Mizurume",
+        mapUrl: "https://maps.app.goo.gl/SN3PYHC4dRxRCSyg7"
     },
 
     { 
@@ -1914,9 +2139,11 @@
             [["11:30", "15:00"], ["17:00", "22:00"]]  // 土
         ],
         closedText: "火曜",
+        description:"1日10食限定の完全予約制「うまアジづくし定食」で、南房総の漁師のこだわりを伝える海鮮処 。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/FgmCYMyVkBsKcTbo8"
     },
 
     { 
@@ -1932,9 +2159,11 @@
             [["11:00", "15:00"], ["17:00", "21:00"]]  // 土
         ],
         closedText: "月・火曜（SNS要確認）",
+        description:"南房総の海辺で誰もが気軽に立ち寄れる、洗練されたハンバーグと美味しいコーヒーの寛ぎカフェ 。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.instagram.com/hamburgcafe16/"
+        sns: "https://www.instagram.com/hamburgcafe16/",
+        mapUrl: "https://maps.app.goo.gl/8CCqHNHdf7SZfHF86"
     },
     
     { 
@@ -1950,9 +2179,11 @@
             [["10:30", "16:00"]]  // 土
         ],
         closedText: "木曜（月1回金曜休あり・スープ次第終了）",
+        description:"伊勢海老とはまぐりの旨味が凝縮された芳醇スープで、南房総のテロワールを表現する名物ラーメン店 。",
         updatedAt: "2026/03/03",
         website: "https://www.bousyuu-net.com/",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/5BvQKn28jWZdrXdk7"
     },
 
     { 
@@ -1968,9 +2199,11 @@
             [["11:00", "14:30"]]  // 土
         ],
         closedText: "火曜、臨時休業あり",
+        description:"クラシカルな竹岡式ラーメンの系譜を継ぎ、厚切りチャーシューと玉ねぎの甘みが調和する人気店 。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.instagram.com/ebisuya_chikura/?hl=ja"
+        sns: "https://www.instagram.com/ebisuya_chikura/?hl=ja",
+        mapUrl: "https://maps.app.goo.gl/QiBDj6s2t8ZAoda66"
     },
 
     { 
@@ -1986,9 +2219,11 @@
             [["11:00", "16:00"]]  // 土
         ],
         closedText: "不定休あり",
+        description:"千倉の海風を感じながら、肉汁溢れるボリューム満点の本格ハンバーガーにかぶりつけるダイナー。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.instagram.com/burger_first_1301/"
+        sns: "https://www.instagram.com/burger_first_1301/",
+        mapUrl: "https://maps.app.goo.gl/sc2v3Th5d9MsMaWt7"
     },
 
     { 
@@ -2004,9 +2239,11 @@
             [["10:00", "15:00"]]  // 土
         ],
         closedText: "火曜",
+        description:"無化調スープとブランド豚「東の匠」、そして「海老トマトつけ麺」で数々の賞に輝く新世代ラーメン店 。",
         updatedAt: "2026/03/03",
         website: "https://www.chikura-seisakusho.com/",
-        sns: "https://www.facebook.com/zatsuyoukakari/?locale=ja_JP"
+        sns: "https://www.facebook.com/zatsuyoukakari/?locale=ja_JP",
+        mapUrl: "https://maps.app.goo.gl/ytz5jk9gUzYskapp9"
     },
 
     { 
@@ -2022,9 +2259,11 @@
             [["11:00", "18:00"]]  // 土
         ],
         closedText: "月・火曜",
+        description:"千倉の穏やかな気候そのままに、静かな時間とこだわりの一杯を提供する隠れ家的カフェ 。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/GYJ2JnW4boiXJG9fA"
     },
 
     { 
@@ -2040,9 +2279,11 @@
             [["11:00", "14:00"]]  // 土
         ],
         closedText: "木曜、不定休あり（SNS要確認）",
+        description:"愛犬と一緒の店内で本格イタリアンと専用「わんこメニュー」を楽しめるドッグフレンドリーレストラン 。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.instagram.com/cucina_ca_na/"
+        sns: "https://www.instagram.com/cucina_ca_na/",
+        mapUrl: "https://maps.app.goo.gl/ikkSUosw4kkqRwDJA"
     },
 
     { 
@@ -2058,9 +2299,11 @@
             [["10:45", "20:00"]]  // 土
         ],
         closedText: "水曜（12～3、7、8月は不定休）",
+        description:"道の駅で伊勢海老丸ごとの「王様丼」やデカネタ寿司、季節の花料理まで南房総の粋を極める海鮮処 。",
         updatedAt: "2026/03/03",
         website: "https://hanabou.jp/",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/t1RcZc3p9k3WmKzCA"
     },
 
     { 
@@ -2076,9 +2319,11 @@
             [["11:30", "14:30"],["17:00", "19:30"]]  // 土
         ],
         closedText: "木曜",
+        description:"房総の地で本格的なコシと出汁の香りが楽しめる、地元客に愛される貴重な本場讃岐うどん専門店。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.instagram.com/tensaku1039/"
+        sns: "https://www.instagram.com/tensaku1039/",
+        mapUrl: "https://maps.app.goo.gl/BeDbvrwCMNDmothG9"
     },
 
     //{ 
@@ -2109,9 +2354,11 @@
             [["09:00", "17:00"]]  // 土
         ],
         closedText: "水曜（1～4、8月は休まず営業）",
+        description:"鯨肉老舗ハクダイ食品直営、特大の「てっぱつ！あじフライ」と極上の「くじらの竜田揚げ」が名物の食堂 。",
         updatedAt: "2026/03/03",
         website: "https://senmasasuisan.com/",
-        sns: "https://www.instagram.com/senmasasuisan/"
+        sns: "https://www.instagram.com/senmasasuisan/",
+        mapUrl: "https://maps.app.goo.gl/pmBwsCXcDALdcC5T8"
     },
     
     { 
@@ -2127,9 +2374,11 @@
             [["11:00", "14:00"], ["17:00", "19:00"]]  // 土
         ],
         closedText: "火・水・第3曜",
+        description:"千倉エリアで地元食材を活かした、丁寧な手仕事が光るデミグラスソースが自慢の王道洋食レストラン 。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/kRd52NjYPiafKaFM7"
     },
 
     { 
@@ -2145,9 +2394,11 @@
             [["11:00", "14:30"], ["17:00", "19:30"]]  // 土
         ],
         closedText: "水曜",
+        description:"千倉海岸の絶景を前に、ザクザク衣の「アジフライ」や冬季限定「塩モツ煮」を味わえる異色のとんかつ店 。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.instagram.com/miyahan2018/"
+        sns: "https://www.instagram.com/miyahan2018/",
+        mapUrl: "https://maps.app.goo.gl/8p3UmoAq5kKd9mK66"
     },
 
     { 
@@ -2163,9 +2414,11 @@
             [["10:00", "18:00"]]  // 土
         ],
         closedText: "火曜（調査中）",
+        description:"蔦に覆われた隠れ家のような空間で、メディアでも絶賛された絶品オムライスを味わえる小さな名店 。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/bGYKccJwWVxVgGti9"
     },
 
     { 
@@ -2181,9 +2434,11 @@
             [["17:00", "23:00"]]  // 土
         ],
         closedText: "調査中",
+        description:"千倉の夜を彩る、地元客の笑い声と香ばしい串焼きの匂いが絶えないアットホームな居酒屋 。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/qz9S6uf8NxBMvx2k9"
     },
 
     { 
@@ -2199,9 +2454,11 @@
             [["11:00", "14:00"], ["17:00", "20:00"]]  // 土
         ],
         closedText: "木曜（祝日の場合は営業）",
+        description:"地元で長年愛され続けるとんかつの名店で、サクサクの豚カツが豪快に乗った「カツラーメン」が裏名物 。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/CGnq1aU3T1F1Sh9J8"
     },
 
     { 
@@ -2217,9 +2474,11 @@
             [["11:00", "16:00"]]  // 土
         ],
         closedText: "火曜",
+        description:"現役海女のオーナーが自ら潜って採った天然天草100％の「みつまめ」をヴィンテージ食器で提供する海辺カフェ 。",
         updatedAt: "2026/03/03",
         website: "http://www.strawberrypot.com/",
-        sns: "https://www.instagram.com/strawberrypot.seacafe/"
+        sns: "https://www.instagram.com/strawberrypot.seacafe/",
+        mapUrl: "https://maps.app.goo.gl/Fz8NiZ9C46WxsmK16"
     },
 
     //{ 
@@ -2250,9 +2509,11 @@
             ["11:00", "22:00"]
         ],
         closedText: "第2・4木曜",
+        description:"千倉の海沿いで異国情緒漂うスパイスの香りと、本格的なアジア・エスニック料理を楽しめるダイニング 。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.facebook.com/sunrisesea.boso/?locale=ja_JP"
+        sns: "https://www.facebook.com/sunrisesea.boso/?locale=ja_JP",
+        mapUrl: "https://maps.app.goo.gl/QQskXo6z2tvGBHwh8"
     },
 
     { 
@@ -2268,9 +2529,11 @@
             [["17:00", "23:00"]]  // 土
         ],
         closedText: "水曜",
+        description:"地元の新鮮な魚介と温かい手料理で、ついつい夜更けまで長居してしまう千倉の憩いの居酒屋 。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/d9GsTMeg25iNyFyy5"
     },
 
     { 
@@ -2286,9 +2549,11 @@
             ["9:00","17:00"]
         ],
         closedText: "水・木曜",
+        description:"南房総産のラム酒を使用した特製「南房総カヌレ」と本格コーヒーで、地域と旅人をつなぐコーヒースタンド 。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.instagram.com/chikura_tsunagu_hotel/p/Cw4M7DMP7gI/?hl=sr"
+        sns: "https://www.instagram.com/chikura_tsunagu_hotel/p/Cw4M7DMP7gI/?hl=sr",
+        mapUrl: "https://maps.app.goo.gl/N3kVank7hYQYm7LRA"
     },
     
     { 
@@ -2304,9 +2569,11 @@
             [["17:30", "23:00"]]  // 土
         ],
         closedText: "木曜",
+        description:"海沿いの広々とした店内で、名物「牛乳ラーメン」やこだわりの三種ラーメンを堪能できる地元密着の居酒屋 。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/qgBzTFBnTbnZFSDYA"
     },
 
     { 
@@ -2322,9 +2589,11 @@
             [["11:30", "14:00"],["17:45", "21:30"]]  // 土
         ],
         closedText: "無休（ホテル休館日に準ずる・完全予約制）",
+        description:"料理旅館プロデュースによる完全予約制の非日常空間で、最高級牛肉のライブ調理を楽しめる究極のダイニング 。",
         updatedAt: "2026/03/03",
         website: "https://baknos.jp/",
-        sns: "https://yumesaki-marche.com/news/detail.html?CN=269449"
+        sns: "https://yumesaki-marche.com/news/detail.html?CN=269449",
+        mapUrl: "https://maps.app.goo.gl/fphftiJhC9aYqwXh8"
     },
 
     { 
@@ -2340,9 +2609,11 @@
             [["11:00", "14:30"]]  // 土
         ],
         closedText: "月曜、火曜はセルフ営業",
+        description:"月・火曜のセルフ営業という独自の形態を取りつつ、酸味の効いた醤油ダレの「あぶらめん」で人気を博すラーメン店 。",
         updatedAt: "2026/03/03",
         website: "https://www.chikura-hananokura.com/",
-        sns: "https://www.instagram.com/hananokura2017/?hl=ja"
+        sns: "https://www.instagram.com/hananokura2017/?hl=ja",
+        mapUrl: "https://maps.app.goo.gl/LVrenstWiSzwPnKq8"
     },
 
     { 
@@ -2358,9 +2629,11 @@
             [["10:00", "17:30"]]  // 土
         ],
         closedText: "月・火曜",
+        description:"大房岬へ向かう丘の上に佇み、絶景とジャズの音色の中で自家焙煎珈琲を楽しめる隠れ家的な絶景カフェ 。",
         updatedAt: "2026/03/03",
         website: "https://www.cafevista.net/",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/pBr2NmQ3h6BibjbQ9"
     },
 
     { 
@@ -2376,9 +2649,11 @@
             [["17:30", "22:00"]]  // 土
         ],
         closedText: "月曜",
+        description:"本格備長炭で焼き上げる25種以上の串焼きと、千倉の地魚や多国籍な創作料理をジャズが流れる空間で味わう焼鳥店 。",
         updatedAt: "2026/03/03",
         website: "https://www.yucho.biz/",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/YrbbiL4na7cEe6YU7"
     },
 
     { 
@@ -2394,9 +2669,11 @@
             [["11:00", "20:00"]]  // 土
         ],
         closedText: "火曜（祝日の場合は営業、翌日休み）",
+        description:"昼前から夕方にかけて通し営業を行い、千倉ならではの新鮮な海の幸を気軽に味わえるシーフード料理店。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/hPoxMCRXRrofMWhs9"
     },
 
     { 
@@ -2412,9 +2689,11 @@
             [["10:30", "17:00"]]  // 土
         ],
         closedText: "火曜",
+        description:"愛犬と一緒にパラソルの下の特等席で、卵白を別立てしたスフレ風の絶品オムライスを味わえる海辺の洋食店 。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.facebook.com/CasaMarina0124/"
+        sns: "https://www.facebook.com/CasaMarina0124/",
+        mapUrl: "https://maps.app.goo.gl/XMBdzyxyvajEb8s46"
     },
 
     { 
@@ -2430,9 +2709,11 @@
             [["11:00", "14:00"],["17:00", "22:00"]]  // 土
         ],
         closedText: "月・火曜",
+        description:"千倉エリアでは希少な、スタミナ満点のホルモンと焼肉をランチからディナーまでガッツリ楽しめる地域密着型の専門酒場。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.instagram.com/nobus.house29/"
+        sns: "https://www.instagram.com/nobus.house29/",
+        mapUrl: "https://maps.app.goo.gl/oaD9jumY5wiHssQs9"
     },
 
     { 
@@ -2448,9 +2729,11 @@
             [["10:30", "14:15"], ["17:00", "18:30"]]  // 土
         ],
         closedText: "火曜（不定休あり）",
+        description:"豊富な大衆向けメニュー展開とお手頃な価格帯で、千倉の地元住民の日常的な食事インフラとして長く愛される老舗そば処 。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.instagram.com/sobadokoro_niiya/?hl=ja"
+        sns: "https://www.instagram.com/sobadokoro_niiya/?hl=ja",
+        mapUrl: "https://maps.app.goo.gl/wV5EjG5y8tn765g5A"
     },
 
     { 
@@ -2466,9 +2749,11 @@
             [["12:00", "15:00"], ["17:00", "21:00"]]  // 土
         ],
         closedText: "火曜（祝日の場合営業、翌水曜休み）",
+        description:"創業150年超の歴史を誇り、郷土料理「なめろう」の発祥とされる南房総最古にして常に進化を続ける老舗寿司店 。",
         updatedAt: "2026/03/03",
         website: "https://daitokuya.co.jp/",
-        sns: "https://www.instagram.com/daitokuya1869/"
+        sns: "https://www.instagram.com/daitokuya1869/",
+        mapUrl: "https://maps.app.goo.gl/vwu4YgARZgDQbnDT8"
     },
     
     { 
@@ -2484,9 +2769,11 @@
             [["11:30", "15:00"]]  // 土
         ],
         closedText: "月～水曜",
+        description:"週の後半・昼の時間帯のみひっそりと暖簾を掲げ、こだわりの蕎麦を静かに提供する千倉の隠れた名店。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/ipe8JZmQGFBoPzBA6"
     },
 
     { 
@@ -2502,9 +2789,11 @@
             [["11:30", "15:00"],["17:00", "21:00"]]  // 土
         ],
         closedText: "月曜・火曜",
+        description:"ホテル併設の洗練された空間で、里見伏姫牛カレーや自家製キューバサンドなど地産地消の味が楽しめるカフェ 。",
         updatedAt: "2026/03/03",
         website: "https://chikura.tsunaguhotel.jp/dininghall/",
-        sns: "https://www.instagram.com/seizan_cafe/"
+        sns: "https://www.instagram.com/seizan_cafe/",
+        mapUrl: "https://maps.app.goo.gl/mBUH1yBP1x5KaL7EA"
     },
 
     { 
@@ -2520,9 +2809,11 @@
             [["11:00", "14:30"],["17:00","20:00"]]  // 土
         ],
         closedText: "木・金曜（祝日の場合営業）",
+        description:"名門・西山麺を使ったこだわりの味噌ラーメンと、ホロホロ叉焼がたっぷり入った絶品チャーハンが食通を唸らせる店 。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/Xrf3utVVNYzkoUm28"
     },
 
     { 
@@ -2538,9 +2829,11 @@
             [["11:00", "14:00"], ["17:00", "21:00"]]  // 土
         ],
         closedText: "木曜",
+        description:"名店で腕を磨いた職人が握る「匠にぎり」と、千倉ならではの珍しい地魚や伝統のなめろうを味わえる本格江戸前寿司 。",
         updatedAt: "2026/03/03",
         website: "https://sushi-shikinami.jp/",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/cMRg27dgBttMZ6kd6"
     },
 
     { 
@@ -2556,9 +2849,11 @@
             [["11:30", "14:30"],["17:00", "23:00"]]
         ],
         closedText: "火曜",
+        description:"釣り人がその日に釣り上げたばかりの新鮮な魚を、抜群の鮮度のまま美味しく調理して提供するユニークな海鮮居酒屋 。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.instagram.com/tsurin2024/"
+        sns: "https://www.instagram.com/tsurin2024/",
+        mapUrl: "https://maps.app.goo.gl/8LtJFEDkJ8FmGGTK6"
     },
 
     { 
@@ -2574,9 +2869,11 @@
             [["11:00", "14:00"], ["17:30", "20:00"]]  // 土
         ],
         closedText: "月曜",
+        description:"豪華な海鮮丼から南房総伝統のくじら料理まで、房州の豊かな海の恵みを総合的に堪能できる本格日本料理店 。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.instagram.com/hamanogou/"
+        sns: "https://www.instagram.com/hamanogou/",
+        mapUrl: "https://maps.app.goo.gl/RWcnN2QGgB1yScMy8"
     },
 
     { 
@@ -2592,9 +2889,11 @@
             [["11:30", "15:00"], ["18:00", "21:00"]]  // 土
         ],
         closedText: "木曜、第2・4水曜",
+        description:"白浜の非日常的な空間で、ハーブ香る「進化系なめろう」や塩釜焼きなど、南房総の食材を活かした本格イタリアン 。",
         updatedAt: "2026/03/03",
         website: "http://odori-kitchen.com/",
-        sns: "https://www.instagram.com/odorikitchen/"
+        sns: "https://www.instagram.com/odorikitchen/",
+        mapUrl: "https://maps.app.goo.gl/RhzCLpN2uhYfYNAs6"
     },
 
     { 
@@ -2610,9 +2909,11 @@
             [["11:00", "14:00"],["18:00", "23:00"]]
         ],
         closedText: "火曜",
+        description:"昼はボリュームのあるランチ、夜は地元住民が集うスナックとして、和田エリアの貴重なコミュニティ拠点となる店。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/TVXrV6jQqsbxLZwg6"
     },
 
     { 
@@ -2628,9 +2929,11 @@
             ["11:30", "21:30"]
         ],
         closedText: "不定休",
+        description:"昼前から夜まで休憩なしの通し営業を行い、時間を問わず和田で温かい定食が食べられる使い勝手抜群の食事処。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/FRKsb8jTd3CA1C4A8"
     },
 
     { 
@@ -2646,9 +2949,11 @@
             [["11:00", "17:00"]]  // 土
         ],
         closedText: "火曜",
+        description:"ランチタイムから夕方にかけて通し営業で暖簾を守り、素朴なラーメンと中華メニューで住民の日常に寄り添う食堂。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/WKSEDNYRCqritE5c9"
     },
     
     { 
@@ -2664,9 +2969,11 @@
             [["11:00", "14:00"], ["17:00", "21:00"]]  // 土
         ],
         closedText: "月曜（祝日の場合は翌火曜）",
+        description:"日本有数の捕鯨基地・和田の傍で、サクサクの「クジラカツ」や竜田揚げなど絶品クジラ料理を提供する専門店 。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/ffguBZauQiXXHJFw9"
     },
 
     { 
@@ -2682,9 +2989,11 @@
             [["11:30", "14:00"], ["18:00", "22:00"]]  // 土
         ],
         closedText: "月・火曜",
+        description:"千倉エリアで本格的な洋食メニューを昼夜問わず提供し、落ち着いた大人の食事時間を演出するレストラン＆バー。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/v1iyn8NXkxoUbTa27"
     },
 
     { 
@@ -2700,9 +3009,11 @@
             [["11:00", "15:00"],["16:30","20:00"]]  // 土
         ],
         closedText: "木曜",
+        description:"千倉駅前という好立地で、素朴でボリューム満点の定食メニューを提供し続け、地元住民の日常を支える大衆食堂 。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.instagram.com/kikukawa.chikura/"
+        sns: "https://www.instagram.com/kikukawa.chikura/",
+        mapUrl: "https://maps.app.goo.gl/Rf4uzNQHhe5pLj2g9"
     },
 
     { 
@@ -2718,9 +3029,11 @@
             [["11:00", "14:30"], ["17:00", "21:00"]]  // 土
         ],
         closedText: "月・火曜",
+        description:"和田の美しい海辺に位置し、洗練された空間とメニューでランチからディナーまで対応するシーサイドレストラン。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.instagram.com/seaside_kitchen_grow/"
+        sns: "https://www.instagram.com/seaside_kitchen_grow/",
+        mapUrl: "https://maps.app.goo.gl/58cj77JUe1t4vKgz5"
     },
 
     { 
@@ -2736,9 +3049,11 @@
             [["11:00", "14:00"]]  //土
         ],
         closedText: "木・金曜",
+        description:"ふっくらした小鯛や絶品と評される甘い「かぼちゃの天ぷら」と共に冷たい蕎麦を味わえる、アットホームな蕎麦屋 。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/SPV57zAsC1XK29yA9"
     },
 
     { 
@@ -2754,9 +3069,11 @@
             [["11:00", "15:30"]]  // 土
         ],
         closedText: "火・水・木曜",
+        description:"全席オーシャンビューの絶景空間で、魚屋直営の目利きが光る「房総半島食べ比べ三色丼」を楽しめる海辺のカフェ 。",
         updatedAt: "2026/03/03",
         website: "https://www.seafoodcourt.jp/",
-        sns: "https://www.instagram.com/seafoodcourt.shirasuka/"
+        sns: "https://www.instagram.com/seafoodcourt.shirasuka/",
+        mapUrl: "https://maps.app.goo.gl/nMB91R4fowQuGLRZ6"
     },
 
     { 
@@ -2772,9 +3089,11 @@
             [["11:00", "14:00"], ["17:00", "21:00"]]  // 土
         ],
         closedText: "水・木曜",
+        description:"昼の定食利用から夜の居酒屋利用まで、多彩なメニューで和田エリアの地域ニーズに幅広く応える和風の食事処。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/WVNmtiK9MA5obFbNA"
     },
 
     { 
@@ -2790,9 +3109,11 @@
             []  // 土：3部制
         ],
         closedText: "臨時休業",
+        description:"1日3部制という独自のスタイルを取り入れ、和田の海辺で特別なプライベートカフェタイムを提供するこだわりの空間。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.instagram.com/cafe.la.plage/"
+        sns: "https://www.instagram.com/cafe.la.plage/",
+        mapUrl: "https://maps.app.goo.gl/a66jAqszG4iP7DKk8"
     },
 
     { 
@@ -2808,9 +3129,11 @@
             [["11:30", "15:00"], ["17:00", "21:00"]]
         ],
         closedText: "不定休（完全予約制）",
+        description:"剣豪・御子神典膳の故郷である山奥の武家屋敷で、完全個室にて名物「地獄焼き」などの炭火焼きを堪能できる秘境の店 。",
         updatedAt: "2026/03/03",
         website: "https://www.tenzen.chiba.jp/",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/PJ6afKfy2XV4th938"
     },
 
     { 
@@ -2826,9 +3149,11 @@
             [["10:30", "14:00"]]  // 土
         ],
         closedText: "月～金曜",
+        description:"貸切ドッグヤード付きの宿を併設し、丸山の里山風景の中で肉厚で極上の「牛たん定食」やシチューを味わえる専門店 。",
         updatedAt: "2026/03/03",
         website: "https://kura-minamiboso.com/",
-        sns: "https://www.instagram.com/gyutan_ichikawa_kura/"
+        sns: "https://www.instagram.com/gyutan_ichikawa_kura/",
+        mapUrl: "https://maps.app.goo.gl/9wYtnBShX4FGLjaF8"
     },
     
     { 
@@ -2844,9 +3169,11 @@
             [["11:00", "20:00"]]  // 土
         ],
         closedText: "調査中",
+        description:"精肉店直営という圧倒的な強みを活かし、肉の旨味が際立つ絶品チャーシュー麺を提供する地域密着型ラーメン店 。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/aCfo5n45ZomDkQJPA"
     },
 
     { 
@@ -2862,9 +3189,11 @@
             [["10:00", "17:00"]]  // 土
         ],
         closedText: "水曜、第2・3・4・5日曜",
+        description:"地域住民の日常に寄り添い、丁寧な手仕事によるパン作りと週休多めのゆったりとした営業形態を両立するこだわりのベーカリー。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.instagram.com/fika.pan/"
+        sns: "https://www.instagram.com/fika.pan/",
+        mapUrl: "https://maps.app.goo.gl/1mv3rc5bYUX1QP3t6"
     },
 
     { 
@@ -2880,9 +3209,11 @@
             [["17:00", "22:00"]]
         ],
         closedText: "日曜",
+        description:"夜の千倉エリアに明かりを灯し、地元客の強固なコミュニティ形成と情報交換のハブを担うオーセンティックな居酒屋。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.instagram.com/izakaya.gonchan/"
+        sns: "https://www.instagram.com/izakaya.gonchan/",
+        mapUrl: "https://maps.app.goo.gl/VwSaXTnsAeyov4M5A"
     },
 
     { 
@@ -2898,9 +3229,11 @@
             [["09:00", "19:00"]]  // 土
         ],
         closedText: "水曜",
+        description:"千倉エリアに甘いひとときを提供し、長年にわたり地元住民のハレの日を彩り続けるクラシックで実直な老舗洋菓子店 。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/Av4e6KwQH4a9GN7f9"
     },
 
     { 
@@ -2916,9 +3249,11 @@
             [["11:00", "14:00"], ["18:00", "24:00"]]  // 土
         ],
         closedText: "調査中",
+        description:"昼のランチと夜の居酒屋営業の二部制で千倉の食卓を支え続ける、伝統的かつ実直な地域密着型の和食処。",
         updatedAt: "2026/03/03",
         website: "http://chidori-chikura.com/",
-        sns: "https://instagram.com/example"
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/Lr5ZS5RkFGNNqenS9"
     },
 
     { 
@@ -2934,9 +3269,11 @@
             [["19:00", "23:59"]]
         ],
         closedText: "調査中",
+        description:"不定休で深夜23時59分まで営業し、過疎化が進む地方部における大人の社交場としてナイトタイムエコノミーを牽引するスナック。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/xtzBHYsUhcaui8h37"
     },
 
     //{ 
@@ -2967,9 +3304,11 @@
             [["06:30", "15:00"]]  // 土
         ],
         closedText: "日・月曜",
+        description:"全長約25cmの「てっぱつアジフライ」や伝統的ななめろうなど、房総の豊かな海の幸を圧倒的なボリュームで堪能できる海鮮定食屋 。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/npCY7RGZETevUFX87"
     },
 
     { 
@@ -2985,9 +3324,11 @@
             ["11:30", "20:00"]
         ],
         closedText: "火曜",
+        description:"千倉の日常風景に溶け込み、地域住民が手軽に足を運んで素朴な軽食を楽しめる、火曜定休のローカル憩いスポット。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/X5hP7NGy8FX1nChYA"
     },
 
     { 
@@ -3003,9 +3344,11 @@
             [["17:00", "23:00"]]  // 土
         ],
         closedText: "不定休",
+        description:"靴を脱いでくつろげるアットホームな空間で、手頃な価格帯でありながら期待を上回る高品質な肉を提供する高コスパ焼肉店 。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/bq8p3q5HE93unxpj8"
     },
     
     { 
@@ -3021,9 +3364,11 @@
             [["10:00", "17:00"]]  // 土
         ],
         closedText: "月～金曜",
+        description:"週末の土日のみ稼働するという希少性を持ち、知る人ぞ知る特別感溢れる商品を提供する週末限定のアルティザン・ベーカリー。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/Cm3WUGV3xS7VUnRp9"
     },
 
     { 
@@ -3039,9 +3384,11 @@
             [["11:00", "15:00"],["18:00", "21:00"]]  // 土
         ],
         closedText: "月～金曜（祝日営業）",
+        description:"白浜の週末を彩り、昼と夜の二部制営業で幅広い時間帯のリラックスニーズに応える、土日祝日限定営業のハイブリッドカフェ。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/j6PY94THs3pc2gqx8"
     },
 
     { 
@@ -3057,9 +3404,11 @@
             [["09:30", "18:30"]]  // 土
         ],
         closedText: "水曜",
+        description:"白浜エリアで長年愛され続け、SNSでの発信を取り入れながら日常のティータイムに寄り添う定番スイーツと洋菓子の名店。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.instagram.com/kagetsu218/"
+        sns: "https://www.instagram.com/kagetsu218/",
+        mapUrl: "https://maps.app.goo.gl/o6mQCHYQgZY9Wahw5"
     },
 
     { 
@@ -3075,9 +3424,11 @@
             [["9:00", "17:00"]]  //土
         ],
         closedText: "月・火・木・金曜、SNS要確認",
+        description:"南房総を訪れる自転車愛好家のハブ（休憩所）として機能し、SNSでの柔軟な情報発信が鍵となるサイクリスト特化型カフェ。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.instagram.com/minamiboso_feal/"
+        sns: "https://www.instagram.com/minamiboso_feal/",
+        mapUrl: "https://maps.app.goo.gl/b4xdoiDYJHzdnjAZ8"
     },
 
     { 
@@ -3093,9 +3444,11 @@
             [["19:00", "23:00"]]  //土
         ],
         closedText: "調査中",
+        description:"毎夜白浜で静かな時間を提供し、地元住民や宿泊観光客が交差する大人のための上質で隠れ家的なバー空間。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.facebook.com/barfragla/?locale=ja_JP"
+        sns: "https://www.facebook.com/barfragla/?locale=ja_JP",
+        mapUrl: "https://maps.app.goo.gl/gkaY5Z7BXiGxtRge6"
     },
 
     { 
@@ -3111,9 +3464,11 @@
             ["11:00","16:00"]  //土
         ],
         closedText: "日・月・水・木曜、第3土曜",
+        description:"火曜・金曜のみ営業する隠れ家的立地で、絶品のピスタチオコロネや塩バターあんロールを提供する至高のパン屋 。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/Qy6mhVixmnU9juZE9"
     },
 
     { 
@@ -3129,9 +3484,11 @@
             []                    //土
         ],
         closedText: "土・日曜",
+        description:"土日を定休とし、平日を中心に白浜でゆったりとした時間を提供することで、喧騒から離れたリラクゼーションを実現する平日特化型カフェ。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/SuMyJjyKAA6CcXiq9"
     },
 
     { 
@@ -3147,9 +3504,11 @@
             [["11:00", "15:30"]]  // 土
         ],
         closedText: "月〜金曜（土日のみ営業）",
+        description:"ドラマ『ビーチボーイズ』の世界観を完全再現し、全国の熱狂的なファンが巡礼に訪れる週末限定のコンセプチュアルカフェ 。",
         updatedAt: "2026/03/03",
         website: "https://cafe-dh.sakura.ne.jp/",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/Ri1JghiEZW4wy3mY9"
     },
 
     { 
@@ -3165,9 +3524,11 @@
             [["11:30", "16:00"]]  // 土：夜営業あり
         ],
         closedText: "月曜",
+        description:"房総名物さんが丼や新食感のデザートモッフルなど、郷土料理と現代的スイーツを融合させたメニューで老若男女を魅了するカフェ 。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/nDapX43VbcgHbtrHA"
     },
 
     { 
@@ -3183,9 +3544,11 @@
             ["11:30", "16:30"]
         ],
         closedText: "月～金曜、土日予約推奨",
+        description:"週末のみ営業し、日本の伝統的な発酵調味料である「麹」をテーマにした身体に優しいメニューを提供する健康志向型の特化型カフェ。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.instagram.com/tocchi_cafe/"
+        sns: "https://www.instagram.com/tocchi_cafe/",
+        mapUrl: "https://maps.app.goo.gl/zY33XroePFmDi7oY6"
     },
     
     { 
@@ -3201,9 +3564,11 @@
             ["9:00", "16:00"]
         ],
         closedText: "水曜",
+        description:"障害福祉サービス事業所が運営し、平日の朝9時から手作りの温もりと社会的包摂性を地域に届ける共生型ベーカリー。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/5iJC1Ruv28rL1Qov5"
     },
 
     { 
@@ -3219,9 +3584,11 @@
             [["11:00", "16:00"]]  // 土
         ],
         closedText: "月～金曜",
+        description:"週末の土日のみオープンし、千倉の静かな休日を優雅かつプライベートに彩る知る人ぞ知る隠れ家的カフェ。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/mS96bKVvTpMNXUAK9"
     },
 
     { 
@@ -3237,9 +3604,11 @@
             [["19:00", "23:59"]]
         ],
         closedText: "不定休（深夜業態）",
+        description:"千倉の夜をディープに楽しむための、深夜業態で地元民の非公式な情報交換の場となる不定休のローカルスナック。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/fRAfGGYZGGkvU31m7"
     },
 
     { 
@@ -3255,9 +3624,11 @@
             [["07:30", "13:00"]]  // 土
         ],
         closedText: "月〜金曜",
+        description:"週末の朝7時半から13時までという特殊な営業時間で、サーファーや観光客のモーニングカルチャーを牽引する朝活特化型カフェ。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.instagram.com/stand_o8017/"
+        sns: "https://www.instagram.com/stand_o8017/",
+        mapUrl: "https://maps.app.goo.gl/QK9GAxyj2J7XjthX8"
     },
 
     { 
@@ -3273,9 +3644,11 @@
             []  // 土
         ],
         closedText: "臨時休業",
+        description:"丸山エリアに位置し、現在は臨時休業中ながらもInstagramを通じて独自の洗練された珈琲文化を発信する謎多きロースタリー。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.instagram.com/l_l_l_coffee/"
+        sns: "https://www.instagram.com/l_l_l_coffee/",
+        mapUrl: "https://maps.app.goo.gl/BZg4EAak9YhbPh9V8"
     },
 
     { 
@@ -3291,9 +3664,11 @@
             [["10:00", "17:00"]]
         ],
         closedText: "不定休（調査中）",
+        description:"サイクリング観光の物理的拠点として機能し、丸山エリアのモビリティと休息を同時に提供するハイブリッド型のカフェステーション。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.instagram.com/cococafe_bicycle4630/"
+        sns: "https://www.instagram.com/cococafe_bicycle4630/",
+        mapUrl: "https://maps.app.goo.gl/vqWMsaukvAVcXrm16"
     },
 
     { 
@@ -3309,9 +3684,11 @@
             []                    // 土
         ],
         closedText: "土・日曜",
+        description:"専門学校内にありながら一般開放され、安価で本格的な日替わりランチと就労支援を見事に両立させている学食カフェ 。",
         updatedAt: "2026/03/03",
         website: "https://www.minami.awa-school.ac.jp/hana_cafe/index.html",
-        sns: "https://www.instagram.com/ranmanhanacafe/"
+        sns: "https://www.instagram.com/ranmanhanacafe/",
+        mapUrl: "https://maps.app.goo.gl/28kz42ctM9dCmAtg9"
     },
 
     { 
@@ -3327,9 +3704,11 @@
             [["10:00", "18:00"]]  //土
         ],
         closedText: "年中無休",
+        description:"年中無休で毎日10時から18時まで営業し、白浜エリアにおいていつでも安定したサービスを提供する地域のオアシス的カフェ。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/Lw7NoQit3eMCnTRXA"
     },
 
     { 
@@ -3345,9 +3724,11 @@
             [["09:00", "17:00"]]  // 土
         ],
         closedText: "水曜（1～3、8月は無休）",
+        description:"道の駅ちくら潮風王国内に位置し、オーシャンビューと千倉の自由な空気を満喫しながら美味しいコーヒーや軽食を楽しめる絶景カフェ 。",
         updatedAt: "2026/03/03",
         website: "https://shiokaze-oukoku.jp/shops/",
-        sns: "https://www.instagram.com/shiokazeoukoku/"
+        sns: "https://www.instagram.com/shiokazeoukoku/",
+        mapUrl: "https://maps.app.goo.gl/R6MdmeFsiXCp3Uj6A"
     },
 
     { 
@@ -3363,9 +3744,11 @@
             []                    // 土
         ],
         closedText: "土曜",
+        description:"「From Seed to Cup」の理念のもと、20年以上の経験を持つ焙煎士が厳選された豆で極上の一杯を提供する本格派ロースタリー 。",
         updatedAt: "2026/03/03",
         website: "https://botarhythm.com/?srsltid=AfmBOopFmLr8OEoccrul98Feczv7vL2Cxl1kmBW1HeVkF58H3d-veEVv",
-        sns: "https://www.instagram.com/botarhythm/?hl=ja"
+        sns: "https://www.instagram.com/botarhythm/?hl=ja",
+        mapUrl: "https://maps.app.goo.gl/nUs3nxt2wv7vRCmp7"
     },
     
     { 
@@ -3381,9 +3764,11 @@
             [["09:00", "17:00"]]  // 土
         ],
         closedText: "火・水曜",
+        description:"地元民の日常に寄り添い、丁寧なパン作りで地域社会の食卓を温かく支え続ける地域密着型のベーカリー。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/EBimsM4ATBJixdqM8"
     },
 
     { 
@@ -3399,9 +3784,11 @@
             [["11:30", "20:00"]]  // 土
         ],
         closedText: "月曜",
+        description:"長年地域で愛されるホッとする味わいの王道中華と、名物タンタンメンを昼から夜まで安定して提供する老舗。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/twQrjvCQDBZQJRjQ8"
     },
 
     //{ 
@@ -3432,9 +3819,11 @@
             [["11:00", "14:30"]]  // 土
         ],
         closedText: "月～金曜",
+        description:"週末土日のランチタイム・わずか3時間半のみ暖簾を掲げる、知る人ぞ知る富浦の希少な隠れ家的ラーメン店。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/Nbbvuq1qok6PbnKb9"
     },
 
     { 
@@ -3450,9 +3839,11 @@
             [["11:00", "14:00"], ["17:00", "21:00"]]  // 土
         ],
         closedText: "水曜・第3火曜",
+        description:"幻の深海魚「エンザラ」や漁港直送の限定海鮮丼を、地元千葉のブランド米「長狭米」と共に豪快に味わえる海鮮定食店。",
         updatedAt: "2026/03/03",
         website: "https://fukkian.com/cuisine.html",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/QdwKFJBfsdv5RWAs8"
     },
 
     { 
@@ -3468,9 +3859,11 @@
             [["11:00", "20:30"]]
         ],
         closedText: "年中無休",
+        description:"水産会社直営の自社便輸送が誇る極上の鮮度とコスパを、完全フルオーダー制のタッチパネルで効率的に提供する人気回転寿司。",
         updatedAt: "2026/03/03",
         website: "https://yamato-f.jp/stores/tomiura?acc=yamato-sushi",
-        sns: "https://www.instagram.com/yamato.tomiuraten/"
+        sns: "https://www.instagram.com/yamato.tomiuraten/",
+        mapUrl: "https://maps.app.goo.gl/srqcEBiZVozEuAGL7"
     },
 
     { 
@@ -3486,9 +3879,11 @@
             [["10:00", "20:00"]]  //土
         ],
         closedText: "年中無休",
+        description:"活サザエやホンビノス貝など多彩な新鮮魚介を、自らの手で豪快に網焼きにして制限時間内で楽しむセルフスタイルの海鮮食べ放題。",
         updatedAt: "2026/03/03",
         website: "https://bosonoeki-tomiura.jp/hamayaki/",
-        sns: "https://www.instagram.com/hamayakiya/"
+        sns: "https://www.instagram.com/hamayakiya/",
+        mapUrl: "https://maps.app.goo.gl/HSXGPpXntEd2euRw5"
     },
 
     { 
@@ -3504,9 +3899,11 @@
             ["10:30","20:30"]
         ],
         closedText: "年中無休",
+        description:"船を模したテーマパーク的な空間で、地元の新鮮な野菜と魚介をサクサクの衣で包み込んだボリューム満点の絶品天丼を堪能できる和食処。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/D9AQk3NW4qjo9gtWA"
     },
 
     { 
@@ -3522,9 +3919,11 @@
             ["12:00", "16:00"]
         ],
         closedText: "月～木曜",
+        description:"ネット情報が皆無に近いにも関わらず、老夫婦が作る絶品の「蓮根ハンバーグ」を求めて客が絶えない、週末限定営業の完全隠れ家洋食店。",
         updatedAt: "2026/03/03",
-        website: "https://example.com",
-        sns: "https://instagram.com/example"
+        website: "",
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/XqC1rNZzFM2BXkXn7"
     },
 
     { 
@@ -3540,9 +3939,11 @@
             [["10:30", "20:00"]]
         ],
         closedText: "無休（完全予約制）",
+        description:"大型バス15台・200席の圧倒的規模を誇り、肉・野菜・海鮮の浜焼きを完全予約制で提供するインバウンド・ツアー向けの大型観光特化施設。",
         updatedAt: "2026/03/03",
         website: "http://www.kiyoppachi.jp/",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/V9Q4RYWGvSmPBNNBA"
     },
     
     { 
@@ -3558,9 +3959,11 @@
             ["11:00", "18:30"]
         ],
         closedText: "日・火・水曜",
+        description:"とかち野酵母と国産小麦を用いた安心の無添加パンと、酸味を抑えた22種類の自家焙煎珈琲で「日常の癒やし」を提供するこだわり派カフェ。",
         updatedAt: "2026/03/03",
         website: "https://kumacafe.jp/",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/9oDNxxVP1qSwDPeN6"
     },
 
     { 
@@ -3576,9 +3979,11 @@
             [["09:30", "15:00"]]  //土
         ],
         closedText: "月曜",
+        description:"富浦エリアで日中の穏やかな憩いの場を提供する、地元住民の生活インフラとして長く親しまれている地域密着型の純喫茶。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/Mis5eNo3nWGgkhp77"
     },
 
     { 
@@ -3594,9 +3999,11 @@
             [["11:30", "14:00"]]
         ],
         closedText: "不定休",
+        description:"都心から90分、自ら地場食材を調理する巨大キッチンや絶景サウナを備え、「作って食べる」ラグジュアリーを追求した新感覚の滞在型リゾート。",
         updatedAt: "2026/03/03",
         website: "https://chikuraumi.basecamp.style/",
-        sns: "https://www.instagram.com/thechikuraumibasecamp/"
+        sns: "https://www.instagram.com/thechikuraumibasecamp/",
+        mapUrl: "https://maps.app.goo.gl/vKnZdM45T2faFCqw7"
     },
 
     { 
@@ -3612,9 +4019,11 @@
             [["19:30", "23:59"]]
         ],
         closedText: "月曜",
+        description:"深夜帯に営業し、地元住民や夜の観光客に千倉のディープなナイトタイムエコノミーと交流の場を提供する地域密着型スナック。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/imCmcPQsb9wmEaNr8"
     },
 
     { 
@@ -3630,9 +4039,11 @@
             [["18:00", "22:00"]]  // 土
         ],
         closedText: "日曜・火曜",
+        description:"希少部位「コリコリ」や人気No.1のだし巻き卵、究極のTKGを揃え、お肉を焼かない居酒屋利用も大歓迎な新感覚のアットホーム焼肉店。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: "https://www.instagram.com/horu_kazu/"
+        sns: "https://www.instagram.com/horu_kazu/",
+        mapUrl: "https://maps.app.goo.gl/dTyS9EjA4dhgoWm38"
     },
     
     { 
@@ -3648,9 +4059,11 @@
             [["10:00", "14:00"]]
         ],
         closedText: "水・木曜（SNS要確認）",
+        description:"サーフポイント至近に拠点を構え、自家焙煎の嶺岡牛乳ラテと無添加スイーツ、そしてヨガを通じて波乗り後のコミュニティを形成するライフスタイル拠点。",
         updatedAt: "2026/03/03",
         website: "https://www.matsufornia.com/",
-        sns: "https://www.instagram.com/matsufornia/"
+        sns: "https://www.instagram.com/matsufornia/",
+        mapUrl: "https://maps.app.goo.gl/yUUB7S8tZuMFKXgu5"
     },
 
     { 
@@ -3666,9 +4079,11 @@
             [["10:00", "18:00"]]  // 土
         ],
         closedText: "調査中",
+        description:"落花生の風味豊かな「落花生風土記」など、房総の農産物の恵みを活かした銘菓を長年作り続ける千倉の老舗和菓子店。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/V3uHHh3MWykvBAsL6"
     },
 
     { 
@@ -3684,9 +4099,11 @@
             [["11:00", "17:00"]]  // 土
         ],
         closedText: "水曜",
+        description:"千葉が誇るご当地麺・乾麺ベースの醤油スープと、ご飯に抜群に合う濃厚チャーシューを、海を眺めながら味わえる歴史的ラーメン店。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/wyonpuMDnDqCBqU99"
     },
 
     { 
@@ -3702,9 +4119,11 @@
             [["09:00", "15:00"]]  // 土
         ],
         closedText: "火～木曜",
+        description:"農作業後やツーリングの合間に泥のついた靴を脱いで心底寛げる、手作りケーキとタコライスが名物の温かな隠れ家山小屋カフェ。",
         updatedAt: "2026/03/03",
         website: "",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/eSubvWc66H1ANggz8"
     },
 
     { 
@@ -3720,9 +4139,11 @@
             [["10:00", "17:00"]]
         ],
         closedText: "不定休",
+        description:"富士山を望む原岡桟橋の目の前で、絶品台湾唐揚げやロコモコと共にSUP体験やサンセットディナーが楽しめるアットホームな海辺のカフェ。",
         updatedAt: "2026/03/03",
         website: "https://beach-kupono.jp/",
-        sns: "https://www.instagram.com/kupono_sup/"
+        sns: "https://www.instagram.com/kupono_sup/",
+        mapUrl: "https://maps.app.goo.gl/Z9yexVHLZ3jt11Ux5"
     },
 
       { id: 201, name: "わだい処 和田浜", genre: "定食", area: "和田", 
@@ -3737,9 +4158,11 @@
             [["10:00", "15:30"]]  // 土
         ],
         closedText: "不定休（ウェブサイト要確認）",
+        description:"捕鯨の町ならではの懐かしい「くじら給食」や新鮮な地魚のさんが焼き定食を、ホッとするお母ちゃんの味で提供する歴史継承のお食事処。",
         updatedAt: "2026/03/03",
         website: "http://wa-o.awa.jp/restaurant.html",
-        sns: ""
+        sns: "",
+        mapUrl: "https://maps.app.goo.gl/o1QL1A8PoMAVBs1u6"
     },
 
     ];
@@ -3747,6 +4170,91 @@
         let favorites = JSON.parse(localStorage.getItem('minamiboso_favs')) || [];
         let showFavoritesOnly = false;
         let userPos = null;
+
+        // ==========================================
+        // 地図表示のロジック
+        // ==========================================
+        let isMapView = false;
+        let map = null;
+        let markersGroup = null;
+
+        // リストとマップを切り替える関数
+        function toggleView() {
+            isMapView = !isMapView;
+            const shopContainer = document.getElementById('shop-container');
+            const mapContainer = document.getElementById('map-container');
+            const toggleBtn = document.getElementById('toggle-view-btn');
+
+            if (isMapView) {
+                shopContainer.classList.add('hidden');
+                mapContainer.classList.remove('hidden');
+                toggleBtn.innerHTML = '<i class="fas fa-th-large mr-1.5"></i>リストに戻す';
+                toggleBtn.classList.replace('bg-blue-600', 'bg-slate-700');
+                toggleBtn.classList.replace('hover:bg-blue-700', 'hover:bg-slate-800');
+                
+                if (!map) initMap();
+                else map.invalidateSize(); // 表示切り替え時のバグ防止
+            } else {
+                shopContainer.classList.remove('hidden');
+                mapContainer.classList.add('hidden');
+                toggleBtn.innerHTML = '<i class="fas fa-map-marked-alt mr-1.5"></i>地図で見る';
+                toggleBtn.classList.replace('bg-slate-700', 'bg-blue-600');
+                toggleBtn.classList.replace('hover:bg-slate-800', 'hover:bg-blue-700');
+            }
+            render();
+        }
+
+        // 地図を初期化する関数
+        function initMap() {
+            // 南房総市周辺を初期表示
+            map = L.map('map-container').setView([35.03, 139.9], 11);
+            
+            // 地図のデザインを読み込む（OpenStreetMap）
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+
+            markersGroup = L.layerGroup().addTo(map);
+        }
+
+        // 地図にピンを立てる関数
+        function updateMapMarkers(filteredShops, targetDate) {
+            if (!map || !markersGroup) return;
+            markersGroup.clearLayers(); // いったんピンを全部消す
+            let bounds = []; // ピンが全部画面に収まるように枠を計算する用
+
+            filteredShops.forEach(shop => {
+                if (shop.lat && shop.lng) {
+                    const status = getBusinessStatus(shop, targetDate);
+                    // ピンを立てる
+                    const marker = L.marker([shop.lat, shop.lng]).addTo(markersGroup);
+                    
+                    // ピンをクリックしたら詳細モーダルを開く
+                    marker.on('click', () => { openModal(shop.id); });
+
+                    // ピンにカーソルを合わせたら（スマホなら1回タップで）店名と営業状態を小さく出す
+                    marker.bindTooltip(`<b>${shop.name}</b><br><span style="color:${status.label === '営業中' ? '#166534' : '#64748b'}">${status.label}</span>`);
+                    bounds.push([shop.lat, shop.lng]);
+                }
+            });
+
+            // 現在地が取得できていれば、赤い丸で現在地を表示する
+            if (userPos) {
+                 const userIcon = L.divIcon({
+                     html: '<div style="width:14px;height:14px;background-color:#ef4444;border-radius:50%;border:2px solid white;box-shadow:0 0 4px rgba(0,0,0,0.5);"></div>',
+                     className: '',
+                     iconSize: [14, 14],
+                     iconAnchor: [7, 7]
+                 });
+                 L.marker([userPos.lat, userPos.lng], {icon: userIcon}).addTo(markersGroup).bindTooltip("現在地");
+                 bounds.push([userPos.lat, userPos.lng]);
+            }
+
+            // ピンが1つでもあれば、それが全部画面に収まるように自動ズームする
+            if (bounds.length > 0) {
+                map.fitBounds(bounds, { padding: [30, 30], maxZoom: 14 });
+            }
+        }
 
         // 営業判定ロジック
         function getBusinessStatus(shop, targetDate = new Date()) {
@@ -3784,18 +4292,15 @@
                 : { label: "準備中", class: "status-closed", text: timeInfo.join(" / ") };
         }
 
-        // カード生成（Googleマップ・SNS・更新日 対応版）
+        // ==========================================
+        // カード生成（写真・動画対応版）
+        // ==========================================
         function createCard(shop, targetDate) {
             const status = getBusinessStatus(shop, targetDate);
             const isFav = favorites.includes(shop.id);
             const distance = userPos ? calculateDistance(userPos.lat, userPos.lng, shop.lat, shop.lng) : "---";
-            
-            // 【修正】Google Maps 公式の正確な検索用リンクを生成
-            const mapUrl = (shop.lat && shop.lng) 
-                ? `https://www.google.com/maps/search/?api=1&query=${shop.lat},${shop.lng}`
-                : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(shop.name + ' 南房総市')}`;
+            const mapLink = shop.mapUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(shop.name + ' 南房総市 ' + shop.area)}`;
 
-            // SNSアイコンの自動判定
             let snsIcon = "fa-hashtag";
             if (shop.sns) {
                 if (shop.sns.includes("instagram.com")) snsIcon = "fa-instagram";
@@ -3803,46 +4308,237 @@
                 else if (shop.sns.includes("facebook.com")) snsIcon = "fa-facebook";
             }
 
-            return `
-                <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 hover:shadow-xl transition-all group flex flex-col justify-between">
-                    <div>
-                        <div class="flex justify-between items-start mb-4">
-                            <span class="${status.class}">${status.label}</span>
-                            
-                            <div class="flex items-center gap-3 text-lg">
-                                ${shop.website ? `<a href="${shop.website}" target="_blank" rel="noopener noreferrer" class="text-slate-300 hover:text-blue-500 transition-colors" title="公式サイトへ"><i class="fas fa-globe"></i></a>` : ''}
-                                ${shop.sns ? `<a href="${shop.sns}" target="_blank" rel="noopener noreferrer" class="text-slate-300 hover:text-pink-500 transition-colors" title="SNSへ"><i class="fab ${snsIcon}"></i></a>` : ''}
-                                <button onclick="toggleFavorite(${shop.id})" class="text-slate-300 hover:text-rose-500 transition-colors ml-1">
-                                    <i class="fas fa-heart ${isFav ? 'favorite-active' : ''}"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-1">${shop.area} / ${shop.genre}</div>
-                        
-                        <a href="${mapUrl}" target="_blank" rel="noopener noreferrer" class="block">
-                            <h3 class="text-xl font-black text-slate-800 mb-2 group-hover:text-blue-600 transition-colors">
-                                ${shop.name} <i class="fas fa-external-link-alt text-xs opacity-0 group-hover:opacity-100 ml-1"></i>
-                            </h3>
-                        </a>
+            // ★画像・動画の出し分けロジック
+            let mediaHtml = '';
+            if (shop.video) {
+                // 動画の場合は自動再生・ループ・消音で背景のように表示
+                mediaHtml = `<video src="${shop.video}" autoplay loop muted playsinline class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"></video>`;
+            } else if (shop.image) {
+                // 画像の場合
+                mediaHtml = `<img src="${shop.image}" alt="${shop.name}" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">`;
+            } else {
+                // どちらもない場合のダミー画像（グレーの背景にアイコン）
+                mediaHtml = `<div class="w-full h-full bg-slate-100 flex items-center justify-center text-slate-300 transition-transform duration-700 group-hover:scale-110"><i class="fas fa-camera text-3xl opacity-50"></i></div>`;
+            }
 
-                        <div class="flex items-center text-slate-400 text-xs font-bold mb-4">
-                            <i class="fas fa-map-marker-alt mr-1"></i>現在地から ${distance}km
-                            <a href="${mapUrl}" target="_blank" rel="noopener noreferrer" class="ml-auto text-blue-500 hover:underline">
-                                地図で見る <i class="fas fa-chevron-right ml-1"></i>
-                            </a>
+            return `
+                <div id="card-${shop.id}" onclick="openModal(${shop.id})" class="bg-white rounded-2xl shadow-sm border border-slate-200 hover:shadow-lg transition-all flex flex-col h-full cursor-pointer relative group overflow-hidden p-0">
+                    
+                    <div class="relative w-full h-28 sm:h-36 bg-slate-100 shrink-0 overflow-hidden">
+                        ${mediaHtml}
+                        <div class="absolute top-2 left-2 z-10">
+                            <span class="${status.class} shadow-sm backdrop-blur-md bg-opacity-90">${status.label}</span>
+                        </div>
+                        <div class="absolute top-2 right-2 z-10">
+                            <button onclick="event.stopPropagation(); toggleFavorite(${shop.id})" class="w-8 h-8 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center text-slate-400 hover:text-rose-500 shadow-sm transition-colors">
+                                <i class="fas fa-heart ${isFav ? 'favorite-active text-rose-500' : ''}"></i>
+                            </button>
                         </div>
                     </div>
-                    
-                    <div class="bg-slate-50 rounded-2xl p-3 text-[11px] font-bold text-slate-500 mt-auto relative">
-                        <i class="far fa-clock mr-1 text-blue-500"></i>${status.text}
-                        ${shop.closedText ? `<div class="mt-1 text-[9px] text-slate-400">※ ${shop.closedText}</div>` : ''}
+
+                    <div class="p-3 flex-grow flex flex-col">
+                        <div class="flex justify-between items-center mb-1">
+                            <div class="text-[9px] font-bold text-blue-500 truncate pr-2">${shop.area} / ${shop.genre}</div>
+                            <div class="flex items-center gap-2 text-sm shrink-0 text-slate-400">
+                                ${shop.website ? `<a href="${shop.website}" onclick="event.stopPropagation()" target="_blank" rel="noopener noreferrer" class="hover:text-blue-500 transition-colors"><i class="fas fa-globe"></i></a>` : ''}
+                                ${shop.sns ? `<a href="${shop.sns}" onclick="event.stopPropagation()" target="_blank" rel="noopener noreferrer" class="hover:text-pink-500 transition-colors"><i class="fab ${snsIcon}"></i></a>` : ''}
+                            </div>
+                        </div>
                         
-                        ${shop.updatedAt ? `<div class="absolute bottom-3 right-3 text-[9px] text-slate-400 font-normal"><i class="fas fa-sync-alt mr-1"></i>情報更新: ${shop.updatedAt}</div>` : ''}
+                        <h3 class="text-[13px] sm:text-sm font-black text-slate-800 leading-snug line-clamp-2 group-hover:text-blue-600 transition-colors mb-2 flex-grow">
+                            ${shop.name}
+                        </h3>
+
+                        <div class="flex items-center justify-between text-slate-500 text-[10px] font-bold border-t border-slate-100 pt-2 mt-auto">
+                            <span class="truncate"><i class="fas fa-map-marker-alt mr-0.5"></i>${distance}km</span>
+                            <div class="flex items-center gap-1 text-slate-600 truncate">
+                                <i class="far fa-clock text-blue-500"></i>
+                                <span class="truncate max-w-[80px]">${status.text}</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             `;
         }
 
+        // ==========================================
+        // モーダル（詳細画面）制御のロジック
+        // ==========================================
+        let activeCardId = null;
+
+        function openModal(id) {
+            activeCardId = id;
+            const shop = shopList.find(s => s.id === id);
+            if(!shop) return;
+
+            const targetDate = document.getElementById('filter-datetime').value ? new Date(document.getElementById('filter-datetime').value) : new Date();
+            const status = getBusinessStatus(shop, targetDate);
+            const isFav = favorites.includes(shop.id);
+            const distance = userPos ? calculateDistance(userPos.lat, userPos.lng, shop.lat, shop.lng) : "---";
+            const mapLink = shop.mapUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(shop.name + ' 南房総市 ' + shop.area)}`;
+
+            let snsIcon = "fa-hashtag";
+            if (shop.sns) {
+                if (shop.sns.includes("instagram.com")) snsIcon = "fa-instagram";
+                else if (shop.sns.includes("twitter.com") || shop.sns.includes("x.com")) snsIcon = "fa-twitter";
+                else if (shop.sns.includes("facebook.com")) snsIcon = "fa-facebook";
+            }
+
+            const descText = shop.description ? shop.description.replace(/\n/g, '<br>') : "店舗の詳細情報は準備中です。<br>情報が入り次第更新します！";
+
+            // ★モーダル用の画像・動画生成（動画は操作可能にする）
+            let modalMediaHtml = '';
+            if (shop.video) {
+                modalMediaHtml = `<video src="${shop.video}" controls autoplay loop muted playsinline class="w-full h-48 sm:h-64 object-cover"></video>`;
+            } else if (shop.image) {
+                modalMediaHtml = `<img src="${shop.image}" alt="${shop.name}" class="w-full h-48 sm:h-64 object-cover">`;
+            } else {
+                modalMediaHtml = `<div class="w-full h-32 sm:h-48 bg-slate-100 flex flex-col items-center justify-center text-slate-300"><i class="fas fa-camera text-4xl mb-2 opacity-50"></i><span class="text-xs font-bold opacity-50">NO IMAGE</span></div>`;
+            }
+
+            const modalHtml = `
+                <button onclick="closeModal()" class="absolute top-3 right-3 w-8 h-8 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/70 transition-colors z-20">
+                    <i class="fas fa-times"></i>
+                </button>
+
+                <div class="relative w-full shrink-0 bg-slate-100">
+                    ${modalMediaHtml}
+                    <div class="absolute bottom-3 left-3 z-10">
+                        <span class="${status.class} shadow-md backdrop-blur-md bg-opacity-90 px-3 py-1 text-[11px]">${status.label}</span>
+                    </div>
+                </div>
+
+                <div class="p-5 sm:p-6 overflow-y-auto flex-grow">
+                    <div class="mb-4">
+                        <div class="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-1">${shop.area} / ${shop.genre}</div>
+                        <h2 class="text-xl sm:text-2xl font-black text-slate-800 leading-tight mb-2">${shop.name}</h2>
+                        <div class="text-xs text-slate-500 font-bold flex items-center">
+                            <i class="fas fa-map-marker-alt mr-1 text-slate-400"></i>現在地から ${distance}km
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <h4 class="text-[11px] sm:text-sm font-black text-slate-400 mb-2 border-b border-slate-100 pb-1">店舗情報</h4>
+                        <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">${descText}</p>
+                    </div>
+
+                    <div class="mb-6 bg-slate-50 rounded-2xl p-4">
+                        <div class="text-[10px] sm:text-xs font-bold text-slate-600 mb-1">
+                            <i class="far fa-clock mr-1 text-blue-500"></i>営業時間
+                        </div>
+                        <div class="text-xs sm:text-sm font-bold text-slate-800 ml-4">${status.text}</div>
+                        ${shop.closedText ? `<div class="mt-2 text-[10px] text-slate-500 ml-4 leading-tight">※${shop.closedText}</div>` : ''}
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 mt-4">
+                        <a href="${mapLink}" target="_blank" rel="noopener noreferrer" class="bg-blue-600 hover:bg-blue-700 text-white text-center py-3.5 rounded-xl font-bold text-xs sm:text-sm transition-colors flex items-center justify-center gap-2 shadow-md">
+                            <i class="fas fa-map-marked-alt"></i>地図を開く
+                        </a>
+                        <button onclick="toggleFavorite(${shop.id}); updateModalFavorite(${shop.id})" class="bg-slate-100 hover:bg-rose-50 text-slate-700 text-center py-3.5 rounded-xl font-bold text-xs sm:text-sm transition-colors flex items-center justify-center gap-2">
+                            <i id="modal-fav-icon" class="fas fa-heart ${isFav ? 'favorite-active text-rose-500' : ''}"></i>保存する
+                        </button>
+                    </div>
+                    
+                    ${(shop.website || shop.sns) ? `
+                    <div class="flex justify-center gap-4 mt-6 pt-6 border-t border-slate-100">
+                        ${shop.website ? `<a href="${shop.website}" target="_blank" rel="noopener noreferrer" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-600 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-colors text-lg shadow-sm"><i class="fas fa-globe"></i></a>` : ''}
+                        ${shop.sns ? `<a href="${shop.sns}" target="_blank" rel="noopener noreferrer" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-600 hover:bg-pink-50 hover:text-pink-600 hover:border-pink-200 transition-colors text-lg shadow-sm"><i class="fab ${snsIcon}"></i></a>` : ''}
+                    </div>
+                    ` : ''}
+                    
+                    ${shop.updatedAt ? `<div class="mt-6 text-[9px] text-slate-400 text-center"><i class="fas fa-sync-alt mr-1"></i>情報更新: ${shop.updatedAt}</div>` : ''}
+                </div>
+            `;
+
+            const modalContent = document.getElementById('shop-modal-content');
+            modalContent.innerHTML = modalHtml;
+            
+            const modal = document.getElementById('shop-modal');
+            const cardElement = document.getElementById(`card-${id}`);
+            
+            modalContent.style.transition = 'none';
+            modalContent.style.opacity = '0';
+            modalContent.style.transform = 'none';
+            modal.classList.remove('hidden');
+            
+            if (cardElement) {
+                const cardRect = cardElement.getBoundingClientRect();
+                const modalRect = modalContent.getBoundingClientRect();
+                const scaleX = cardRect.width / modalRect.width;
+                const scaleY = cardRect.height / modalRect.height;
+                const translateX = cardRect.left + cardRect.width / 2 - (modalRect.left + modalRect.width / 2);
+                const translateY = cardRect.top + cardRect.height / 2 - (modalRect.top + modalRect.height / 2);
+
+                modalContent.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scaleX}, ${scaleY})`;
+            } else {
+                modalContent.style.transform = 'scale(0.9)';
+            }
+            
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    modal.classList.remove('opacity-0');
+                    modalContent.style.transition = 'transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.4s ease';
+                    modalContent.style.transform = 'translate(0, 0) scale(1)';
+                    modalContent.style.opacity = '1';
+                });
+            });
+            
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            if (!activeCardId) return;
+            const modal = document.getElementById('shop-modal');
+            const modalContent = document.getElementById('shop-modal-content');
+            const cardElement = document.getElementById(`card-${activeCardId}`);
+            
+            if (cardElement) {
+                const cardRect = cardElement.getBoundingClientRect();
+                const modalRect = modalContent.getBoundingClientRect();
+                const scaleX = cardRect.width / modalRect.width;
+                const scaleY = cardRect.height / modalRect.height;
+                const translateX = cardRect.left + cardRect.width / 2 - (modalRect.left + modalRect.width / 2);
+                const translateY = cardRect.top + cardRect.height / 2 - (modalRect.top + modalRect.height / 2);
+                
+                modalContent.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease';
+                modalContent.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scaleX}, ${scaleY})`;
+                modalContent.style.opacity = '0';
+            } else {
+                modalContent.style.transform = 'scale(0.9)';
+                modalContent.style.opacity = '0';
+            }
+            
+            modal.classList.add('opacity-0');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modalContent.style.transition = 'none';
+                if(window.innerWidth < 1024) {
+                    document.body.style.overflow = '';
+                }
+                activeCardId = null;
+            }, 400);
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('shop-modal');
+            if (event.target === modal) closeModal();
+        }
+
+        function updateModalFavorite(id) {
+            const icon = document.getElementById('modal-fav-icon');
+            if(icon) {
+                if(favorites.includes(id)) {
+                    icon.classList.add('favorite-active');
+                    icon.classList.add('text-rose-500');
+                } else {
+                    icon.classList.remove('favorite-active');
+                    icon.classList.remove('text-rose-500');
+                }
+            }
+        }
+
+        // 距離計算
         function calculateDistance(lat1, lon1, lat2, lon2) {
             const R = 6371;
             const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -3851,6 +4547,7 @@
             return (R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))).toFixed(1);
         }
 
+        // 描画・フィルタリング・並び替え
         function render() {
             const area = document.getElementById('filter-area').value;
             const genre = document.getElementById('filter-genre').value;
@@ -3872,10 +4569,38 @@
                 if (genre !== 'all' && shop.genre !== genre) return false;
                 if (search && !shop.name.toLowerCase().includes(search)) return false;
                 if (showFavoritesOnly && !favorites.includes(shop.id)) return false;
+                
+                shop._tempIsOpen = status.label === "営業中" ? 1 : 0;
+                shop._tempDistance = userPos ? parseFloat(calculateDistance(userPos.lat, userPos.lng, shop.lat, shop.lng)) : Infinity;
+                if (isNaN(shop._tempDistance)) shop._tempDistance = Infinity;
+
                 return true;
             });
 
-            document.getElementById('shop-container').innerHTML = filtered.map(shop => createCard(shop, targetDate)).join('');
+            filtered.sort((a, b) => {
+                if (a._tempIsOpen !== b._tempIsOpen) return b._tempIsOpen - a._tempIsOpen; 
+                if (a._tempDistance !== b._tempDistance) return a._tempDistance - b._tempDistance;
+                return a.id - b.id;
+            });
+
+            // ★ここから変更：マップモードとリストモードで処理を分ける
+            if (isMapView) {
+                // マップ表示の場合：ピンを立て直す
+                updateMapMarkers(filtered, targetDate);
+            } else {
+                // リスト表示の場合：カードを作り直す
+                if (filtered.length === 0) {
+                    document.getElementById('shop-container').innerHTML = `
+                        <div class="col-span-full py-12 text-center text-slate-500">
+                            <i class="far fa-frown-open text-4xl mb-3 text-slate-300"></i>
+                            <p class="text-sm font-bold">ご指定の条件で現在開いているお店は見つかりませんでした。</p>
+                            <p class="text-xs mt-2">条件を変えるか、「営業中のみ」のチェックを外してみてください。</p>
+                        </div>
+                    `;
+                } else {
+                    document.getElementById('shop-container').innerHTML = filtered.map(shop => createCard(shop, targetDate)).join('');
+                }
+            }
         }
 
         function toggleFavorite(id) {
@@ -3908,6 +4633,19 @@
         }
 
         render();
+
+        
     </script>
+    
+    <div id="shop-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[9999] hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div id="shop-modal-content" class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            </div>
+    </div>
+    
+    <a href="https://docs.google.com/forms/d/1GdzNqpJJ8SVIpX6kvPB0mphtrAOaGQVnDeVRkY4_A3c/edit" target="_blank" rel="noopener noreferrer" 
+       class="fixed bottom-6 right-6 lg:bottom-10 lg:right-10 bg-slate-800 text-white px-4 py-3 sm:px-5 sm:py-3.5 rounded-full shadow-2xl hover:bg-blue-600 hover:-translate-y-1 transition-all duration-300 z-50 flex items-center gap-2 font-bold group border-2 border-white/20">
+        <i class="fas fa-comment-dots text-lg group-hover:animate-bounce"></i>
+        <span class="text-xs sm:text-sm tracking-wide">情報提供・ご要望</span>
+    </a>
 </body>
 </html>
