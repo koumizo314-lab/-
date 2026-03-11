@@ -4386,14 +4386,16 @@
 
             const descText = shop.description ? shop.description.replace(/\n/g, '<br>') : "店舗の詳細情報は準備中です。<br>情報が入り次第更新します！";
 
-            // ★モーダル用の画像・動画生成（動画は操作可能にする）
+            // ★画像枠を大きく設定（スマホで画面高さの35%、PCで40%の領域を確保）
             let modalMediaHtml = '';
+            const mediaClass = "w-full h-[35vh] sm:h-[40vh] object-cover";
+            
             if (shop.video) {
-                modalMediaHtml = `<video src="${shop.video}" controls autoplay loop muted playsinline class="w-full h-48 sm:h-64 object-cover"></video>`;
+                modalMediaHtml = `<video src="${shop.video}" controls autoplay loop muted playsinline class="${mediaClass}"></video>`;
             } else if (shop.image) {
-                modalMediaHtml = `<img src="${shop.image}" alt="${shop.name}" class="w-full h-48 sm:h-64 object-cover">`;
+                modalMediaHtml = `<img src="${shop.image}" alt="${shop.name}" class="${mediaClass}">`;
             } else {
-                modalMediaHtml = `<div class="w-full h-32 sm:h-48 bg-slate-100 flex flex-col items-center justify-center text-slate-300"><i class="fas fa-camera text-4xl mb-2 opacity-50"></i><span class="text-xs font-bold opacity-50">NO IMAGE</span></div>`;
+                modalMediaHtml = `<div class="${mediaClass} bg-slate-100 flex flex-col items-center justify-center text-slate-300"><i class="fas fa-camera text-4xl mb-2 opacity-50"></i><span class="text-xs font-bold opacity-50">NO IMAGE</span></div>`;
             }
 
             const modalHtml = `
@@ -4404,49 +4406,52 @@
                 <div class="relative w-full shrink-0 bg-slate-100">
                     ${modalMediaHtml}
                     <div class="absolute bottom-3 left-3 z-10">
-                        <span class="${status.class} shadow-md backdrop-blur-md bg-opacity-90 px-3 py-1 text-[11px]">${status.label}</span>
+                        <span class="shadow-md backdrop-blur-md bg-white/90 px-3 py-1.5 text-[11px] rounded-full text-slate-800 font-bold flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full ${status.label === '営業中' ? 'bg-green-500 animate-pulse' : 'bg-slate-400'}"></span>
+                            ${status.label}
+                        </span>
                     </div>
                 </div>
 
-                <div class="p-5 sm:p-6 overflow-y-auto flex-grow">
-                    <div class="mb-4">
-                        <div class="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-1">${shop.area} / ${shop.genre}</div>
-                        <h2 class="text-xl sm:text-2xl font-black text-slate-800 leading-tight mb-2">${shop.name}</h2>
-                        <div class="text-xs text-slate-500 font-bold flex items-center">
-                            <i class="fas fa-map-marker-alt mr-1 text-slate-400"></i>現在地から ${distance}km
+                <div class="p-5 sm:p-6 overflow-y-auto flex-grow bg-white">
+                    
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <div class="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-1">${shop.area} / ${shop.genre}</div>
+                            <h2 class="text-xl sm:text-2xl font-black text-slate-800 leading-tight">${shop.name}</h2>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            ${shop.website ? `<a href="${shop.website}" target="_blank" rel="noopener noreferrer" class="w-8 h-8 bg-slate-50 rounded-full flex items-center justify-center text-slate-500 hover:text-blue-500 hover:bg-blue-50 transition-colors"><i class="fas fa-globe"></i></a>` : ''}
+                            ${shop.sns ? `<a href="${shop.sns}" target="_blank" rel="noopener noreferrer" class="w-8 h-8 bg-slate-50 rounded-full flex items-center justify-center text-slate-500 hover:text-pink-500 hover:bg-pink-50 transition-colors"><i class="fab ${snsIcon}"></i></a>` : ''}
                         </div>
                     </div>
 
-                    <div class="mb-6">
-                        <h4 class="text-[11px] sm:text-sm font-black text-slate-400 mb-2 border-b border-slate-100 pb-1">店舗情報</h4>
-                        <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">${descText}</p>
+                    <div class="text-xs text-slate-500 font-bold flex items-center mb-5 pb-5 border-b border-slate-100">
+                        <i class="fas fa-map-marker-alt mr-1.5 text-slate-400"></i>現在地から ${distance}km
                     </div>
 
-                    <div class="mb-6 bg-slate-50 rounded-2xl p-4">
-                        <div class="text-[10px] sm:text-xs font-bold text-slate-600 mb-1">
-                            <i class="far fa-clock mr-1 text-blue-500"></i>営業時間
+                    <div class="mb-5">
+                        <p class="text-[13px] sm:text-sm text-slate-700 leading-relaxed">${descText}</p>
+                    </div>
+
+                    <div class="bg-slate-50 rounded-2xl p-4 mb-5">
+                        <div class="text-[10px] sm:text-xs font-bold text-slate-500 mb-1 flex items-center">
+                            <i class="far fa-clock mr-1.5 text-blue-500"></i>営業時間
                         </div>
-                        <div class="text-xs sm:text-sm font-bold text-slate-800 ml-4">${status.text}</div>
-                        ${shop.closedText ? `<div class="mt-2 text-[10px] text-slate-500 ml-4 leading-tight">※${shop.closedText}</div>` : ''}
+                        <div class="text-[13px] sm:text-sm font-bold text-slate-800 ml-5">${status.text}</div>
+                        ${shop.closedText ? `<div class="mt-1.5 text-[11px] text-rose-500 font-bold ml-5">※${shop.closedText}</div>` : ''}
                     </div>
 
-                    <div class="grid grid-cols-2 gap-3 mt-4">
-                        <a href="${mapLink}" target="_blank" rel="noopener noreferrer" class="bg-blue-600 hover:bg-blue-700 text-white text-center py-3.5 rounded-xl font-bold text-xs sm:text-sm transition-colors flex items-center justify-center gap-2 shadow-md">
+                    <div class="grid grid-cols-2 gap-3 mt-2">
+                        <a href="${mapLink}" target="_blank" rel="noopener noreferrer" class="bg-blue-600 hover:bg-blue-700 text-white text-center py-3.5 rounded-xl font-bold text-[13px] transition-colors flex items-center justify-center gap-2 shadow-sm">
                             <i class="fas fa-map-marked-alt"></i>地図を開く
                         </a>
-                        <button onclick="toggleFavorite(${shop.id}); updateModalFavorite(${shop.id})" class="bg-slate-100 hover:bg-rose-50 text-slate-700 text-center py-3.5 rounded-xl font-bold text-xs sm:text-sm transition-colors flex items-center justify-center gap-2">
+                        <button onclick="toggleFavorite(${shop.id}); updateModalFavorite(${shop.id})" class="bg-slate-100 hover:bg-rose-50 text-slate-700 text-center py-3.5 rounded-xl font-bold text-[13px] transition-colors flex items-center justify-center gap-2">
                             <i id="modal-fav-icon" class="fas fa-heart ${isFav ? 'favorite-active text-rose-500' : ''}"></i>保存する
                         </button>
                     </div>
                     
-                    ${(shop.website || shop.sns) ? `
-                    <div class="flex justify-center gap-4 mt-6 pt-6 border-t border-slate-100">
-                        ${shop.website ? `<a href="${shop.website}" target="_blank" rel="noopener noreferrer" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-600 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-colors text-lg shadow-sm"><i class="fas fa-globe"></i></a>` : ''}
-                        ${shop.sns ? `<a href="${shop.sns}" target="_blank" rel="noopener noreferrer" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-600 hover:bg-pink-50 hover:text-pink-600 hover:border-pink-200 transition-colors text-lg shadow-sm"><i class="fab ${snsIcon}"></i></a>` : ''}
-                    </div>
-                    ` : ''}
-                    
-                    ${shop.updatedAt ? `<div class="mt-6 text-[9px] text-slate-400 text-center"><i class="fas fa-sync-alt mr-1"></i>情報更新: ${shop.updatedAt}</div>` : ''}
+                    ${shop.updatedAt ? `<div class="mt-6 pt-4 text-[9px] text-slate-400 text-center border-t border-slate-50"><i class="fas fa-sync-alt mr-1"></i>情報更新: ${shop.updatedAt}</div>` : ''}
                 </div>
             `;
 
