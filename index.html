@@ -11696,15 +11696,10 @@
         let isClosing = false; // ★追加：アニメーションの重複を防ぐフラグ
 
         function openModal(id, isRandomPickup = false) {
-            // ★追加：スマホの「戻る」ボタン対策（URLに仮想の履歴を追加する）
-            if (!history.state || history.state.modalId !== id) {
-                if (activeCardId) {
-                    // 既に別のモーダルが開いている時（ガチャ等）は履歴を置き換える
-                    history.replaceState({ modalId: id }, '', `#shop-${id}`);
-                } else {
-                    // 通常時は新しく履歴を追加する
-                    history.pushState({ modalId: id }, '', `#shop-${id}`);
-                }
+            // ★スマホ対策：URLの末尾（ハッシュ）に「#shop-番号」をつけて明確な履歴を作る
+            const targetHash = `#shop-${id}`;
+            if (window.location.hash !== targetHash) {
+                history.pushState(null, '', targetHash);
             }
 
             activeCardId = id;
@@ -11793,8 +11788,6 @@
                             <i id="modal-fav-icon" class="fas fa-heart ${isFav ? 'favorite-active text-rose-500' : ''}"></i>保存する
                         </button>
                     </div>
-                    
-                    ${shop.updatedAt ? `<div class="mt-6 pt-4 text-[9px] text-slate-400 text-center border-t border-slate-50"><i class="fas fa-sync-alt mr-1"></i>情報更新: ${shop.updatedAt}</div>` : ''}
                 </div>
             `;
 
@@ -11834,7 +11827,6 @@
             document.body.style.overflow = 'hidden';
         }
 
-        // ★引数 (isFromBackButton) を追加し、フラグ制御を追加
         function closeModal(isFromBackButton = false) {
             if (!activeCardId || isClosing) return;
             isClosing = true;
@@ -11843,8 +11835,8 @@
             const modalContent = document.getElementById('shop-modal-content');
             const cardElement = document.getElementById(`card-${activeCardId}`);
             
-            // ★追加：×ボタンや背景タップで閉じた場合は、仮想の履歴を1つ戻す
-            if (!isFromBackButton && history.state && history.state.modalId) {
+            // ★スマホ対策：×ボタンや背景タップで閉じた場合は、強制的に「戻る」処理を実行
+            if (!isFromBackButton && window.location.hash.startsWith('#shop-')) {
                 history.back();
             }
 
@@ -11873,7 +11865,7 @@
                     document.body.style.overflow = '';
                 }
                 activeCardId = null;
-                isClosing = false; // フラグをリセット
+                isClosing = false;
             }, 400);
         }
 
@@ -11883,6 +11875,7 @@
         }
 
         function updateModalFavorite(id) {
+            // ... (変更なし) ...
             const icon = document.getElementById('modal-fav-icon');
             if(icon) {
                 if(favorites.includes(id)) {
@@ -11895,15 +11888,21 @@
             }
         }
 
-        // ★追加：スマホの「戻る」ボタンや、ブラウザの「戻る/進む」が押された時の処理
-        window.addEventListener('popstate', function(event) {
-            if (activeCardId && !isClosing) {
-                // モーダルが開いている時に戻るボタンが押されたら、モーダルを閉じる
-                // （trueを渡すことで、二重に履歴が戻るのを防ぎます）
-                closeModal(true);
+        // ★スマホのブラウザバックを検知する決定版ロジック
+        window.addEventListener('popstate', function() {
+            if (!window.location.hash.startsWith('#shop-')) {
+                // URLから #shop- が消えていたらモーダルを閉じる
+                if (activeCardId && !isClosing) {
+                    closeModal(true);
+                }
+            } else {
+                // 逆にURLに #shop- がついたなら、そのお店を開く
+                const id = parseInt(window.location.hash.replace('#shop-', ''));
+                if (activeCardId !== id && !isClosing) {
+                    openModal(id);
+                }
             }
         });
-        // ==========================================
 
         // 距離計算
         function calculateDistance(lat1, lon1, lat2, lon2) {
@@ -12001,6 +12000,14 @@
 
         render();
 
+JavaScript
+        // ページ読み込み時にURLに #shop- がついていたら、そのお店を直接開く
+        window.addEventListener('DOMContentLoaded', () => {
+            if (window.location.hash.startsWith('#shop-')) {
+                const id = parseInt(window.location.hash.replace('#shop-', ''));
+                setTimeout(() => openModal(id), 500); // 画面描画が終わった直後に開く
+            }
+        });
         
     </script>
     
